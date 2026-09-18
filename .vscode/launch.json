@@ -1,0 +1,47 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Django: Runserver (Docker Postgres)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/django_backend/manage.py",
+      "args": [
+        "runserver",
+        "0.0.0.0:3100",
+        "--noreload",
+        "--settings=config.settings.dev"
+      ],
+      "cwd": "${workspaceFolder}/django_backend",
+      "django": true,
+      "justMyCode": true,
+      "env": {
+        "POSTGRES_DB": "code_assessment",
+        "POSTGRES_USER": "code_assessment",
+        "POSTGRES_PASSWORD": "code_assessment_dev_password",
+        "POSTGRES_HOST": "localhost",
+        "POSTGRES_PORT": "5432",
+        "REDIS_URL": "redis://localhost:6380/0",
+        "JUDGE0_BASE_URL": "http://localhost:2358"
+      }
+    },
+    {
+      "name": "Django: Runserver (Offline SQLite)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/django_backend/manage.py",
+      "args": [
+        "runserver",
+        "0.0.0.0:3100",
+        "--noreload",
+        "--settings=config.settings.dev"
+      ],
+      "cwd": "${workspaceFolder}/django_backend",
+      "django": true,
+      "justMyCode": true,
+      "env": {
+        "USE_SQLITE": "True"
+      }
+    }
+  ]
+}

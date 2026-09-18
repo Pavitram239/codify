@@ -1,0 +1,53 @@
+# ── Core Django ───────────────────────────────────────────────────────────────
+Django==5.1.1
+djangorestframework==3.15.2
+
+# ── Database ──────────────────────────────────────────────────────────────────
+# psycopg3 (the "psycopg" package) — supports Python 3.14 and Django 5.1+.
+# Django uses the same "django.db.backends.postgresql" backend for both psycopg2 and psycopg3.
+psycopg[binary]>=3.2.10
+
+# ── Environment ───────────────────────────────────────────────────────────────
+django-environ==0.11.2
+
+# ── Authentication ────────────────────────────────────────────────────────────
+djangorestframework-simplejwt==5.3.1
+django-cors-headers==4.4.0
+
+# ── Password hashing (bcrypt compat for existing MongoDB users) ────────────────
+bcrypt==4.2.0
+
+# ── Redis / Cache ─────────────────────────────────────────────────────────────
+redis==5.1.0
+django-redis==5.4.0
+
+# ── Celery (async tasks & periodic session cleanup) ───────────────────────────
+celery==5.4.0
+django-celery-beat==2.7.0
+kombu==5.4.0
+
+# ── File / Image handling ─────────────────────────────────────────────────────
+# Pillow 11.1.0+ provides pre-built Windows binaries for Python 3.14.
+Pillow>=11.1.0
+
+# ── HTTP client (Judge0 calls) ────────────────────────────────────────────────
+requests==2.32.3
+
+# ── WSGI server (production) ──────────────────────────────────────────────────
+gunicorn==23.0.0
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest==8.3.3
+pytest-django==4.9.0
+factory-boy==3.3.1
+Faker==28.4.1
+
+# ── Dev / Linting ─────────────────────────────────────────────────────────────
+black==24.10.0
+isort==5.13.2
+flake8==7.1.1
+
+# ── Migration Tooling (MongoDB ETL) ───────────────────────────────────────────
+pymongo>=4.18.0
+dnspython>=2.8.0
+

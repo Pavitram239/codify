@@ -1,0 +1,82 @@
+.problem-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden; /* Ensures that content doesn't overflow */
+}
+
+.resizable {
+  flex-basis: 50%; /* Allow the resizable element to grow and shrink */
+  min-width: 35%; /* Minimum width to prevent it from collapsing */
+  max-width: 75%; /* Maximum width to keep content visible */
+  overflow-y: auto;
+  height: 100%;
+  border-right: 1px solid #333;
+} 
+
+.code-editor {
+  flex-grow: 1; /* Allow the code editor to take remaining space */
+  min-width: 25%; /* Minimum width to ensure it remains visible */
+  height: 100%;
+  overflow-y: auto;
+}
+
+.divider {
+  width: 5px;
+  cursor: col-resize;
+  background-color: #4a4a4a; /* Medium Gray */
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.divider:hover {
+  background-color: #808080; /* Lighter Gray on hover */
+}
+
+
+
+
+/* Optional custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #333;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+@media (max-width: 1200px) {
+  .problem-container {
+    flex-direction: column; /* Stack elements vertically */
+    height: auto; /* Allow height to adjust to content */
+  }
+
+  .resizable {
+    flex-basis: 100%; /* Full width for problem statement */
+    min-width: auto;
+    max-width: none;
+    height: auto; /* Adjust height for vertical stacking */
+    position: relative; /* Remove sticky behavior */
+    border-right: none; /* Remove border */
+  }
+
+  .divider {
+    display: none; /* Hide the divider */
+  }
+
+  .code-editor {
+    flex-grow: 0; /* Ensure it does not stretch */
+    width: 100%; /* Full width */
+    height: auto; /* Adjust height to content */
+  }
+}

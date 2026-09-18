@@ -1,0 +1,6 @@
+[flake8]
+max-line-length = 100
+exclude = .git,__pycache__,migrations,staticfiles,media
+per-file-ignores =
+    config/settings/*.py:F401,F403,F405
+    apps/*/migrations/*.py:E501
