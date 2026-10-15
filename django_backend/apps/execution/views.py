@@ -1,5 +1,7 @@
+from apps.users.access_policy import ModulePermission
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -7,11 +9,12 @@ from rest_framework.views import APIView
 
 from apps.execution.services import Judge0Client, get_language_id
 from apps.problems.models import Problem
+from apps.problems.access import require_problem_access
 from apps.submissions.models import Submission, TestCaseResult
 
 
 class RunCodeView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         code = request.data.get("code")
@@ -19,7 +22,7 @@ class RunCodeView(APIView):
         problem_id = request.data.get("problemId")
         all_test_cases = request.data.get("allTestCases", False)
 
-        if not code or not language or not problem_id:
+        if not isinstance(code, str) or not code or not language or not problem_id or not isinstance(all_test_cases, bool):
             return Response(
                 {"success": False, "message": "Invalid input. Missing required fields."},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -32,6 +35,8 @@ class RunCodeView(APIView):
             )
 
         problem = get_object_or_404(Problem, id=problem_id)
+        submitted_at = timezone.now()
+        require_problem_access(request.user, problem, at=submitted_at)
         all_cases = list(problem.test_cases.all().order_by("order"))
 
         if not all_cases:
@@ -59,7 +64,6 @@ class RunCodeView(APIView):
                 {
                     "success": False,
                     "message": "An error occurred while processing the code.",
-                    "error": str(e),
                     "queueStatus": {"pending": 0, "processing": 0},
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -93,6 +97,7 @@ class RunCodeView(APIView):
                     number_of_test_cases=number_of_test_case,
                     number_of_test_cases_pass=number_of_test_case_pass,
                     total_marks=total_marks,
+                    created_at=submitted_at,
                 )
                 for order, t in enumerate(test_results):
                     TestCaseResult.objects.create(
@@ -121,7 +126,7 @@ class RunCodeView(APIView):
                             "input": "******" if t.get("is_hidden") else t.get("input"),
                             "expectedOutput": "******" if t.get("is_hidden") else t.get("expectedOutput"),
                             "output": "******" if t.get("is_hidden") else t.get("output"),
-                            "error": t.get("error"),
+                            "error": "Hidden test case failed." if t.get("is_hidden") and t.get("error") else t.get("error"),
                             "passed": t.get("passed"),
                             "time": t.get("time"),
                             "memory": t.get("memory"),
@@ -136,7 +141,7 @@ class RunCodeView(APIView):
                 "input": "******" if t.get("is_hidden") else t.get("input"),
                 "expectedOutput": "******" if t.get("is_hidden") else t.get("expectedOutput"),
                 "output": "******" if t.get("is_hidden") else t.get("output"),
-                "error": t.get("error"),
+                "error": "Hidden test case failed." if t.get("is_hidden") and t.get("error") else t.get("error"),
                 "passed": t.get("passed"),
                 "time": t.get("time"),
                 "memory": t.get("memory"),
@@ -160,7 +165,7 @@ class RunCodeView(APIView):
 
 
 class QueueStatusView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request):
         return Response(

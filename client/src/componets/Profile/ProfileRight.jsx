@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
 import {
   Save,
   User,
@@ -72,12 +73,12 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
         contentReady ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="bg-gradient-to-br from-gray-900 to-gray-900 rounded-xl shadow-2xl p-8 border border-blue-900/30">
+      <div className="ui-gradient   rounded-lg ui-card-shadow p-8 border border-blue-900/30">
         <div className="mb-8 text-center">
-          <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+          <h2 className="text-3xl font-bold  text-slate-900 ui-gradient  ">
             Profile Information
           </h2>
-          <div className="mt-2 h-1 w-24 mx-auto bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></div>
+          <div className="mt-2 h-1 w-24 mx-auto ui-gradient   rounded-full"></div>
         </div>
 
         <form
@@ -86,19 +87,19 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
         >
           {/* Full Name */}
           <div className="col-span-2" style={getFieldAnimation(1)}>
-            <label className="flex items-center text-white mb-3 text-sm font-medium">
-              <User size={18} className="mr-3 text-blue-400" />
+            <label htmlFor="profile-name" className="flex items-center text-slate-900 mb-3 text-sm font-medium">
+              <User size={18} className="mr-3 text-blue-700" />
               Full Name
             </label>
             <div className="relative group">
-              <input
+              <input id="profile-name"
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputFieldChange}
-                className="w-full p-4 pl-5 bg-gray-800 border-2 border-gray-700 rounded-lg shadow-lg
+                className="w-full p-4 pl-5 ui-surface border-2 border-slate-200 rounded-lg ui-card-shadow
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-all duration-300 group-hover:border-gray-600"
+                           transition-all duration-300 group-hover:border-slate-200"
                 placeholder="Enter your full name"
                 autoComplete="name"
               />
@@ -110,19 +111,19 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
 
           {/* Username */}
           <div className="col-span-2" style={getFieldAnimation(2)}>
-            <label className="flex items-center text-white mb-3 text-sm font-medium">
-              <User size={18} className="mr-3 text-blue-400" />
+            <label htmlFor="profile-username" className="flex items-center text-slate-900 mb-3 text-sm font-medium">
+              <User size={18} className="mr-3 text-blue-700" />
               Username
             </label>
             <div className="relative group">
-              <input
+              <input id="profile-username"
                 type="text"
                 name="username"
                 value={formData.username}
                 onChange={handleInputFieldChange}
-                className="w-full p-4 pl-5 bg-gray-800 border-2 border-gray-700 rounded-lg shadow-lg
+                className="w-full p-4 pl-5 ui-surface border-2 border-slate-200 rounded-lg ui-card-shadow
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-all duration-300 group-hover:border-gray-600"
+                           transition-all duration-300 group-hover:border-slate-200"
                 placeholder="Enter your username"
                 autoComplete="username"
               />
@@ -134,19 +135,19 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
 
           {/* Email */}
           <div className="col-span-2" style={getFieldAnimation(3)}>
-            <label className="flex items-center text-white mb-3 text-sm font-medium">
-              <Mail size={18} className="mr-3 text-blue-400" />
+            <label htmlFor="profile-email" className="flex items-center text-slate-900 mb-3 text-sm font-medium">
+              <Mail size={18} className="mr-3 text-blue-700" />
               Email
             </label>
             <div className="relative">
-              <input
+              <input id="profile-email"
                 type="email"
-                value={user.email}
+                value={user.email || ""}
                 readOnly
-                className="w-full p-4 pl-5 bg-gray-700 border-2 border-gray-600 rounded-lg shadow-lg
-                           text-gray-300 cursor-not-allowed"
+                className="w-full p-4 pl-5 ui-surface border-2 border-slate-200 rounded-lg ui-card-shadow
+                           text-slate-600 cursor-not-allowed"
               />
-              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-xs font-semibold text-gray-400 bg-gray-800 px-3 py-1 rounded-full border border-gray-600">
+              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-xs font-semibold text-slate-600 ui-surface px-3 py-1 rounded-full border border-slate-200">
                 Read only
               </div>
             </div>
@@ -154,19 +155,19 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
 
           {/* Github */}
           <div className="col-span-1" style={getFieldAnimation(4)}>
-            <label className="flex items-center text-white mb-3 text-sm font-medium">
-              <Github size={18} className="mr-3 text-blue-400" />
+            <label htmlFor="profile-github" className="flex items-center text-slate-900 mb-3 text-sm font-medium">
+              <Github size={18} className="mr-3 text-blue-700" />
               Github
             </label>
             <div className="relative group">
-              <input
+              <input id="profile-github"
                 name="github"
                 value={formData.github}
                 onChange={handleInputFieldChange}
-                className="w-full p-4 pl-5 bg-gray-800 border-2 border-gray-700 rounded-lg shadow-lg
+                className="w-full p-4 pl-5 ui-surface border-2 border-slate-200 rounded-lg ui-card-shadow
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-all duration-300 group-hover:border-gray-600"
-                placeholder="Enter your GitHub profile name"
+                           transition-all duration-300 group-hover:border-slate-200"
+                placeholder="https://github.com/your-username"
               />
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -176,18 +177,18 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
 
           {/* LinkedIn */}
           <div className="col-span-1" style={getFieldAnimation(5)}>
-            <label className="flex items-center text-white mb-3 text-sm font-medium">
-              <Linkedin size={18} className="mr-3 text-blue-400" />
+            <label htmlFor="profile-linkedIn" className="flex items-center text-slate-900 mb-3 text-sm font-medium">
+              <Linkedin size={18} className="mr-3 text-blue-700" />
               LinkedIn
             </label>
             <div className="relative group">
-              <input
+              <input id="profile-linkedIn"
                 name="linkedIn"
                 value={formData.linkedIn}
                 onChange={handleInputFieldChange}
-                className="w-full p-4 pl-5 bg-gray-800 border-2 border-gray-700 rounded-lg shadow-lg
+                className="w-full p-4 pl-5 ui-surface border-2 border-slate-200 rounded-lg ui-card-shadow
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-all duration-300 group-hover:border-gray-600"
+                           transition-all duration-300 group-hover:border-slate-200"
                 placeholder="Enter your LinkedIn profile URL"
               />
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -198,18 +199,18 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
 
           {/* Bio */}
           <div className="col-span-2" style={getFieldAnimation(6)}>
-            <label className="flex items-center text-white mb-3 text-sm font-medium">
-              <FileText size={18} className="mr-3 text-blue-400" />
+            <label htmlFor="profile-bio" className="flex items-center text-slate-900 mb-3 text-sm font-medium">
+              <FileText size={18} className="mr-3 text-blue-700" />
               Bio
             </label>
             <div className="relative group">
-              <textarea
+              <textarea id="profile-bio"
                 name="bio"
                 value={formData.bio}
                 onChange={handleInputFieldChange}
-                className="w-full p-4 pl-5 bg-gray-800 border-2 border-gray-700 rounded-lg shadow-lg
+                className="w-full p-4 pl-5 ui-surface border-2 border-slate-200 rounded-lg ui-card-shadow
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-all duration-300 group-hover:border-gray-600 resize-none"
+                           transition-all duration-300 group-hover:border-slate-200 resize-none"
                 placeholder="Tell us about yourself..."
                 rows={4}
               ></textarea>
@@ -221,18 +222,18 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
 
           {/* Gender */}
           <div className="col-span-1" style={getFieldAnimation(7)}>
-            <label className="flex items-center text-white mb-3 text-sm font-medium">
-              <User size={18} className="mr-3 text-blue-400" />
+            <label htmlFor="profile-gender" className="flex items-center text-slate-900 mb-3 text-sm font-medium">
+              <User size={18} className="mr-3 text-blue-700" />
               Gender
             </label>
             <div className="relative group">
-              <select
+              <select id="profile-gender"
                 name="gender"
                 value={formData.gender}
                 onChange={handleInputFieldChange}
-                className="w-full p-4 pl-5 bg-gray-800 border-2 border-gray-700 rounded-lg shadow-lg
+                className="w-full p-4 pl-5 ui-surface border-2 border-slate-200 rounded-lg ui-card-shadow
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-all duration-300 group-hover:border-gray-600 appearance-none"
+                           transition-all duration-300 group-hover:border-slate-200 appearance-none"
               >
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
@@ -240,7 +241,7 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center pr-5 pointer-events-none">
                 <svg
-                  className="w-5 h-5 text-blue-400"
+                  className="w-5 h-5 text-blue-700"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -259,19 +260,19 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
 
           {/* Birthday */}
           <div className="col-span-1" style={getFieldAnimation(8)}>
-            <label className="flex items-center text-white mb-3 text-sm font-medium">
-              <Cake size={18} className="mr-3 text-blue-400" />
+            <label htmlFor="profile-birthday" className="flex items-center text-slate-900 mb-3 text-sm font-medium">
+              <Cake size={18} className="mr-3 text-blue-700" />
               Birthday
             </label>
             <div className="relative group">
-              <input
+              <input id="profile-birthday"
                 type="date"
                 name="birthday"
                 value={formData.birthday}
                 onChange={handleInputFieldChange}
-                className="w-full p-4 pl-5 bg-gray-800 border-2 border-gray-700 rounded-lg shadow-lg
+                className="w-full p-4 pl-5 ui-surface border-2 border-slate-200 rounded-lg ui-card-shadow
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-all duration-300 group-hover:border-gray-600"
+                           transition-all duration-300 group-hover:border-slate-200"
               />
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -281,18 +282,18 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
 
           {/* Location */}
           <div className="col-span-2" style={getFieldAnimation(9)}>
-            <label className="flex items-center text-white mb-3 text-sm font-medium">
-              <MapPin size={18} className="mr-3 text-blue-400" />
+            <label htmlFor="profile-location" className="flex items-center text-slate-900 mb-3 text-sm font-medium">
+              <MapPin size={18} className="mr-3 text-blue-700" />
               Location
             </label>
             <div className="relative group">
-              <textarea
+              <textarea id="profile-location"
                 name="location"
                 value={formData.location}
                 onChange={handleInputFieldChange}
-                className="w-full p-4 pl-5 bg-gray-800 border-2 border-gray-700 rounded-lg shadow-lg
+                className="w-full p-4 pl-5 ui-surface border-2 border-slate-200 rounded-lg ui-card-shadow
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-all duration-300 group-hover:border-gray-600 resize-none"
+                           transition-all duration-300 group-hover:border-slate-200 resize-none"
                 placeholder="Enter your location details"
                 rows={3}
               ></textarea>
@@ -304,19 +305,19 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
 
           {/* Skills */}
           <div className="col-span-2" style={getFieldAnimation(10)}>
-            <label className="flex items-center text-white mb-3 text-sm font-medium">
-              <Code size={18} className="mr-3 text-blue-400" />
+            <label htmlFor="profile-skills" className="flex items-center text-slate-900 mb-3 text-sm font-medium">
+              <Code size={18} className="mr-3 text-blue-700" />
               Skills
             </label>
             <div className="relative group">
-              <input
+              <input id="profile-skills"
                 type="text"
                 name="skills"
                 value={formData.skills}
                 onChange={handleInputFieldChange}
-                className="w-full p-4 pl-5 bg-gray-800 border-2 border-gray-700 rounded-lg shadow-lg
+                className="w-full p-4 pl-5 ui-surface border-2 border-slate-200 rounded-lg ui-card-shadow
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-all duration-300 group-hover:border-gray-600"
+                           transition-all duration-300 group-hover:border-slate-200"
                 placeholder="Enter your skills (e.g., JavaScript, React, Node.js)"
               />
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -327,19 +328,19 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
 
           {/* Education */}
           <div className="col-span-2" style={getFieldAnimation(11)}>
-            <label className="flex items-center text-white mb-3 text-sm font-medium">
-              <BookOpen size={18} className="mr-3 text-blue-400" />
+            <label htmlFor="profile-education" className="flex items-center text-slate-900 mb-3 text-sm font-medium">
+              <BookOpen size={18} className="mr-3 text-blue-700" />
               Education
             </label>
             <div className="relative group">
-              <input
+              <input id="profile-education"
                 type="text"
                 name="education"
                 value={formData.education}
                 onChange={handleInputFieldChange}
-                className="w-full p-4 pl-5 bg-gray-800 border-2 border-gray-700 rounded-lg shadow-lg
+                className="w-full p-4 pl-5 ui-surface border-2 border-slate-200 rounded-lg ui-card-shadow
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-all duration-300 group-hover:border-gray-600"
+                           transition-all duration-300 group-hover:border-slate-200"
                 placeholder="Enter your education details"
               />
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -356,10 +357,10 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
               className={`w-full p-4 rounded-lg font-medium text-lg transition-all duration-300 transform ${
                 isFormTouched && !isSubmitting ? 'hover:scale-[1.02]' : ''
               } 
-                         bg-gradient-to-r from-blue-500 to-blue-700 ${
-                           isFormTouched && !isSubmitting ? 'hover:from-blue-600 hover:to-blue-800' : 'opacity-70'
+                         ui-gradient   ${
+                           isFormTouched && !isSubmitting ? ' ' : 'opacity-70'
                          }
-                         text-white shadow-xl flex items-center justify-center space-x-3 border border-blue-600`}
+                         text-slate-900 ui-card-shadow flex items-center justify-center space-x-3 border border-blue-600`}
             >
               {isSubmitting ? (
                 <>
@@ -378,6 +379,14 @@ const ProfileRight = ({ formData, handleInputChange, handleSubmit, user }) => {
       </div>
     </div>
   );
+};
+
+
+ProfileRight.propTypes = {
+  formData: PropTypes.object,
+  handleInputChange: PropTypes.func,
+  handleSubmit: PropTypes.func,
+  user: PropTypes.object,
 };
 
 export default ProfileRight;

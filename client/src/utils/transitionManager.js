@@ -82,8 +82,7 @@ export const withTransition = (Component, duration = 300) => {
     const isVisible = usePageTransition(false, duration);
     return React.createElement('div', {
       className: `page-transition ${isVisible ? 'page-entered' : 'page-entering'}`,
-      children: React.createElement(Component, props)
-    });
+    }, React.createElement(Component, props));
   };
 };
 

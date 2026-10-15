@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { useState } from "react";
 
 const StudentTable = ({
   users,
@@ -89,7 +90,7 @@ const StudentTable = ({
           <select
             value={filters.branch}
             onChange={(e) => updateFilter("branch", e.target.value)}
-            className="bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="ui-surface text-slate-900 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="ALL">All Branches</option>
             <option value="cspit-it">CSPIT-IT</option>
@@ -99,7 +100,7 @@ const StudentTable = ({
           <select
             value={filters.semester}
             onChange={(e) => updateFilter("semester", e.target.value)}
-            className="bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="ui-surface text-slate-900 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="ALL">All Semesters</option>
             {[...Array(8)].map((_, i) => (
@@ -111,7 +112,7 @@ const StudentTable = ({
           <select
             value={filters.batch}
             onChange={(e) => updateFilter("batch", e.target.value)}
-            className="bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="ui-surface text-slate-900 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="ALL">All Batches</option>
             {["a", "b", "c", "d"].map((letter) =>
@@ -125,21 +126,21 @@ const StudentTable = ({
         </div>
       </div>
 
-      <div className="mb-4 text-gray-300 pl-4">
+      <div className="mb-4 text-slate-600 pl-4">
         <span className="font-bold">{filteredUsers.length}</span>{" "}
         {filteredUsers.length === 1 ? "student" : "students"} found.
       </div>
 
       {/* Students Table */}
       <div className="p-4">
-        <div className="overflow-hidden rounded-xl border border-gray-800 bg-gray-900/50 shadow-xl">
-          <table className="w-full border-collapse text-left text-gray-300">
+        <div className="overflow-hidden rounded-lg border border-slate-200 ui-page ui-card-shadow">
+          <table className="w-full border-collapse text-left text-slate-600">
             <thead>
-              <tr className="border-b border-gray-800 bg-gray-900/80">
+              <tr className="border-b border-slate-200 ui-page">
                 <th className="py-4 px-4 text-center">
                   <button
                     onClick={handleSelectAll}
-                    className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-all hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/20 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                    className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-slate-900 transition-all hover:bg-blue-700 hover:ui-card-shadow hover:shadow-blue-500/20 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
                   >
                     {selectedStudents.length === filteredUsers.length
                       ? "Deselect All"
@@ -147,59 +148,59 @@ const StudentTable = ({
                   </button>
                 </th>
                 <th
-                  className="group cursor-pointer py-4 px-4 text-center text-sm font-medium uppercase tracking-wider text-gray-400 transition-colors hover:text-white"
+                  className="group cursor-pointer py-4 px-4 text-center text-sm font-medium uppercase tracking-wider text-slate-600 transition-colors hover:text-slate-900"
                   onClick={() => handleSort("id")}
                 >
                   <div className="flex items-center justify-center space-x-1">
                     <span>ID</span>
                     {sortConfig.key === "id" && (
-                      <span className="text-blue-500">
+                      <span className="text-blue-700">
                         {sortConfig.direction === "asc" ? " ↑" : " ↓"}
                       </span>
                     )}
                   </div>
                 </th>
                 <th
-                  className="group cursor-pointer py-4 px-4 text-center text-sm font-medium uppercase tracking-wider text-gray-400 transition-colors hover:text-white"
+                  className="group cursor-pointer py-4 px-4 text-center text-sm font-medium uppercase tracking-wider text-slate-600 transition-colors hover:text-slate-900"
                   onClick={() => handleSort("username")}
                 >
                   <div className="flex items-center justify-center space-x-1">
                     <span>Username</span>
                     {sortConfig.key === "username" && (
-                      <span className="text-blue-500">
+                      <span className="text-blue-700">
                         {sortConfig.direction === "asc" ? " ↑" : " ↓"}
                       </span>
                     )}
                   </div>
                 </th>
-                <th className="py-4 px-4 text-center text-sm font-medium uppercase tracking-wider text-gray-400">
+                <th className="py-4 px-4 text-center text-sm font-medium uppercase tracking-wider text-slate-600">
                   Branch
                 </th>
                 <th
-                  className="group cursor-pointer py-4 px-4 text-center text-sm font-medium uppercase tracking-wider text-gray-400 transition-colors hover:text-white"
+                  className="group cursor-pointer py-4 px-4 text-center text-sm font-medium uppercase tracking-wider text-slate-600 transition-colors hover:text-slate-900"
                   onClick={() => handleSort("semester")}
                 >
                   <div className="flex items-center justify-center space-x-1">
                     <span>Semester</span>
                     {sortConfig.key === "semester" && (
-                      <span className="text-blue-500">
+                      <span className="text-blue-700">
                         {sortConfig.direction === "asc" ? " ↑" : " ↓"}
                       </span>
                     )}
                   </div>
                 </th>
-                <th className="py-4 px-4 text-center text-sm font-medium uppercase tracking-wider text-gray-400">
+                <th className="py-4 px-4 text-center text-sm font-medium uppercase tracking-wider text-slate-600">
                   Batch
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800">
+            <tbody className="divide-y divide-slate-200">
               {loading ? (
                 <tr>
                   <td colSpan="6" className="py-8 text-center">
                     <div className="flex flex-col items-center justify-center">
-                      <div className="h-16 w-16 animate-spin rounded-full border-4 border-gray-700 border-t-blue-500"></div>
-                      <p className="mt-4 text-lg font-medium text-blue-400">
+                      <div className="h-16 w-16 animate-spin rounded-full border-4 border-slate-200 border-t-blue-500"></div>
+                      <p className="mt-4 text-lg font-medium text-blue-700">
                         Loading, please wait...
                       </p>
                     </div>
@@ -210,33 +211,33 @@ const StudentTable = ({
                   <tr
                     key={student._id}
                     className={`transition-colors ${
-                      index % 2 === 0 ? "bg-gray-900/30" : "bg-gray-900/10"
-                    } hover:bg-gray-900/60`}
+                      index % 2 === 0 ? "ui-page" : "ui-page"
+                    } hover:ui-page`}
                   >
                     <td className="py-4 px-4 text-center">
                       <input
                         type="checkbox"
                         checked={selectedStudents.includes(student._id)}
                         onChange={() => handleSelectStudent(student._id)}
-                        className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                        className="h-4 w-4 rounded border-slate-200 ui-surface text-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
                       />
                     </td>
-                    <td className="whitespace-nowrap py-4 px-4 text-center font-medium text-gray-100">
+                    <td className="whitespace-nowrap py-4 px-4 text-center font-medium text-slate-900">
                       {student.id?.toUpperCase()}
                     </td>
-                    <td className="py-4 px-4 text-center text-gray-100">
+                    <td className="py-4 px-4 text-center text-slate-900">
                       {student.username}
                     </td>
                     <td className="py-4 px-4 text-center">
-                      <span className="inline-flex rounded-full bg-gray-800 px-3 py-1 text-sm font-medium text-gray-100">
+                      <span className="inline-flex rounded-full ui-surface px-3 py-1 text-sm font-medium text-slate-900">
                         {student.branch?.toUpperCase()}
                       </span>
                     </td>
-                    <td className="py-4 px-4 text-center font-medium text-gray-100">
+                    <td className="py-4 px-4 text-center font-medium text-slate-900">
                       {student.semester}
                     </td>
                     <td className="py-4 px-4 text-center">
-                      <span className="inline-flex rounded-full bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-400">
+                      <span className="inline-flex rounded-full bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-700">
                         {student.batch?.toUpperCase()}
                       </span>
                     </td>
@@ -246,7 +247,7 @@ const StudentTable = ({
                 <tr>
                   <td
                     colSpan="6"
-                    className="py-8 text-center text-lg text-gray-400"
+                    className="py-8 text-center text-lg text-slate-600"
                   >
                     No students found
                   </td>
@@ -262,23 +263,38 @@ const StudentTable = ({
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="flex items-center space-x-2 rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-gray-800"
+          className="flex items-center space-x-2 rounded-lg ui-surface px-4 py-2 text-sm font-medium text-slate-900 transition-all hover:ui-surface disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:ui-surface"
         >
           <span>Previous</span>
         </button>
-        <div className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-gray-300">
+        <div className="rounded-lg ui-surface px-4 py-2 text-sm font-medium text-slate-600">
           Page {currentPage} of {totalPages}
         </div>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="flex items-center space-x-2 rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-gray-800"
+          className="flex items-center space-x-2 rounded-lg ui-surface px-4 py-2 text-sm font-medium text-slate-900 transition-all hover:ui-surface disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:ui-surface"
         >
           <span>Next</span>
         </button>
       </div>
     </div>
   );
+};
+
+
+StudentTable.propTypes = {
+  users: PropTypes.any,
+  selectedStudents: PropTypes.object,
+  handleSelectAll: PropTypes.func,
+  handleSelectStudent: PropTypes.func,
+  filters: PropTypes.object,
+  updateFilter: PropTypes.any,
+  loading: PropTypes.bool,
+  currentPage: PropTypes.number,
+  itemsPerPage: PropTypes.any,
+  handlePageChange: PropTypes.func,
+  totalPages: PropTypes.number,
 };
 
 export default StudentTable;

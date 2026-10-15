@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import * as XLSX from "xlsx";
@@ -11,10 +11,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [submissions, setSubmissions] = useState([]);
   const [filteredSubmissions, setFilteredSubmissions] = useState([]);
-  const [selectedSubmission, setSelectedSubmission] = useState(null);
+  
   const [TotalSubmission, setTotalSubmission] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
 
@@ -50,9 +50,7 @@ const Dashboard = () => {
     fetchSubmissions();
   }, [problemId]);
 
-  useEffect(() => {
-    applyFilters();
-  }, [filters]);
+
 
   const handleSort = (field) => {
     const order = sortField === field && sortOrder === "asc" ? "desc" : "asc";
@@ -79,7 +77,7 @@ const Dashboard = () => {
     setFilteredSubmissions(sortedData);
   };
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = submissions;
 
     if (filters.branch !== "ALL") {
@@ -115,7 +113,9 @@ const Dashboard = () => {
     }
 
     setFilteredSubmissions(filtered);
-  };
+  }, [submissions, filters]);
+
+  useEffect(() => { applyFilters(); }, [applyFilters]);
 
   const updateFilter = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -135,10 +135,7 @@ const Dashboard = () => {
     const totalSubmissions = filteredSubmissions.length;
 
     // Add a header row for the total number of submissions
-    const headerRow = [
-      { ID: `Total Submissions: ${totalSubmissions}` },
-      {}, // Blank cells to adjust layout
-    ];
+    
 
     const dataToExport = filteredSubmissions.map((submission) => ({
       ID: submission.user_id.id,
@@ -208,27 +205,27 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="relative min-h-screen bg-gray-900 text-white">
-        <div className="mx-auto px-5 pt-20 pb-5">
+      <div className="relative ui-page-height ui-page text-slate-900">
+        <div className="mx-auto px-5 ui-page-top pb-5">
           {problemTitle && (
-            <div className="mb-6 bg-gray-800 p-6 rounded-lg shadow-lg border-l-4 border-blue-500">
-              <h3 className="text-2xl sm:text-3xl font-bold text-blue-400 mb-4">
+            <div className="mb-6 ui-surface p-6 rounded-lg ui-card-shadow border-l-4 border-blue-500">
+              <h3 className="text-2xl sm:text-3xl font-bold text-blue-700 mb-4">
                 {problemTitle}
               </h3>
               <div className="flex flex-col sm:flex-row sm:justify-between text-base sm:text-lg">
-                <p className="font-semibold text-gray-300 mb-2 sm:mb-0">
+                <p className="font-semibold text-slate-600 mb-2 sm:mb-0">
                   Difficulty:{" "}
-                  <span className="text-blue-300">{difficulty}</span>
+                  <span className="text-blue-700">{difficulty}</span>
                 </p>
-                <p className="font-semibold text-gray-300">
+                <p className="font-semibold text-slate-600">
                   Created on:{" "}
-                  <span className="text-gray-400">{formatDate(createdAt)}</span>
+                  <span className="text-slate-600">{formatDate(createdAt)}</span>
                 </p>
               </div>
             </div>
           )}
 
-          <div className="mb-4 font-medium text-xl  text-gray-300">
+          <div className="mb-4 font-medium text-xl  text-slate-600">
             Total Number of Submissions :{" "}
             {TotalSubmission ? TotalSubmission : "0"}
           </div>
@@ -240,7 +237,7 @@ const Dashboard = () => {
               <select
                 value={filters.branch}
                 onChange={(e) => updateFilter("branch", e.target.value)}
-                className="bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="ui-surface text-slate-900 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="ALL">All Branches</option>
                 <option value="CSPIT-IT">CSPIT-IT</option>
@@ -250,7 +247,7 @@ const Dashboard = () => {
               <select
                 value={filters.semester}
                 onChange={(e) => updateFilter("semester", e.target.value)}
-                className="bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="ui-surface text-slate-900 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="ALL">All Semesters</option>
                 {[...Array(8)].map((_, i) => (
@@ -262,7 +259,7 @@ const Dashboard = () => {
               {/* <select
                 value={filters.language}
                 onChange={(e) => updateFilter("language", e.target.value)}
-                className="bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="ui-surface text-slate-900 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="ALL">All Languages</option>
                 <option value="CPP">C++</option>
@@ -272,7 +269,7 @@ const Dashboard = () => {
               {/* <select
                 value={filters.status}
                 onChange={(e) => updateFilter("status", e.target.value)}
-                className="bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="ui-surface text-slate-900 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="ALL">All Statuses</option>
                 <option value="COMPLETED">Completed</option>
@@ -282,7 +279,7 @@ const Dashboard = () => {
               <select
                 value={filters.batch}
                 onChange={(e) => updateFilter("batch", e.target.value)}
-                className="bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="ui-surface text-slate-900 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="ALL">All Batches</option>
                 {["A", "B", "C", "D"].map((letter) =>
@@ -299,7 +296,7 @@ const Dashboard = () => {
             <div>
               <button
                 onClick={() => navigate(-1)}
-                className="flex items-center bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-full shadow-md hover:shadow-lg transition-all duration-200 ease-in-out"
+                className="flex items-center ui-surface hover:ui-subtle text-slate-900 px-4 py-2 rounded-full shadow-md hover:ui-card-shadow transition-all duration-200 ease-in-out"
               >
                 <svg
                   className="w-4 h-4 mr-2"
@@ -318,13 +315,13 @@ const Dashboard = () => {
           <div className="flex justify-end gap-4 mb-4">
             <button
               onClick={downloadExcel}
-              className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded shadow transition-all duration-200"
+              className="bg-green-600 hover:bg-green-500 text-slate-900 px-4 py-2 rounded shadow transition-all duration-200"
             >
               Download Excel
             </button>
             <button
               onClick={downloadPDF}
-              className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded shadow transition-all duration-200"
+              className="bg-blue-600 hover:bg-blue-500 text-slate-900 px-4 py-2 rounded shadow transition-all duration-200"
             >
               Download PDF
             </button>
@@ -332,56 +329,56 @@ const Dashboard = () => {
 
           {/* Submissions Table */}
           <div className="overflow-x-auto">
-            <div className="mb-4 font-medium text-xl text-gray-300">
+            <div className="mb-4 font-medium text-xl text-slate-600">
               Total After Filter of Submissions:{" "}
               {filteredSubmissions.length > 0
                 ? filteredSubmissions.length
                 : "0"}
             </div>
 
-            <table className="w-full min-w-max text-sm text-left text-gray-400 border-collapse border border-gray-600">
-              <thead className="bg-gray-800 text-gray-300">
+            <table className="w-full min-w-max text-sm text-left text-slate-600 border-collapse border border-slate-200">
+              <thead className="ui-surface text-slate-600">
                 <tr>
                   <th
-                    className="py-3 px-6 border border-gray-600 text-sm md:text-base cursor-pointer"
+                    className="py-3 px-6 border border-slate-200 text-sm md:text-base cursor-pointer"
                     onClick={() => handleSort("id")}
                   >
                     ID
                   </th>
                   <th
-                    className="py-3 px-6 border border-gray-600 text-sm md:text-base cursor-pointer"
+                    className="py-3 px-6 border border-slate-200 text-sm md:text-base cursor-pointer"
                     onClick={() => handleSort("username")}
                   >
                     User Name
                   </th>
-                  <th className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                  <th className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                     Branch
                   </th>
                   <th
-                    className="py-3 px-6 border border-gray-600 text-sm md:text-base cursor-pointer"
+                    className="py-3 px-6 border border-slate-200 text-sm md:text-base cursor-pointer"
                     onClick={() => handleSort("batch")}
                   >
                     Batch
                   </th>
                   <th
-                    className="py-3 px-6 border border-gray-600 text-sm md:text-base cursor-pointer"
+                    className="py-3 px-6 border border-slate-200 text-sm md:text-base cursor-pointer"
                     onClick={() => handleSort("semester")}
                   >
                     Semester
                   </th>
-                  {/* <th className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                  {/* <th className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                     Language
                   </th> */}
-                  {/* <th className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                  {/* <th className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                     Status
                   </th> */}
-                  <th className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                  <th className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                     TestCase Pass
                   </th>
-                  <th className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                  <th className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                     Submission Date
                   </th>
-                  <th className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                  <th className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                     Marks
                   </th>
                 </tr>
@@ -392,7 +389,7 @@ const Dashboard = () => {
                     <td colSpan="10" className="py-6 text-center">
                       <div className="flex flex-col items-center justify-center">
                         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
-                        <p className="mt-4 text-blue-500 text-lg font-medium">
+                        <p className="mt-4 text-blue-700 text-lg font-medium">
                           Loading, please wait...
                         </p>
                       </div>
@@ -403,30 +400,30 @@ const Dashboard = () => {
                     <tr
                       key={submission._id}
                       className={`${
-                        index % 2 === 0 ? "bg-gray-900" : "bg-gray-800"
-                      } hover:bg-gray-700 text-gray-300 cursor-pointer transition-all duration-200`}
+                        index % 2 === 0 ? "ui-page" : "ui-surface"
+                      } hover:ui-surface text-slate-600 cursor-pointer transition-all duration-200`}
                       onClick={() => navigate("/submissions/" + submission._id)}
                     >
-                      <td className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                      <td className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                         {submission.user_id.id}
                       </td>
-                      <td className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                      <td className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                         {submission.user_id.username}
                       </td>
-                      <td className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                      <td className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                         {submission.user_id.branch?.toUpperCase() || "N/A"}
                       </td>
-                      <td className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                      <td className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                         {submission.user_id.batch?.toUpperCase() || "N/A"}
                       </td>
-                      <td className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                      <td className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                         {submission.user_id.semester || "N/A"}
                       </td>
-                      {/* <td className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                      {/* <td className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                         {submission.language || "N/A"}
                       </td> */}
                       {/* <td
-                        className={`py-3 px-6 border border-gray-600 capitalize text-sm md:text-base ${
+                        className={`py-3 px-6 border border-slate-200 capitalize text-sm md:text-base ${
                           submission.status === "completed"
                             ? "text-green-500"
                             : "text-red-500"
@@ -434,16 +431,16 @@ const Dashboard = () => {
                       >
                         {submission.status}
                       </td> */}
-                      <td className="py-3 px-6 border border-gray-600 capitalize text-sm md:text-base">
+                      <td className="py-3 px-6 border border-slate-200 capitalize text-sm md:text-base">
                         {submission.numberOfTestCasePass != null &&
                         submission.numberOfTestCase != null
                           ? `${submission.numberOfTestCasePass}/${submission.numberOfTestCase}`
                           : "N/A"}
                       </td>
-                      <td className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                      <td className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                         {formatDate(submission?.createdAt)}
                       </td>
-                      <td className="py-3 px-6 border border-gray-600 text-sm md:text-base">
+                      <td className="py-3 px-6 border border-slate-200 text-sm md:text-base">
                         {submission?.totalMarks ?? "N/A"}
                       </td>
                     </tr>
@@ -452,7 +449,7 @@ const Dashboard = () => {
                   <tr>
                     <td
                       colSpan="10"
-                      className="py-3 px-6 text-center text-gray-400 border border-gray-600"
+                      className="py-3 px-6 text-center text-slate-600 border border-slate-200"
                     >
                       No submissions found
                     </td>

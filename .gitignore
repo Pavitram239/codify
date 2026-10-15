@@ -14,3 +14,17 @@ node_modules/
 
 # Build output
 client/dist/
+
+# Local verification artifacts
+.npm-cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local Python validation dependencies
+.runtime-packages/
+
+.pytest-tmp-access*/
+*.sqlite3.access-backup
+
+.ui-preview/

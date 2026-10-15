@@ -1,16 +1,38 @@
-import React, { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as XLSX from "xlsx";
 import axiosInstance from "../../utils/axiosInstance";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import TemporaryPasswords from "../TemporaryPasswords";
 
 const StudentRegister = () => {
+  const [searchParams] = useSearchParams();
   const [students, setStudents] = useState([]); // Holds parsed Excel data
   const [selectedStudents, setSelectedStudents] = useState({}); // Tracks selected students for registration
   const [errorMessages, setErrorMessages] = useState([]); // Holds error messages from the backend
   const user = useSelector((store) => store.app.user);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [isModalOpen, setIsModalOpen] = useState(() => searchParams.get("add") === "1");
+  const [credentials, setCredentials] = useState([]);
+  const nextIndex = useRef(0);
+  const dialogRef = useRef(null);
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const opener = document.activeElement;
+    const dialog = dialogRef.current;
+    dialog.querySelector("input")?.focus();
+    const keydown = (event) => {
+      if (event.key === "Escape") { event.preventDefault(); setIsModalOpen(false); }
+      if (event.key === "Tab") {
+        const controls = [...dialog.querySelectorAll("input, button, select, textarea, [tabindex='0']")].filter((el) => !el.disabled);
+        const first = controls[0], last = controls.at(-1);
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
+    };
+    dialog.addEventListener("keydown", keydown);
+    return () => { dialog.removeEventListener("keydown", keydown); opener?.focus(); };
+  }, [isModalOpen]);
   const [newStudent, setNewStudent] = useState({
     id: "",
     username: "",
@@ -37,12 +59,12 @@ const StudentRegister = () => {
 
       // Transform parsed data to expected format
       setStudents(
-        parsedData.map((row, index) => ({
+        parsedData.map((row) => ({
           id: row.ID?.toLowerCase() || "", // Match the key 'ID' in the parsed data
           username: row.Username || "", // Match the key 'Username'
           batch: row.Batch?.toLowerCase() || "", // Match the key 'Batch'
           semester: row.Semester || "", // Match the key 'Semester'
-          index,
+          index: nextIndex.current++,
         }))
       );
 
@@ -56,7 +78,7 @@ const StudentRegister = () => {
 
   // Toggle select all students
   const toggleSelectAll = () => {
-    if (Object.keys(selectedStudents).length === students.length) {
+    if (students.every((student) => selectedStudents[student.index])) {
       setSelectedStudents({});
     } else {
       const allSelected = {};
@@ -105,9 +127,9 @@ const StudentRegister = () => {
       }
 
       // Remove successfully registered students from the list
-      setStudents((prev) =>
-        prev.filter((student) => !selectedStudents[student.index])
-      );
+      const succeeded = new Set(results.success.map((row) => selectedData[row.rowIndex]?.index));
+      setStudents((prev) => prev.filter((student) => !succeeded.has(student.index)));
+      setCredentials(results.success.filter((row) => row.temporaryPassword));
       setSelectedStudents({});
     } catch (error) {
       console.error(error);
@@ -131,7 +153,7 @@ const StudentRegister = () => {
         username: newStudent.username,
         batch: newStudent.batch.toLowerCase(),
         semester: newStudent.semester,
-        index: students.length,
+        index: nextIndex.current++,
       },
     ]);
   
@@ -173,33 +195,34 @@ const StudentRegister = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gray-900 text-white">
+    <div className="relative ui-page-height ui-page text-slate-900">
 
-      <div className="pl-10 pt-[6%]">
+      <div className="pl-10 ui-page-top">
         <button
-          className="py-2 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-700 active:scale-95 transition transform duration-200"
-          onClick={() => navigate(-1)}
+          className="py-2 px-6 ui-gradient   text-slate-900 font-semibold rounded-lg shadow-md   active:scale-95 transition transform duration-200"
+          onClick={() => navigate("/students")}
         >
           Back
         </button>
       </div>
 
       
-      <div className="pl-10 pr-10 mt-10 flex items-center justify-between">
+      <div className="student-import-heading mt-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold mb-4">Bulk Student Registration</h1>
+          <h1 className="text-2xl font-bold mb-4">Register students</h1>
+          <p className="text-slate-600 mb-4">Add a student or upload a spreadsheet, then select the entries to register.</p>
           {/* File Upload Input */}
           <input
             type="file"
             accept=".xlsx, .xls"
             onChange={handleFileUpload}
             className="mb-4"
-            style={{hover:"cursor:pointer"}}
+            style={{ cursor: "pointer" }}
           />
         </div>
         <div>
         <button
-          className="py-2 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-700 active:scale-95 transition transform duration-200"
+          className="py-2 px-6 ui-gradient   text-slate-900 font-semibold rounded-lg shadow-md   active:scale-95 transition transform duration-200"
           onClick={() => setIsModalOpen(true)}
         >
           Add Single Student
@@ -208,17 +231,18 @@ const StudentRegister = () => {
       </div>
 
       {/* Render Student Data Table */}
+      <TemporaryPasswords credentials={credentials} onDismiss={() => setCredentials([])} />
       {students.length > 0 ? (
-        <div className="overflow-x-auto bg-gray-900 shadow-md rounded-lg p-8">
-          <table className="min-w-full text-lg text-left text-gray-500">
-            <thead className="bg-gray-900 text-gray-400">
+        <div className="overflow-x-auto ui-page shadow-md rounded-lg p-8">
+          <table className="min-w-full text-lg text-left text-slate-600">
+            <thead className="ui-page text-slate-600">
               <tr>
                 <th className="py-3 px-6">
                   <input
                     type="checkbox"
                     className="accent-blue-500"
                     checked={
-                      Object.keys(selectedStudents).length === students.length
+                      students.every((student) => selectedStudents[student.index])
                     }
                     onChange={toggleSelectAll}
                   />
@@ -236,7 +260,7 @@ const StudentRegister = () => {
                 <tr
                   key={index}
                   className={`${
-                    index % 2 === 0 ? "bg-gray-900" : "bg-gray-800"
+                    index % 2 === 0 ? "ui-page" : "ui-surface"
                   }`}
                 >
                   <td className="py-3 px-6">
@@ -258,7 +282,7 @@ const StudentRegister = () => {
                   <td className="py-3 px-6">{student.semester}</td>
                   <td className="py-3 px-6 flex gap-2">
                     <button
-                      className="bg-red-600 text-white py-1 px-3 rounded-lg hover:bg-red-700 transition"
+                      className="bg-red-600 text-slate-900 py-1 px-3 rounded-lg hover:bg-red-50 transition"
                       onClick={() => handleDecline(student.index)}
                     >
                       Decline
@@ -274,17 +298,17 @@ const StudentRegister = () => {
             <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
-              className="bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition disabled:opacity-50"
+              className="ui-surface text-slate-900 py-2 px-4 rounded-lg hover:ui-subtle transition disabled:opacity-50"
             >
               Previous
             </button>
-            <span className="text-gray-300 pr-2 pl-2 ">
+            <span className="text-slate-600 pr-2 pl-2 ">
               Page {currentPage} of {totalPages}
             </span>
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className="bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition disabled:opacity-50"
+              className="ui-surface text-slate-900 py-2 px-4 rounded-lg hover:ui-subtle transition disabled:opacity-50"
             >
               Next
             </button>
@@ -292,13 +316,13 @@ const StudentRegister = () => {
 
           <button
             onClick={handleRegisterSelected}
-            className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg shadow transition"
+            className="bg-green-600 hover:bg-green-700 text-slate-900 py-2 px-6 rounded-lg shadow transition"
           >
             Register Selected
           </button>
         </div>
       ) : (
-        <div className="text-center py-6 text-gray-400">
+        <div className="text-center py-6 text-slate-600">
           <p>No data available</p>
         </div>
       )}
@@ -320,47 +344,47 @@ const StudentRegister = () => {
 
 
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-gray-900 rounded-lg shadow-lg p-8" style={{width:"40%"}}>
-            <h2 className="text-2xl font-bold text-white mb-4">Add Student</h2>
+        <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Add single student" className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="ui-page rounded-lg ui-card-shadow p-8" style={{ width: "min(100%, 560px)" }}>
+            <h2 className="text-2xl font-bold text-slate-900 mb-4">Add Student</h2>
             <div className="flex flex-col gap-4">
               <input
                 type="text"
                 placeholder="Student ID"
                 value={newStudent.id}
                 onChange={(e) => setNewStudent({ ...newStudent, id: e.target.value })}
-                className="p-4 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
+                className="p-4 rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
               />
               <input
                 type="text"
                 placeholder="Username"
                 value={newStudent.username}
                 onChange={(e) => setNewStudent({ ...newStudent, username: e.target.value })}
-                className="p-4 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
+                className="p-4 rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
               />
               <input
                 type="text"
                 placeholder="Batch"
                 value={newStudent.batch}
                 onChange={(e) => setNewStudent({ ...newStudent, batch: e.target.value })}
-                className="p-4 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
+                className="p-4 rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
               />
               <input
                 type="text"
                 placeholder="Semester"
                 value={newStudent.semester}
                 onChange={(e) => setNewStudent({ ...newStudent, semester: e.target.value })}
-                className="p-4 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
+                className="p-4 rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
               />
               <div className="flex justify-end gap-4">
                 <button
-                  className="py-2 px-4 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition"
+                  className="py-2 px-4 ui-subtle text-slate-900 rounded-lg hover:ui-subtle transition"
                   onClick={() => setIsModalOpen(false)}
                 >
                   Cancel
                 </button>
                 <button
-                  className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition"
+                  className="py-2 px-4 bg-blue-600 text-slate-900 rounded-lg hover:bg-blue-500 transition"
                   onClick={handleModalSubmit}
                 >
                   Add Student

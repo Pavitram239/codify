@@ -1,4 +1,5 @@
 from django.urls import path
+from apps.users.views_onboarding import IssueInitialPasswordView
 from apps.users.views_faculty import (
     FacultyAcceptAllRequestsView,
     FacultyAcceptRequestView,
@@ -12,6 +13,7 @@ from apps.users.views_faculty import (
 )
 
 urlpatterns = [
+    path("issue-initial-password", IssueInitialPasswordView.as_view(), name="faculty-issue-initial-password"),
     path("get-pending-users", FacultyPendingUsersView.as_view(), name="faculty-get-pending-users"),
     path("accept-request", FacultyAcceptRequestView.as_view(), name="faculty-accept-request"),
     path("accept-all-requests", FacultyAcceptAllRequestsView.as_view(), name="faculty-accept-all-requests"),

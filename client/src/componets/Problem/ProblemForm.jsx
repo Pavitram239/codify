@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+
 import toast from "react-hot-toast";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Sparkles } from "lucide-react";
@@ -17,7 +17,7 @@ const ProblemForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  const user = useSelector((state) => state.app.user);
+  
   const [assignLoading, setAssignLoading] = useState(false); // For button-specific loading
 
   const [problemData, setProblemData] = useState({
@@ -46,7 +46,7 @@ const ProblemForm = () => {
   const [errors, setErrors] = useState({});
   const [isModalOpenInternal, setIsModalOpenInternal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
+  const [modalMessage, ] = useState("");
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
 
   // Auto-open AI modal if URL contains openAI=true
@@ -235,12 +235,12 @@ const ProblemForm = () => {
       return (
         <div
           key={index}
-          className={`mb-6 p-6 border rounded-lg shadow-lg ${
-            hasError ? "border-red-600" : "border-gray-700"
-          } bg-gray-900`}
+          className={`mb-6 p-6 border rounded-lg ui-card-shadow ${
+            hasError ? "border-red-600" : "border-slate-200"
+          } ui-page`}
         >
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-300">
+            <h3 className="text-lg font-semibold text-slate-600">
               Test Case {index + 1}
             </h3>
 
@@ -249,9 +249,9 @@ const ProblemForm = () => {
               onClick={() =>
                 handleTestCaseChange(index, "is_hidden", !testCase.is_hidden)
               }
-              className={`px-4 py-2 font-medium rounded-md transition flex items-center gap-2 text-white shadow-md ${
+              className={`px-4 py-2 font-medium rounded-md transition flex items-center gap-2 text-slate-900 shadow-md ${
                 testCase.is_hidden
-                  ? "bg-red-600 hover:bg-red-700"
+                  ? "bg-red-600 hover:bg-red-50"
                   : "bg-green-600 hover:bg-green-700"
               }`}
             >
@@ -260,35 +260,35 @@ const ProblemForm = () => {
           </div>
 
           {/* Input Field */}
-          <label className="block text-gray-400 mb-2">Input</label>
+          <label className="block text-slate-600 mb-2">Input</label>
           <textarea
             placeholder="Enter test case input"
             value={testCase.inputs}
             onChange={(e) =>
               handleTestCaseChange(index, "inputs", e.target.value)
             }
-            className={`w-full p-3 bg-gray-800 border ${
-              hasError ? "border-red-600" : "border-gray-700"
+            className={`w-full p-3 ui-surface border ${
+              hasError ? "border-red-600" : "border-slate-200"
             } rounded-md mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
             rows="3"
           />
 
           {/* Expected Output Field */}
-          <label className="block text-gray-400 mb-2">Expected Output</label>
+          <label className="block text-slate-600 mb-2">Expected Output</label>
           <textarea
             placeholder="Enter expected output"
             value={testCase.outputs}
             onChange={(e) =>
               handleTestCaseChange(index, "outputs", e.target.value)
             }
-            className={`w-full p-3 bg-gray-800 border ${
-              hasError ? "border-red-600" : "border-gray-700"
+            className={`w-full p-3 ui-surface border ${
+              hasError ? "border-red-600" : "border-slate-200"
             } rounded-md mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
             rows="3"
           />
 
           {/* Marks Field */}
-          <label className="block text-gray-400 mb-2">Marks</label>
+          <label className="block text-slate-600 mb-2">Marks</label>
           <input
             type="number"
             placeholder="Enter marks for this test case"
@@ -296,11 +296,11 @@ const ProblemForm = () => {
             onChange={(e) =>
               handleTestCaseChange(index, "marks", e.target.value)
             }
-            className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 mb-4"
+            className="w-full p-3 ui-surface border border-slate-200 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 mb-4"
           />
 
           {/* CPU Time Limit */}
-          <label className="block text-gray-400 mb-2">
+          <label className="block text-slate-600 mb-2">
             CPU Time Limit (seconds 1s - 15s)
           </label>
           <input
@@ -317,11 +317,11 @@ const ProblemForm = () => {
               if (e.target.value < 1) e.target.value = 1;
               if (e.target.value > 15) e.target.value = 15;
             }}
-            className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 mb-4"
+            className="w-full p-3 ui-surface border border-slate-200 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 mb-4"
           />
 
           {/* Memory Limit */}
-          <label className="block text-gray-400 mb-2">
+          <label className="block text-slate-600 mb-2">
             Memory Limit (MB 1MB - 256MB)
           </label>
           <input
@@ -338,7 +338,7 @@ const ProblemForm = () => {
               if (e.target.value < 1) e.target.value = 1;
               if (e.target.value > 256) e.target.value = 256;
             }}
-            className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 mb-4"
+            className="w-full p-3 ui-surface border border-slate-200 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 mb-4"
           />
 
           {/* Hidden/Show Toggle Button */}
@@ -348,7 +348,7 @@ const ProblemForm = () => {
             <button
               type="button"
               onClick={() => handleRemoveTestCase(index)}
-              className="mt-4 px-4 py-2 w-full text-red-600 border border-red-600 rounded-md hover:bg-red-600 hover:text-white transition"
+              className="mt-4 px-4 py-2 w-full text-red-600 border border-red-600 rounded-md hover:bg-red-600 hover:text-slate-900 transition"
             >
               Remove Test Case
             </button>
@@ -408,7 +408,7 @@ const ProblemForm = () => {
   };
 
   const confirmSubmit = async () => {
-    const actionType = isEditing ? "edit" : "create";
+    
     const apiMethod = isEditing ? axiosInstance.put : axiosInstance.post;
     const apiEndpoint = isEditing ? `/problems/${id}` : "/problems/";
 
@@ -463,8 +463,8 @@ const ProblemForm = () => {
 
   return (
     <>
-      <div className="relative min-h-screen bg-gray-900 text-white">
-        <div className="mx-auto p-[5%] bg-gray-900 text-white rounded-lg shadow-lg">
+      <div className="relative ui-page-height ui-page text-slate-900">
+        <div className="mx-auto p-4 ui-surface text-slate-900 rounded-lg ui-card-shadow">
           <h1 className="text-2xl font-bold mt-10 mb-6 text-center">
             {isEditing ? "Edit Problem" : "Create Problem"}
           </h1>
@@ -472,7 +472,7 @@ const ProblemForm = () => {
           <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
             <button
               onClick={handleBackClick}
-              className="px-4 py-1 sm:px-6 sm:py-2 bg-blue-500 text-white text-base sm:text-sm rounded-lg hover:bg-blue-600 transition duration-200 ease-in-out cursor-pointer"
+              className="px-4 py-1 sm:px-6 sm:py-2 bg-blue-500 text-slate-900 text-base sm:text-sm rounded-lg hover:bg-blue-600 transition duration-200 ease-in-out cursor-pointer"
             >
               Back
             </button>
@@ -481,9 +481,9 @@ const ProblemForm = () => {
               <button
                 type="button"
                 onClick={() => setIsAIModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-medium text-sm rounded-lg shadow-lg shadow-indigo-600/30 transition transform hover:-translate-y-0.5 cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 ui-gradient      text-slate-900 font-medium text-sm rounded-lg ui-card-shadow shadow-indigo-600/30 transition transform hover:-translate-y-0.5 cursor-pointer"
               >
-                <Sparkles className="w-4 h-4 text-yellow-300 animate-pulse" />
+                <Sparkles className="w-4 h-4 text-yellow-700 animate-pulse" />
                 <span>✨ AI Problem Assistant</span>
               </button>
             )}
@@ -505,7 +505,7 @@ const ProblemForm = () => {
             <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
               <div className="flex flex-col items-center">
                 <svg
-                  className="animate-spin h-12 w-12 text-blue-500 mb-4"
+                  className="animate-spin h-12 w-12 text-blue-700 mb-4"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -524,7 +524,7 @@ const ProblemForm = () => {
                     d="M4 12a8 8 0 018-8v8H4z"
                   ></path>
                 </svg>
-                <p className="text-white text-lg font-semibold">Loading...</p>
+                <p className="text-slate-900 text-lg font-semibold">Loading...</p>
               </div>
             </div>
           )}
@@ -538,8 +538,8 @@ const ProblemForm = () => {
                 name="title"
                 value={problemData.title}
                 onChange={handleChange}
-                className={`w-full p-4  bg-gray-800 border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
-                  errors.title ? "border-red-500" : "border-gray-700"
+                className={`w-full p-4  ui-surface border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
+                  errors.title ? "border-red-500" : "border-slate-200"
                 }`}
                 placeholder="Enter problem title"
               />
@@ -555,8 +555,8 @@ const ProblemForm = () => {
                 name="description"
                 value={problemData.description}
                 onChange={handleChange}
-                className={`w-full p-4  bg-gray-800 border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
-                  errors.description ? "border-red-500" : "border-gray-700"
+                className={`w-full p-4  ui-surface border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
+                  errors.description ? "border-red-500" : "border-slate-200"
                 } `}
                 placeholder="Describe the problem"
                 rows="6"
@@ -573,7 +573,7 @@ const ProblemForm = () => {
                 name="difficulty"
                 value={problemData.difficulty}
                 onChange={handleChange}
-                className="w-full p-4  bg-gray-800 border border-gray-700 rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 "
+                className="w-full p-4  ui-surface border border-slate-200 rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 "
               >
                 <option value={DIFFICULTY.EASY}>Easy</option>
                 <option value={DIFFICULTY.MEDIUM}>Medium</option>
@@ -591,8 +591,8 @@ const ProblemForm = () => {
                 name="inputFormat"
                 value={problemData.inputFormat}
                 onChange={handleChange}
-                className={`w-full p-4  bg-gray-800 border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
-                  errors.inputFormat ? "border-red-500" : "border-gray-700"
+                className={`w-full p-4  ui-surface border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
+                  errors.inputFormat ? "border-red-500" : "border-slate-200"
                 }`}
                 placeholder="Specify the input format"
                 rows={4}
@@ -609,8 +609,8 @@ const ProblemForm = () => {
                 name="outputFormat"
                 value={problemData.outputFormat}
                 onChange={handleChange}
-                className={`w-full p-4  bg-gray-800 border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
-                  errors.outputFormat ? "border-red-500" : "border-gray-600"
+                className={`w-full p-4  ui-surface border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
+                  errors.outputFormat ? "border-red-500" : "border-slate-200"
                 }`}
                 placeholder="Specify the output format"
                 rows={4}
@@ -630,8 +630,8 @@ const ProblemForm = () => {
                     value={sample.input}
                     onChange={(e) => handleSampleChange(index, e)}
                     placeholder="Sample Input"
-                    className={`w-full p-4  bg-gray-800 border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
-                      errors.sampleIO ? "border-red-500" : "border-gray-700"
+                    className={`w-full p-4  ui-surface border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
+                      errors.sampleIO ? "border-red-500" : "border-slate-200"
                     }`}
                     rows={3}
                   />
@@ -641,8 +641,8 @@ const ProblemForm = () => {
                     value={sample.output}
                     onChange={(e) => handleSampleChange(index, e)}
                     placeholder="Sample Output"
-                    className={`w-full p-4  bg-gray-800 border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
-                      errors.sampleIO ? "border-red-500" : "border-gray-700"
+                    className={`w-full p-4  ui-surface border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
+                      errors.sampleIO ? "border-red-500" : "border-slate-200"
                     }`}
                     rows={3}
                   />
@@ -652,7 +652,7 @@ const ProblemForm = () => {
                     <button
                       type="button"
                       onClick={() => removeSampleIO(index)}
-                      className="bg-red-500 mt-5 text-white font-semibold py-2 px-4 rounded hover:bg-red-600 transition duration-300 ease-in-out"
+                      className="bg-red-500 mt-5 text-slate-900 font-semibold py-2 px-4 rounded hover:bg-red-600 transition duration-300 ease-in-out"
                     >
                       Remove Sample
                     </button>
@@ -663,7 +663,7 @@ const ProblemForm = () => {
               <button
                 type="button"
                 onClick={addSampleIO}
-                className="text-blue-500 mt-2"
+                className="text-blue-700 mt-2"
               >
                 + Add More
               </button>
@@ -678,8 +678,8 @@ const ProblemForm = () => {
                 name="constraints"
                 value={problemData.constraints}
                 onChange={handleChange}
-                className={`w-full p-4  bg-gray-800 border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
-                  errors.constraints ? "border-red-500" : "border-gray-700"
+                className={`w-full p-4  ui-surface border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
+                  errors.constraints ? "border-red-500" : "border-slate-200"
                 }`}
                 placeholder="Specify the problem constraints"
                 rows={4}
@@ -694,8 +694,8 @@ const ProblemForm = () => {
                 name="tags"
                 value={problemData.tags}
                 onChange={handleChange}
-                className={`w-full p-4  bg-gray-800 border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
-                  errors.tags ? "border-red-500" : "border-gray-700"
+                className={`w-full p-4  ui-surface border rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500  ${
+                  errors.tags ? "border-red-500" : "border-slate-200"
                 }
                 `}
                 placeholder="Comma-separated tags (e.g., arrays, sorting)"
@@ -710,7 +710,7 @@ const ProblemForm = () => {
                 type="number"
                 name="totalMarks"
                 value={problemData.totalMarks}
-                className="w-full p-4 bg-gray-800 border border-gray-700 rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-4 ui-surface border border-slate-200 rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Total Marks for all test cases"
                 min={0}
                 readOnly
@@ -722,16 +722,16 @@ const ProblemForm = () => {
               <button
                 type="button"
                 onClick={addTestCase}
-                className="text-blue-500 mt-2 mb-2"
+                className="text-blue-700 mt-2 mb-2"
               >
                 + Add More Test Case
               </button>
 
-              <div className="bg-gray-100 border border-gray-300 rounded-md p-4 my-4">
-                <h4 className="text-lg sm:text-base font-semibold text-gray-800 mb-2">
+              <div className="ui-subtle border border-slate-200 rounded-md p-4 my-4">
+                <h4 className="text-lg sm:text-base font-semibold text-slate-700 mb-2">
                   Important Note:
                 </h4>
-                <p className="text-gray-700 sm:text-sm leading-relaxed text-justify">
+                <p className="text-slate-700 sm:text-sm leading-relaxed text-justify">
                   As an admin, when you create a problem, please ensure that the
                   input and output examples are accurate. These examples are
                   crucial for testing the submitted code to determine its
@@ -743,7 +743,7 @@ const ProblemForm = () => {
             <div className="text-center">
               <button
                 type="submit"
-                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                className="px-6 py-3 bg-blue-500 text-slate-900 rounded-lg hover:bg-blue-600"
               >
                 {isEditing ? "Update Problem" : "Create Problem"}
               </button>
@@ -756,20 +756,20 @@ const ProblemForm = () => {
       <div
         className={`${
           isModalOpenInternal ? "block" : "hidden"
-        } fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center z-50`}
+        } fixed top-0 left-0 w-full h-full ui-page bg-opacity-50 flex items-center justify-center z-50`}
       >
-        <div className="bg-white p-8 rounded-lg shadow-lg text-gray-900 text-center">
+        <div className="bg-white p-8 rounded-lg ui-card-shadow text-slate-700 text-center">
           <p className="text-2xl font-bold mb-4">Confirmation</p>
           <p>{modalMessage || "Are you sure you want to proceed?"}</p>
           <div className="flex justify-center gap-4 mt-6">
             <button
-              className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+              className="px-6 py-2 bg-red-500 text-slate-900 rounded-lg hover:bg-red-600"
               onClick={() => setIsModalOpenInternal(false)}
             >
               Cancel
             </button>
             <button
-              className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+              className="px-6 py-2 bg-green-500 text-slate-900 rounded-lg hover:bg-green-600"
               onClick={confirmSubmit}
             >
               Confirm

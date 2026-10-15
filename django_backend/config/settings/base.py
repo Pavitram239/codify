@@ -34,7 +34,7 @@ env = environ.Env(
     JUDGE0_TOKEN=(str, ""),
     RABBITMQ_URL=(str, "amqp://guest:guest@localhost:5672/"),
     REDIS_URL=(str, "redis://localhost:6379/0"),
-    BACKEND_ORIGIN=(str, "http://localhost:5173"),
+    BACKEND_ORIGIN=(str, "http://localhost:5185"),
     MEDIA_ROOT=(str, str(BASE_DIR / "media")),
     GEMINI_API_KEY=(str, ""),
 )
@@ -229,6 +229,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta  # noqa: E402 — must be after imports
 
 SIMPLE_JWT = {
+    "CHECK_REVOKE_TOKEN": True,
     "ACCESS_TOKEN_LIFETIME": timedelta(seconds=env("JWT_EXP_SECONDS")),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": False,
@@ -248,6 +249,7 @@ CORS_ALLOWED_ORIGINS = [
     env("BACKEND_ORIGIN").rstrip("/"),
 ]
 CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
 # ---------------------------------------------------------------------------
 # Cookie settings (mirrors Node.js behaviour)
@@ -257,6 +259,8 @@ COOKIE_SECURE = env("DJANGO_COOKIE_SECURE")   # True in production
 COOKIE_SAMESITE = "None" if COOKIE_SECURE else "Lax"
 COOKIE_HTTPONLY = True
 COOKIE_MAX_AGE = env("JWT_EXP_SECONDS")        # seconds
+CSRF_COOKIE_SECURE = COOKIE_SECURE
+CSRF_COOKIE_SAMESITE = COOKIE_SAMESITE
 
 # ---------------------------------------------------------------------------
 # Celery
@@ -268,6 +272,12 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_BEAT_SCHEDULE = {
+    "cleanup-expired-sessions": {
+        "task": "apps.execution.tasks.cleanup_expired_sessions",
+        "schedule": 300.0,
+    },
+}
 
 # ---------------------------------------------------------------------------
 # Redis cache (used for rate limiting in Phase 8)

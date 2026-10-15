@@ -12,7 +12,7 @@ LANGUAGE_MAP = {
 
 
 def get_language_id(language: str):
-    return LANGUAGE_MAP.get(language.lower())
+    return LANGUAGE_MAP.get(language.lower()) if isinstance(language, str) else None
 
 
 def decode_base64(base64_str: str) -> str:
@@ -46,7 +46,7 @@ class Judge0Client:
         return headers
 
     def submit_one(self, submission_data: dict, retry_count: int = 3) -> dict:
-        url = f"{self.base_url}/submissions"
+        url = f"{self.base_url}/submissions?base64_encoded=false"
         headers = self._get_headers()
 
         for attempt in range(retry_count):
@@ -107,20 +107,8 @@ class Judge0Client:
 
         results = []
         for tc in test_cases:
-            # Memory limit: Judge0 enforces min 2048 KB (2 MB) and max 512000 KB (512 MB).
-            # Modern runtimes (JVM for Java, Python runtime) require sufficient RAM.
-            try:
-                raw_mem = float(tc.memory_limit) if tc.memory_limit else 128.0
-            except (ValueError, TypeError):
-                raw_mem = 128.0
-
-            mem_kb = int(raw_mem * 1024)
-            # Java JVM requires at least 64-128 MB to avoid OutOfMemoryError
-            if language_id == 62:
-                mem_kb = max(mem_kb, 131072)
-            else:
-                mem_kb = max(mem_kb, 32768)
-            mem_kb = min(mem_kb, 512000)
+            # Use the authored budget exactly; never silently relax marking limits.
+            mem_kb = int(tc.memory_limit * 1024)
 
             # CPU time limit: Judge0 supports [0.5, 15.0]
             try:
@@ -149,7 +137,10 @@ class Judge0Client:
             norm_expected = normalize_output(tc.outputs or "")
 
             error = result_data.get("error")
-            passed = (norm_stdout == norm_expected) and not error
+            status_id = result_data.get("status", {}).get("id")
+            if status_id != 3 and not error:
+                error = result_data.get("status", {}).get("description") or "Execution failed"
+            passed = status_id == 3 and (norm_stdout == norm_expected) and not error
 
             exec_time = float(result_data.get("time") or 0.0)
             exec_mem = float(result_data.get("memory") or 0.0)

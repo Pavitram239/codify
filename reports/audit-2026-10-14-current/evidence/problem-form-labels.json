@@ -1,0 +1,105 @@
+{
+  "labels": [
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Title"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Description"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Difficulty"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Input Format"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Output Format"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Sample Input/Output"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Constraints"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Tags"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Total Marks"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Input"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Expected Output"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Marks"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "CPU Time Limit (seconds 1s - 15s)"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Memory Limit (MB 1MB - 256MB)"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Input"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Expected Output"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Marks"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "CPU Time Limit (seconds 1s - 15s)"
+    },
+    {
+      "controls": 0,
+      "for": null,
+      "text": "Memory Limit (MB 1MB - 256MB)"
+    }
+  ],
+  "unnamedSelects": [
+    {
+      "name": "difficulty",
+      "value": "easy"
+    }
+  ]
+}

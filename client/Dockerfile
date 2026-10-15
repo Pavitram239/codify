@@ -5,7 +5,7 @@ COPY client/package*.json ./
 RUN npm ci --legacy-peer-deps
 
 COPY client ./
-ARG VITE_FRONTEND_ORIGIN=http://localhost:3100/api/v1
+ARG VITE_FRONTEND_ORIGIN=http://localhost:3185/api/v1
 ENV VITE_FRONTEND_ORIGIN=$VITE_FRONTEND_ORIGIN
 RUN npm run build
 

@@ -56,6 +56,7 @@ class TestAuthentication:
             "batch": "b1",
             "subject": "Algorithms",
             "role": "student",
+            "password": "ChosenSignupPassword-42!",
         }
         res = api_client.post(url, payload, format="json")
         assert res.status_code == 201
@@ -72,6 +73,7 @@ class TestAuthentication:
             "email": "jones@charusat.edu.in",
             "subject": "Web Development",
             "role": "faculty",
+            "password": "ChosenSignupPassword-42!",
         }
         res = api_client.post(url, payload, format="json")
         assert res.status_code == 201
@@ -157,7 +159,7 @@ class TestAuthentication:
 
         # Logout
         logout_url = reverse("auth-logout")
-        res = api_client.get(logout_url)
+        res = api_client.post(logout_url)
         assert res.status_code == 200
         assert res.data["success"] is True
 

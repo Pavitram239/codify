@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useParams } from "react-router-dom";
 import * as XLSX from 'xlsx';
@@ -44,7 +44,7 @@ const ContestDashboard = () => {
     }))
   ];
 
-  const fetchDashboard = async () => {
+  const fetchDashboard = useCallback(async () => {
     try {
       setLoading(true);
       const queryParams = new URLSearchParams(filters);
@@ -56,11 +56,11 @@ const ContestDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, filters]);
 
   useEffect(() => {
     fetchDashboard();
-  }, [id, filters]);
+  }, [fetchDashboard]);
 
   const downloadExcel = () => {
     if (!dashboardData?.rankings) return;
@@ -127,15 +127,15 @@ const ContestDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6 pt-20">
+    <div className="ui-page-height ui-page text-slate-900 p-6 ui-page-top">
       <div className="max-w-7xl mx-auto">
         {/* Header - Always visible */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="assessment-dashboard-heading flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-bold">
               {dashboardData?.contestName || "Contest Dashboard"}
             </h1>
-            <div className="text-gray-400 mt-2">
+            <div className="text-slate-600 mt-2">
               Total Submissions: {dashboardData?.pagination?.totalStudents || 0}
               {dashboardData?.sortBy && (
                 <span className="ml-2">
@@ -145,7 +145,7 @@ const ContestDashboard = () => {
             </div>
           </div>
           
-          <div className="flex gap-4 items-center">
+          <div className="assessment-dashboard-controls flex gap-4 items-center">
             {/* Controls - Always visible but disabled during loading */}
             <select 
               value={filters.limit}
@@ -154,7 +154,7 @@ const ContestDashboard = () => {
                 limit: Number(e.target.value),
                 page: 1 
               }))}
-              className="bg-gray-700 rounded px-2 py-1"
+              className="ui-surface rounded px-2 py-1"
               disabled={loading}
             >
               {pageSizeOptions.map(size => (
@@ -165,7 +165,7 @@ const ContestDashboard = () => {
             <select 
               value={filters.branch}
               onChange={(e) => setFilters(prev => ({ ...prev, branch: e.target.value, page: 1 }))}
-              className="bg-gray-700 rounded px-2 py-1"
+              className="ui-surface rounded px-2 py-1"
               disabled={loading}
             >
               {branchOptions.map(option => (
@@ -176,7 +176,7 @@ const ContestDashboard = () => {
             <select 
               value={filters.semester}
               onChange={(e) => setFilters(prev => ({ ...prev, semester: e.target.value, page: 1 }))}
-              className="bg-gray-700 rounded px-2 py-1"
+              className="ui-surface rounded px-2 py-1"
               disabled={loading}
             >
               {semesterOptions.map(option => (
@@ -187,7 +187,7 @@ const ContestDashboard = () => {
             <select 
               value={filters.batch}
               onChange={(e) => setFilters(prev => ({ ...prev, batch: e.target.value, page: 1 }))}
-              className="bg-gray-700 rounded px-2 py-1"
+              className="ui-surface rounded px-2 py-1"
               disabled={loading}
             >
               {batchOptions.map(option => (
@@ -213,10 +213,10 @@ const ContestDashboard = () => {
         </div>
 
         {/* Table - Always visible with conditional content */}
-        <div className="overflow-x-auto bg-gray-800 rounded-lg">
+        <div className="overflow-x-auto ui-surface rounded-lg">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-700">
+              <tr className="ui-surface">
                 <th className="p-3 text-left">Rank</th>
                 <th className="p-3 text-left cursor-pointer" onClick={() => handleSort('studentId')}>ID</th>
                 <th className="p-3 text-left">Name</th>
@@ -226,7 +226,7 @@ const ContestDashboard = () => {
                 {dashboardData?.problemNames?.map((problem, index) => (
                   <th key={index} className="p-3 text-right">
                     {problem.name}<br/>
-                    <span className="text-sm text-gray-400">({problem.maxMarks})</span>
+                    <span className="text-sm text-slate-600">({problem.maxMarks})</span>
                   </th>
                 ))}
                 <th className="p-3 text-right cursor-pointer" onClick={() => handleSort('totalMarks')}>Total Marks</th>
@@ -245,7 +245,7 @@ const ContestDashboard = () => {
                 </tr>
               ) : dashboardData?.rankings?.length ? (
                 dashboardData.rankings.map((student) => (
-                  <tr key={student.studentId} className="border-t border-gray-700 hover:bg-gray-700">
+                  <tr key={student.studentId} className="border-t border-slate-200 hover:ui-surface">
                     <td className="p-3">{student.rank}</td>
                     <td className="p-3">{student.studentId}</td>
                     <td className="p-3">{student.username}</td>
@@ -260,7 +260,7 @@ const ContestDashboard = () => {
                     <td className="p-3 text-right">{student.totalMarks}</td>
                     <td className="p-3 text-right">
                       <div>{student.lastSubmissionDate}</div>
-                      <div className="text-sm text-gray-400">{student.lastSubmissionTime}</div>
+                      <div className="text-sm text-slate-600">{student.lastSubmissionTime}</div>
                     </td>
                   </tr>
                 ))
@@ -283,7 +283,7 @@ const ContestDashboard = () => {
               {Math.min(filters.page * filters.limit, dashboardData.pagination.totalStudents)} of{' '}
               {dashboardData.pagination.totalStudents} submissions
               {filters.sortBy !== 'totalMarks' && (
-                <span className="ml-2 text-gray-400">
+                <span className="ml-2 text-slate-600">
                   (Filtered from {dashboardData.pagination.totalStudents} total)
                 </span>
               )}
@@ -294,7 +294,7 @@ const ContestDashboard = () => {
                   key={i + 1}
                   onClick={() => setFilters(prev => ({ ...prev, page: i + 1 }))}
                   className={`px-3 py-1 rounded ${
-                    filters.page === i + 1 ? 'bg-blue-600' : 'bg-gray-700'
+                    filters.page === i + 1 ? 'bg-blue-600' : 'ui-surface'
                   }`}
                   disabled={loading}
                 >
@@ -307,11 +307,11 @@ const ContestDashboard = () => {
 
         {/* Statistics Panel */}
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gray-800 p-4 rounded-lg">
+          <div className="ui-surface p-4 rounded-lg">
             <h3 className="font-semibold mb-2">Total Submissions</h3>
             <p className="text-2xl">{dashboardData?.pagination?.totalStudents || 0}</p>
           </div>
-          <div className="bg-gray-800 p-4 rounded-lg">
+          <div className="ui-surface p-4 rounded-lg">
             <h3 className="font-semibold mb-2">Filtered Count</h3>
             <p className="text-2xl">{dashboardData?.pagination?.totalStudents || 0}</p>
           </div>

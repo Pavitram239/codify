@@ -1,0 +1,392 @@
+/* Figma foundations shared by every route and dialog. */
+:root {
+  --surface: #fff;
+  --background: #f8fafc;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #475569;
+  --action: #2563eb;
+  color-scheme: light;
+}
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font-family: Inter, sans-serif;
+}
+.ui-page {
+  background-color: var(--background);
+}
+.ui-surface {
+  background-color: var(--surface);
+}
+.ui-subtle {
+  background-color: #f1f5f9;
+}
+.ui-gradient {
+  background-image: none;
+  background-color: var(--surface);
+}
+.ui-card-shadow {
+  box-shadow: 0 1px 2px rgb(15 23 42 / 4%);
+  border: 1px solid var(--border);
+}
+.ui-page-height {
+  min-height: 280px;
+  height: auto;
+}
+.ui-page-top {
+  padding-top: 0;
+  margin-top: 0;
+}
+.application-page {
+  color: var(--text);
+  min-width: 0;
+}
+.application-page > :first-child {
+  background: transparent;
+}
+.application-page h1 {
+  font-size: 28px;
+  line-height: 1.35;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-align: left;
+  color: var(--text);
+}
+.application-page h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+}
+.application-page h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+.application-page :is(input, select, textarea) {
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  padding: 12px;
+}
+.application-page
+  :is(input, select):not([type="checkbox"]):not([type="radio"]) {
+  min-height: 48px;
+}
+.application-page input:is([type="checkbox"], [type="radio"]) {
+  accent-color: var(--action);
+  padding: 0;
+}
+.application-page input[type="file"]::file-selector-button {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-right: 12px;
+}
+.application-page :is(button, a)[class*="bg-blue-"],
+.application-page :is(button, a)[class*="bg-indigo-"],
+.application-page :is(button, a)[class*="bg-purple-"],
+.application-page :is(button, a).ui-gradient {
+  background: var(--action);
+  color: #fff;
+  border: 1px solid var(--action);
+  border-radius: 6px;
+}
+.application-page :is(button, a)[class*="bg-red-6"],
+.application-page :is(button, a)[class*="bg-red-5"] {
+  background: #dc2626;
+  color: white;
+}
+.application-page :is(button, a)[class*="bg-green-"],
+.application-page :is(button, a)[class*="bg-emerald-"] {
+  background: #15803d;
+  color: white;
+}
+.application-page :is(button, a)[class*="bg-yellow-"] {
+  background: #fef3c7;
+  color: #92400e;
+}
+.application-page button {
+  border-radius: 6px;
+  min-height: 40px;
+  font-weight: 600;
+}
+.application-page button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.application-page :is(button, a)[class*="bg-blue-"]:hover {
+  background: #1d4ed8;
+}
+.application-page table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  font-size: 14px;
+  text-align: left;
+}
+.application-page th {
+  background: var(--background);
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.application-page :is(th, td) {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.application-page tr:hover {
+  background: #f8fafc;
+}
+.application-page :is(pre, code) {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+.application-page pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: var(--background);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.application-page [class*="fixed"][class*="inset-0"] {
+  padding: 20px;
+  overflow-y: auto;
+}
+.application-page [class*="fixed"][class*="inset-0"] > :not(svg) {
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+}
+.application-page [class*="bg-opacity"]:not([class*="bg-black"]) {
+  --tw-bg-opacity: 1;
+}
+.application-page [class*="text-justify"] {
+  text-align: left;
+}
+.application-page .overflow-x-auto {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.application-page .problem-container {
+  min-height: 600px;
+  height: calc(100dvh - 140px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.application-page .resizable {
+  border-color: var(--border);
+}
+.application-page .divider {
+  background: var(--border);
+}
+.application-page .divider:hover {
+  background: var(--action);
+}
+.application-page .code-editor {
+  background: var(--surface);
+  padding: 16px;
+  box-shadow: none;
+}
+.application-page .custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--background);
+}
+.application-page .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+.workspace--authentication .workspace-shell {
+  min-height: calc(100dvh - 60px);
+}
+.workspace--authentication .workspace-main {
+  padding: 32px 20px;
+}
+.workspace--authentication .application-page > div > div {
+  min-height: calc(100dvh - 124px);
+}
+.workspace--authentication form {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgb(15 23 42 / 5%);
+}
+.workspace--authentication form h1 {
+  text-align: left;
+  font-size: 28px;
+  margin: 0;
+}
+.workspace--authentication form button[type="submit"] {
+  min-height: 48px;
+}
+.workspace-sidebar nav {
+  gap: 4px;
+}
+.workspace-signout {
+  margin-top: 16px;
+}
+@media (max-width: 1023px) {
+  .application-page .problem-container {
+    flex-direction: column;
+    height: auto;
+  }
+  .application-page .resizable {
+    max-width: none;
+    width: 100%;
+    height: auto;
+    flex-basis: auto !important;
+  }
+  .application-page .divider {
+    display: none;
+  }
+  .application-page .code-editor {
+    width: 100%;
+    height: auto;
+  }
+}
+@media (max-width: 767px) {
+  .application-page h1 {
+    font-size: 24px;
+  }
+  .application-page [class*="px-8"],
+  .application-page [class*="p-8"] {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .application-page [class*="grid-cols-2"]:not([class*="sm:grid-cols-2"]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .application-page .problem-container {
+    min-height: 0;
+  }
+  .workspace--authentication .workspace-safe-area {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .application-page *,
+  .application-page *::before,
+  .application-page *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.application-page :is(button, a)[class*="bg-red-600"]:hover {
+  background: #b91c1c;
+}
+.application-page [class*="bg-red-50"] {
+  color: #b91c1c;
+}
+.application-page input[class*="pl-10"],
+.application-page select[class*="pl-10"] {
+  padding-left: 40px;
+}
+.application-page :is(button, a).ui-gradient svg {
+  color: inherit;
+}
+.application-page button.ui-surface,
+.application-page button.ui-subtle {
+  border: 1px solid var(--border);
+}
+.application-page [class*="shadow-blue"],
+.application-page [class*="shadow-indigo"] {
+  --tw-shadow-color: transparent;
+}
+.application-page [class*="overflow-hidden"]:has(> table) {
+  overflow-x: auto;
+}
+.application-page .profile-page {
+  min-width: 0;
+}
+.workspace--authentication .workspace-profile {
+  width: auto;
+  padding: 0 12px;
+}
+.workspace-sidebar {
+  overflow-y: auto;
+}
+.application-page .ui-gradient[class*="bg-clip"] {
+  background: transparent;
+}
+@media (max-width: 767px) {
+  .application-page :is(table, .overflow-x-auto) {
+    max-width: 100%;
+  }
+}
+.ui-card-shadow {
+  background-color: var(--surface);
+}
+.application-page
+  [class*="fixed"][class*="inset-0"]
+  > .flex.flex-col.items-center {
+  background: var(--surface);
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.application-page input[class*="pr-24"] {
+  padding-right: 96px;
+}
+.application-page h1.ui-gradient,
+.application-page h2.ui-gradient {
+  background: transparent;
+}
+@media (max-width: 767px) {
+  .application-page [class*="flex"][class*="justify-between"] {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .application-page [class*="pl-10"]:not(input):not(select) {
+    padding-left: 16px;
+  }
+  .application-page [class*="pr-10"]:not(input):not(select) {
+    padding-right: 16px;
+  }
+  .application-page [class*="col-span-2"] {
+    grid-column: auto;
+  }
+  .application-page [class*="space-x-4"] {
+    column-gap: 8px;
+  }
+  .application-page [class*="space-x-4"] > * {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+.application-page .assessment-dashboard-heading {
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.application-page .assessment-dashboard-controls {
+  flex-wrap: wrap;
+  min-width: 0;
+  gap: 12px;
+}
+.application-page .student-import-heading > div {
+  min-width: 0;
+  max-width: 100%;
+}
+.application-page .student-import-heading input[type="file"] {
+  width: 100%;
+}
+.workspace--authentication .application-page > div > div {
+  background: var(--background);
+}
+
+.access-page { max-width: 1100px; margin: auto; padding: 24px; }
+.access-page h1 { font-size: 28px; font-weight: 700; }
+.access-page h2 { font-size: 22px; margin-top: 24px; }
+.access-page h3 { font-size: 18px; font-weight: 600; margin-top: 20px; }
+.access-page p { margin: 12px 0; }
+.access-page label { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+.access-page input:not([type=checkbox]), .access-page select { padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); max-width: 100%; }
+.access-page input[type=checkbox] { width: 18px; height: 18px; }
+.access-matrix { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin: 24px 0; }
+.access-module { padding: 16px; border: 1px solid var(--border); border-radius: 10px; }
+.access-module legend { font-weight: 600; text-transform: capitalize; }
+.access-page pre { overflow: auto; font-size: 12px; }
+.access-page button { padding: 8px 16px; margin: 4px; }
+.access-page button:disabled { opacity: .5; }

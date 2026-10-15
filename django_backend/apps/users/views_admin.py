@@ -1,3 +1,4 @@
+from apps.users.access_policy import ModulePermission
 import math
 from django.core.cache import cache
 from django.db import transaction
@@ -8,11 +9,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.users.models import User
-from apps.users.permissions import IsAdmin
+from apps.users.onboarding import prepare_initial_password
+from apps.users.pagination import pagination_params
 
 
 class AdminPendingUsersView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request):
         try:
@@ -72,7 +74,7 @@ class AdminPendingUsersView(APIView):
 
 
 class AdminAcceptRequestView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         user_id = request.data.get("userId")
@@ -96,9 +98,7 @@ class AdminAcceptRequestView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if user.role == "faculty":
-            email_prefix = user.email.split("@")[0] if user.email else user.username
-            user.set_password(email_prefix)
+        credential = prepare_initial_password(user)
 
         user.is_approved = True
         user.save()
@@ -107,6 +107,7 @@ class AdminAcceptRequestView(APIView):
         return Response({
             "success": True,
             "message": "User request accepted and approved",
+            "temporaryPasswords": [credential] if credential else [],
             "data": {
                 "username": user.username,
                 "email": user.email,
@@ -118,7 +119,7 @@ class AdminAcceptRequestView(APIView):
 
 
 class AdminDeclineRequestView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         user_id = request.data.get("userId")
@@ -144,7 +145,7 @@ class AdminDeclineRequestView(APIView):
 
 
 class AdminAcceptAllRequestsView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         pending_users = list(User.objects.filter(is_approved=False, role="faculty"))
@@ -155,10 +156,12 @@ class AdminAcceptAllRequestsView(APIView):
             )
 
         approved_count = 0
+        credentials = []
         with transaction.atomic():
             for user in pending_users:
-                email_prefix = user.email.split("@")[0] if user.email else user.username
-                user.set_password(email_prefix)
+                credential = prepare_initial_password(user)
+                if credential:
+                    credentials.append(credential)
                 user.is_approved = True
                 user.save()
                 approved_count += 1
@@ -168,11 +171,12 @@ class AdminAcceptAllRequestsView(APIView):
         return Response({
             "success": True,
             "message": f"{approved_count} faculty users have been approved",
+            "temporaryPasswords": credentials,
         }, status=status.HTTP_200_OK)
 
 
 class AdminDeclineAllRequestsView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         pending_users = User.objects.filter(is_approved=False, role="faculty")
@@ -191,11 +195,10 @@ class AdminDeclineAllRequestsView(APIView):
 
 
 class AdminGetFacultyView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
-        page = int(request.data.get("page") or request.query_params.get("page", 1))
-        limit = int(request.data.get("limit") or request.query_params.get("limit", 10))
+        page, limit = pagination_params(request.data or request.query_params)
         skip = (page - 1) * limit
 
         faculties = User.objects.filter(role="faculty", is_approved=True).order_by("-created_at")
@@ -213,6 +216,7 @@ class AdminGetFacultyView(APIView):
                 "sessionId": u.session_id,
                 "lastLoginTime": u.last_login_time,
                 "createdAt": u.created_at,
+                "firstTimeLogin": u.first_time_login,
             }
             for u in page_faculties
         ]
@@ -228,7 +232,7 @@ class AdminGetFacultyView(APIView):
 
 
 class AdminDeleteFacultyView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def delete(self, request):
         faculty_id = request.data.get("facultyId") or request.query_params.get("facultyId")
@@ -259,7 +263,7 @@ class AdminDeleteFacultyView(APIView):
 
 
 class AdminTerminateSessionView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         user_id = request.data.get("userId")
@@ -311,15 +315,10 @@ class AdminTerminateSessionView(APIView):
 
 
 class AdminUsersSessionsView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request):
-        try:
-            page = int(request.query_params.get("page", 1))
-            limit = int(request.query_params.get("limit", 10))
-        except ValueError:
-            page = 1
-            limit = 10
+        page, limit = pagination_params(request.query_params)
 
         search = (request.query_params.get("search") or "").strip()
         role = request.query_params.get("role", "all")

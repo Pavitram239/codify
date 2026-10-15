@@ -268,6 +268,11 @@ class TestProblemsAPI:
         url = reverse("problems-get-students")
         res = client.get(url)
         assert res.status_code == 200
+        # Assigned scope excludes students managed by another user or nobody.
+        assert res.data["totalStudents"] == 0
+        from apps.users.models import AccessPermission
+        faculty_user.direct_permissions.add(AccessPermission.objects.get(code="users.view_all"))
+        res = client.get(url)
         assert res.data["totalStudents"] == 2
         assert len(res.data["branchWiseCount"]) >= 2
         assert "5" in res.data["semesterBranchBatchWiseCount"]

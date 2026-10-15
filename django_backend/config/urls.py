@@ -23,6 +23,7 @@ urlpatterns = [
         include(
             [
                 # Phase 4: Authentication
+                path("access/", include("apps.users.urls.access")),
                 path("auth/", include("apps.users.urls.auth")),
 
                 # Phase 4: User profile

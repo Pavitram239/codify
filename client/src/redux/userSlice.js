@@ -69,7 +69,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.imageUrl = action.payload;
       })
-      .addCase(fetchProfilePicThunk.rejected, (state, action) => {
+      .addCase(fetchProfilePicThunk.rejected, (state) => {
         state.isLoading = false;
         // Add error handling if needed
         state.imageUrl = null;

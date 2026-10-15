@@ -1,0 +1,11 @@
+{
+  "findingsVerified": 38,
+  "apiAuditPassed": 63,
+  "liveChecksPassed": 23,
+  "uniqueBackendChecks": 174,
+  "retestedOriginalScenarios": 286,
+  "remainingReleaseScenarios": 80,
+  "clientLintErrors": 0,
+  "clientLintWarnings": 0,
+  "originalObservationsPreserved": true
+}

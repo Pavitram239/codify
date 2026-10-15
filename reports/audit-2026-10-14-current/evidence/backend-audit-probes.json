@@ -1,0 +1,57 @@
+[
+  {
+    "id": "AUTH-REVOKE-faculty",
+    "termination": 200,
+    "old_token": 200,
+    "expected": 401
+  },
+  {
+    "id": "AUTH-REVOKE-admin",
+    "termination": 200,
+    "old_token": 200,
+    "expected": 401
+  },
+  {
+    "id": "SCOPE-DIRECTORY-problems",
+    "http": 200,
+    "foreign_student_exposed": true,
+    "user_directory_permission": false,
+    "entries": 2
+  },
+  {
+    "id": "SCOPE-DIRECTORY-contests",
+    "http": 200,
+    "foreign_student_exposed": true,
+    "user_directory_permission": false,
+    "entries": 2
+  },
+  {
+    "id": "PERF-USER-LIST",
+    "one_user_queries": 10,
+    "twenty_user_queries": 86,
+    "http": 200
+  },
+  {
+    "id": "PERF-EXECUTION-LIMIT",
+    "default_throttles": [],
+    "view_throttles": []
+  },
+  {
+    "id": "VALIDATION-ID-execution",
+    "http": 500,
+    "expected": 400
+  },
+  {
+    "id": "VALIDATION-ID-submissions",
+    "http": 500,
+    "expected": 400
+  },
+  {
+    "id": "CONCURRENCY-LAST-MANAGER",
+    "statuses": [
+      400,
+      200
+    ],
+    "remaining": 1
+  }
+]

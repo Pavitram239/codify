@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import InitialPasswordButton from "../InitialPasswordButton";
 
 const FacultyRegister = () => {
   const user = useSelector((store) => store.app.user);
@@ -17,7 +18,7 @@ const FacultyRegister = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userId, setuserId] = useState(null);
 
-  const fetchStudents = async (page) => {
+  const fetchStudents = useCallback(async (page) => {
     try {
       setLoading(true);
       const response = await axiosInstance.post(
@@ -36,16 +37,16 @@ const FacultyRegister = () => {
       } else {
         setError(response.data.message || "Failed to fetch students.");
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred while fetching students.");
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchStudents(currentPage);
-  }, [currentPage]);
+  }, [fetchStudents, currentPage]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -97,20 +98,20 @@ const FacultyRegister = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gray-900 text-white">
+    <div className="relative ui-page-height ui-page text-slate-900">
 
-      <div className="flex justify-center pt-[6%]">
+      <div className="flex justify-center ui-page-top">
         <h1 className="text-2xl font-bold mb-4">Student Register</h1>
       </div>
 
       <button
-        className="py-2 px-6 ml-6 bg-gradient-to-r mb-4 from-blue-500 to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-700 active:scale-95 transition transform duration-200"
+        className="py-2 px-6 ml-6 ui-gradient mb-4   text-slate-900 font-semibold rounded-lg shadow-md   active:scale-95 transition transform duration-200"
         onClick={() => navigate(-1)}
       >
         Back
       </button>
 
-      <div className="flex items-center ml-4 text-white py-2 px-4 rounded-full shadow-lg text-lg font-semibold">
+      <div className="flex items-center ml-4 text-slate-900 py-2 px-4 rounded-full ui-card-shadow text-lg font-semibold">
         <span>Total Number of Students Register:</span>
         <span className="ml-2 text-xl font-bold">{totalStudents}</span>
       </div>
@@ -120,7 +121,7 @@ const FacultyRegister = () => {
           <div className="flex justify-center items-center h-64">
             <div className="flex flex-col items-center">
               <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-opacity-75"></div>
-              <p className="mt-4 text-blue-500 text-lg font-medium">
+              <p className="mt-4 text-blue-700 text-lg font-medium">
                 Loading, please wait...
               </p>
             </div>
@@ -128,9 +129,9 @@ const FacultyRegister = () => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <div className="overflow-x-auto bg-gray-900 shadow-md rounded-lg p-4">
-            <table className="min-w-full text-lg text-left text-gray-500">
-              <thead className="bg-gray-900 text-gray-400">
+          <div className="overflow-x-auto ui-page shadow-md rounded-lg p-4">
+            <table className="min-w-full text-lg text-left text-slate-600">
+              <thead className="ui-page text-slate-600">
                 <tr>
                   <th className="py-3 px-6">#</th>
                   <th className="py-3 px-6">ID</th>
@@ -147,7 +148,7 @@ const FacultyRegister = () => {
                   <tr
                     key={student._id}
                     className={`${
-                      index % 2 === 0 ? "bg-gray-900" : "bg-gray-800"
+                      index % 2 === 0 ? "ui-page" : "ui-surface"
                     }`}
                   >
                     <td className="py-3 px-6">
@@ -167,9 +168,10 @@ const FacultyRegister = () => {
 
                     <td className="py-3">{formatDate(student?.createdAt)} </td>
                     <td className="py-3 px-6">
+                      {student.firstTimeLogin && <InitialPasswordButton userId={student._id} namespace="faculty" />}
                       <button
                         onClick={() => openDeleteModal(student._id)}
-                        className="bg-red-600 text-white py-1 px-3 rounded-lg hover:bg-red-700 transition"
+                        className="bg-red-600 text-slate-900 py-1 px-3 rounded-lg hover:bg-red-50 transition"
                       >
                         Delete
                       </button>
@@ -184,17 +186,17 @@ const FacultyRegister = () => {
               <button
                 onClick={handlePreviousPage}
                 disabled={currentPage === 1}
-                className="bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition disabled:opacity-50"
+                className="ui-surface text-slate-900 py-2 px-4 rounded-lg hover:ui-subtle transition disabled:opacity-50"
               >
                 Previous
               </button>
-              <span className="text-gray-300 pr-2 pl-2">
+              <span className="text-slate-600 pr-2 pl-2">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-                className="bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition disabled:opacity-50"
+                className="ui-surface text-slate-900 py-2 px-4 rounded-lg hover:ui-subtle transition disabled:opacity-50"
               >
                 Next
               </button>
@@ -206,24 +208,24 @@ const FacultyRegister = () => {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-gray-800 p-6 sm:p-8 rounded-lg w-11/12 max-w-md sm:max-w-lg mx-auto">
-            <h3 className="text-white text-lg sm:text-xl font-bold mb-4 text-center">
+          <div className="ui-surface p-6 sm:p-8 rounded-lg w-11/12 max-w-md sm:max-w-lg mx-auto">
+            <h3 className="text-slate-900 text-lg sm:text-xl font-bold mb-4 text-center">
               Confirm Deletion
             </h3>
-            <p className="text-gray-300 mb-4 text-sm sm:text-base text-center">
+            <p className="text-slate-600 mb-4 text-sm sm:text-base text-center">
               Are you sure you want to delete this student? This action cannot
               be undone.
             </p>
             <div className="flex justify-center gap-4">
               <button
                 onClick={cancelDelete}
-                className="bg-gray-500 text-white py-2 px-4 sm:py-2.5 sm:px-6 rounded-lg hover:bg-gray-600 transition"
+                className="ui-subtle text-slate-900 py-2 px-4 sm:py-2.5 sm:px-6 rounded-lg hover:ui-subtle transition"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="bg-red-500 text-white py-2 px-4 sm:py-2.5 sm:px-6 rounded-lg hover:bg-red-600 transition"
+                className="bg-red-500 text-slate-900 py-2 px-4 sm:py-2.5 sm:px-6 rounded-lg hover:bg-red-600 transition"
               >
                 Delete
               </button>

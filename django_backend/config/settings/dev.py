@@ -52,6 +52,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 COOKIE_SECURE = False
 COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = "Lax"
 
 # ---------------------------------------------------------------------------
 # Email — print to console instead of sending

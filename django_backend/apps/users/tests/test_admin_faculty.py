@@ -62,7 +62,8 @@ def test_admin_pending_and_accept_request(api_client, admin_user):
 
     pending_fac.refresh_from_db()
     assert pending_fac.is_approved is True
-    assert pending_fac.check_password("pendingfac")
+    assert not pending_fac.check_password("pendingfac")
+    assert pending_fac.check_password(accept_res.json()["temporaryPasswords"][0]["temporaryPassword"])
 
 
 @pytest.mark.django_db
@@ -140,7 +141,8 @@ def test_faculty_pending_and_accept(api_client, faculty_user):
     student.refresh_from_db()
     assert student.is_approved is True
     assert student.email == "22it045@charusat.edu.in"
-    assert student.check_password("22IT045")
+    assert not student.check_password("22IT045")
+    assert student.check_password(accept_res.json()["temporaryPasswords"][0]["temporaryPassword"])
 
 
 @pytest.mark.django_db
@@ -163,7 +165,8 @@ def test_faculty_bulk_register_and_expire_session(api_client, faculty_user):
     # Check that users were created with right branch and password
     it_student = User.objects.get(student_id="22IT099")
     assert it_student.branch == "cspit-it"
-    assert it_student.check_password("22IT099")
+    assert not it_student.check_password("22IT099")
+    assert it_student.check_password(results["success"][0]["temporaryPassword"])
 
     ce_student = User.objects.get(student_id="22CE050")
     assert ce_student.branch == "cspit-ce"

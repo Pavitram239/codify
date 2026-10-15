@@ -6,6 +6,12 @@ class CodeDraftSaveSerializer(serializers.Serializer):
     problemId = serializers.UUIDField(required=True)
     codeByLanguage = serializers.DictField(required=True)
 
+    def validate_codeByLanguage(self, value):
+        if any(key not in {"python", "cpp", "java", "javascript"} or not isinstance(code, str)
+               for key, code in value.items()):
+            raise serializers.ValidationError("Code must be text keyed by a supported language.")
+        return value
+
 
 class CodeDraftModelSerializer(serializers.ModelSerializer):
     _id = serializers.SerializerMethodField()

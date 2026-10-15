@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { useEffect, useState, useCallback } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useSelector } from "react-redux";
 import SubmissionList from "./SubmissionList.jsx";
 
 const Submission = ({ problemId, latestSubmission }) => {
   const [submissions, setSubmissions] = useState([]);
-  const [selectedSubmission, setSelectedSubmission] = useState(
+  const [, setSelectedSubmission] = useState(
     latestSubmission || null
   );
   const [error, setError] = useState(null);
@@ -13,7 +14,7 @@ const Submission = ({ problemId, latestSubmission }) => {
   const user = useSelector((state) => state.app.user);
   const userId = user._id;
 
-  const fetchSubmissions = async () => {
+  const fetchSubmissions = useCallback(async () => {
     try {
       setLoading(true);
       setError(null); 
@@ -40,11 +41,11 @@ const Submission = ({ problemId, latestSubmission }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [problemId]);
 
   useEffect(() => {
     fetchSubmissions();
-  }, [userId, problemId]);
+  }, [userId, fetchSubmissions]);
 
   useEffect(() => {
     if (latestSubmission) {
@@ -53,7 +54,7 @@ const Submission = ({ problemId, latestSubmission }) => {
   }, [latestSubmission]);
 
   return (
-    <div className="bg-gray-900 p-2 rounded-lg shadow-lg">
+    <div className="ui-page p-2 rounded-lg ui-card-shadow">
       <SubmissionList
         submissions={submissions}
         onSelect={setSelectedSubmission}
@@ -62,6 +63,12 @@ const Submission = ({ problemId, latestSubmission }) => {
       />
     </div>
   );
+};
+
+
+Submission.propTypes = {
+  problemId: PropTypes.any,
+  latestSubmission: PropTypes.any,
 };
 
 export default Submission;

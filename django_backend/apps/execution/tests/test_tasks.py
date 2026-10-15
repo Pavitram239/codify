@@ -60,11 +60,11 @@ def test_process_submission_async(student_user, sample_problem):
             "marks": 100,
             "time": 0.05,
             "memory": 10.0,
-            "isHidden": False,
+            "is_hidden": True,
         }
     ]
 
-    with patch("apps.execution.services.Judge0Client.execute_test_cases", return_value=(mock_results, 100, 1, 1, 0.05, 10.0)):
+    with patch("apps.execution.services.Judge0Client.execute_test_cases", return_value=mock_results):
         result = process_submission_async(str(sub.id))
 
     assert result["status"] == "completed"
@@ -76,6 +76,9 @@ def test_process_submission_async(student_user, sample_problem):
     assert sub.total_marks == 100
     assert sub.number_of_test_cases_pass == 1
     assert sub.test_case_results.count() == 1
+    assert sub.test_case_results.get().is_hidden is True
+    assert sub.execution_time == 50.0
+    assert sub.memory_usage == 0.01
 
 
 @pytest.mark.django_db

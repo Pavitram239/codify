@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import PropTypes from "prop-types";
 import Editor from "@monaco-editor/react";
 
 const CodeEditorArea = ({
@@ -9,30 +9,18 @@ const CodeEditorArea = ({
   theme,
   handleThemeChange,
 }) => {
-  const editorRef = useRef(null);
+  
 
-  const onMount = (editor) => {
-    editorRef.current = editor;
-    editor.focus();
-
-    editor.updateOptions({ contextmenu: false });
-
-    editor.onKeyDown((event) => {
-      const { keyCode, ctrlKey, metaKey } = event;
-      if ((keyCode === 33 || keyCode === 52) && (metaKey || ctrlKey)) {
-        event.preventDefault();
-      }
-    });
-  };
+  
 
   return (
-    <div className="border border-gray-700 rounded-lg overflow-hidden shadow-lg">
-      <div className="flex justify-between items-center  text-white p-3 border-b border-gray-600" style={{backgroundColor:"#1e1e1e"}}>
+    <div className="border border-slate-200 rounded-lg overflow-hidden ui-card-shadow">
+      <div className="flex justify-between items-center  text-slate-900 p-3 border-b border-slate-200" style={{backgroundColor: "var(--surface)"}}>
         <div className="text-lg font-bold">{title}</div>
         <div className="relative inline-block">
           <select
-            className="border border-gray-600 text-white rounded-md py-2 pl-3 pr-10 appearance-none outline-none cursor-pointer"
-            style={{ backgroundColor: "#1e1e1e" }}
+            className="border border-slate-200 text-slate-900 rounded-md py-2 pl-3 pr-10 appearance-none outline-none cursor-pointer"
+            style={{ backgroundColor: "var(--surface)" }}
             onChange={(e) => handleThemeChange(e.target.value)}
             value={theme}
           >
@@ -54,7 +42,7 @@ const CodeEditorArea = ({
             >
               <path
                 d="M5 8L1 4H9L5 8Z"
-                fill="#fff" // Arrow color
+                fill="currentColor" // Arrow color
               />
             </svg>
           </div>
@@ -62,7 +50,7 @@ const CodeEditorArea = ({
       </div>
       <Editor
         height="400px"
-        defaultLanguage={language}
+        language={language}
         value={code}
         onChange={handleEditorChange}
         theme={theme}
@@ -81,6 +69,16 @@ const CodeEditorArea = ({
       />
     </div>
   );
+};
+
+
+CodeEditorArea.propTypes = {
+  language: PropTypes.string,
+  code: PropTypes.string,
+  handleEditorChange: PropTypes.func,
+  title: PropTypes.string,
+  theme: PropTypes.string,
+  handleThemeChange: PropTypes.func,
 };
 
 export default CodeEditorArea;

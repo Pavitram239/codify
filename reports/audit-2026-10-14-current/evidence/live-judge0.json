@@ -1,0 +1,206 @@
+[
+  {
+    "language": "python",
+    "http": 200,
+    "seconds": 2.59,
+    "response": {
+      "success": true,
+      "testResults": [
+        {
+          "input": "2 3",
+          "expectedOutput": "5",
+          "output": "5",
+          "error": null,
+          "passed": true,
+          "time": 0.031,
+          "memory": 7120.0,
+          "marks": 10
+        },
+        {
+          "input": "******",
+          "expectedOutput": "******",
+          "output": "******",
+          "error": null,
+          "passed": true,
+          "time": 0.014,
+          "memory": 3336.0,
+          "marks": 10
+        }
+      ],
+      "overallTime": "45.00",
+      "averageMemory": "5.11",
+      "allPassed": true,
+      "savedSubmission": {
+        "_id": "fed930fe-39d3-44c8-9b4c-5eba1392bd36",
+        "status": "completed",
+        "language": "python",
+        "totalMarks": 20,
+        "numberOfTestCase": 2,
+        "numberOfTestCasePass": 2,
+        "createdAt": "2026-10-14 10:53:24.222459+00:00",
+        "testCaseResults": [
+          {
+            "input": "2 3",
+            "expectedOutput": "5",
+            "output": "5",
+            "error": null,
+            "passed": true,
+            "time": 0.031,
+            "memory": 7120.0,
+            "marks": 10
+          },
+          {
+            "input": "******",
+            "expectedOutput": "******",
+            "output": "******",
+            "error": null,
+            "passed": true,
+            "time": 0.014,
+            "memory": 3336.0,
+            "marks": 10
+          }
+        ]
+      },
+      "queueStatus": {
+        "pending": 0,
+        "processing": 0
+      }
+    }
+  },
+  {
+    "language": "cpp",
+    "http": 200,
+    "seconds": 3.33,
+    "response": {
+      "success": true,
+      "testResults": [
+        {
+          "input": "2 3",
+          "expectedOutput": "5",
+          "output": "5",
+          "error": null,
+          "passed": true,
+          "time": 0.006,
+          "memory": 54784.0,
+          "marks": 10
+        },
+        {
+          "input": "******",
+          "expectedOutput": "******",
+          "output": "******",
+          "error": null,
+          "passed": true,
+          "time": 0.004,
+          "memory": 31908.0,
+          "marks": 10
+        }
+      ],
+      "overallTime": "10.00",
+      "averageMemory": "42.33",
+      "allPassed": true,
+      "savedSubmission": {
+        "_id": "6437d31a-f9b3-4fff-9e8a-85036c5ddd63",
+        "status": "completed",
+        "language": "cpp",
+        "totalMarks": 20,
+        "numberOfTestCase": 2,
+        "numberOfTestCasePass": 2,
+        "createdAt": "2026-10-14 10:53:26.703726+00:00",
+        "testCaseResults": [
+          {
+            "input": "2 3",
+            "expectedOutput": "5",
+            "output": "5",
+            "error": null,
+            "passed": true,
+            "time": 0.006,
+            "memory": 54784.0,
+            "marks": 10
+          },
+          {
+            "input": "******",
+            "expectedOutput": "******",
+            "output": "******",
+            "error": null,
+            "passed": true,
+            "time": 0.004,
+            "memory": 31908.0,
+            "marks": 10
+          }
+        ]
+      },
+      "queueStatus": {
+        "pending": 0,
+        "processing": 0
+      }
+    }
+  },
+  {
+    "language": "java",
+    "http": 200,
+    "seconds": 4.36,
+    "response": {
+      "success": true,
+      "testResults": [
+        {
+          "input": "2 3",
+          "expectedOutput": "5",
+          "output": "5",
+          "error": null,
+          "passed": true,
+          "time": 0.136,
+          "memory": 90136.0,
+          "marks": 10
+        },
+        {
+          "input": "******",
+          "expectedOutput": "******",
+          "output": "******",
+          "error": null,
+          "passed": true,
+          "time": 0.182,
+          "memory": 51636.0,
+          "marks": 10
+        }
+      ],
+      "overallTime": "318.00",
+      "averageMemory": "69.22",
+      "allPassed": true,
+      "savedSubmission": {
+        "_id": "6acc3d37-c1fe-4fb0-bb30-aa39c320a14a",
+        "status": "completed",
+        "language": "java",
+        "totalMarks": 20,
+        "numberOfTestCase": 2,
+        "numberOfTestCasePass": 2,
+        "createdAt": "2026-10-14 10:53:30.034176+00:00",
+        "testCaseResults": [
+          {
+            "input": "2 3",
+            "expectedOutput": "5",
+            "output": "5",
+            "error": null,
+            "passed": true,
+            "time": 0.136,
+            "memory": 90136.0,
+            "marks": 10
+          },
+          {
+            "input": "******",
+            "expectedOutput": "******",
+            "output": "******",
+            "error": null,
+            "passed": true,
+            "time": 0.182,
+            "memory": 51636.0,
+            "marks": 10
+          }
+        ]
+      },
+      "queueStatus": {
+        "pending": 0,
+        "processing": 0
+      }
+    }
+  }
+]

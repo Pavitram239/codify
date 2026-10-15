@@ -4,12 +4,12 @@ services:
       context: .
       dockerfile: client/Dockerfile
       args:
-        VITE_FRONTEND_ORIGIN: http://localhost:3100/api/v1
+        VITE_FRONTEND_ORIGIN: ${VITE_FRONTEND_ORIGIN:-http://localhost:3185/api/v1}
     ports:
-      - "5173:80"
+      - "${CLIENT_HOST_PORT:-5185}:80"
     depends_on:
       django-server:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
 
   server:
@@ -23,7 +23,7 @@ services:
       PORT: 3100
       ALL_IP: 0.0.0.0
       MONGO_URI: ${DOCKER_MONGO_URI}
-      BACKEND_ORIGIN: http://localhost:5173
+      BACKEND_ORIGIN: ${BACKEND_ORIGIN:-http://localhost:5185}
       JUDGE0_BASE_URL: http://judge0-server:2358
       JUDGE0_TOKEN: ${JUDGE0_TOKEN}
       RABBITMQ_URL: amqp://judge0:judge0_rabbitmq_password_123@rabbitmq:5672
@@ -91,12 +91,12 @@ services:
     restart: unless-stopped
 
   judge0-server:
-    image: judge0/judge0:latest
+    image: ${JUDGE0_IMAGE:-judge0/judge0:latest}
     privileged: true
     ports:
       - "2358:2358"
     volumes:
-      - ./judge0.conf:/judge0.conf:ro
+      - ./judge0.conf:/api/judge0.conf:ro
     environment:
       AUTHN_TOKEN: ${JUDGE0_TOKEN}
     depends_on:
@@ -107,13 +107,18 @@ services:
     restart: unless-stopped
 
   judge0-worker:
-    image: judge0/judge0:latest
-    command: ["./scripts/workers"]
+    image: ${JUDGE0_IMAGE:-judge0/judge0:latest}
+    user: ${JUDGE0_WORKER_USER:-judge0}
+    command:
+      - bash
+      - -c
+      - "if [ \"$$(id -u)\" -eq 0 ]; then printf 'root ALL=(ALL) NOPASSWD: ALL\\n' >> /etc/sudoers; fi; exec ./scripts/workers"
     privileged: true
     volumes:
-      - ./judge0.conf:/judge0.conf:ro
+      - ./judge0.conf:/api/judge0.conf:ro
     environment:
       AUTHN_TOKEN: ${JUDGE0_TOKEN}
+      COUNT: ${JUDGE0_WORKER_COUNT:-2}
     depends_on:
       judge0-db:
         condition: service_started
@@ -146,7 +151,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-code_assessment}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-code_assessment_dev_password}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -180,13 +185,19 @@ services:
       REDIS_URL: redis://django-redis-cache:6379/0
       RABBITMQ_URL: amqp://judge0:judge0_rabbitmq_password_123@rabbitmq:5672
       JUDGE0_BASE_URL: http://judge0-server:2358
-      BACKEND_ORIGIN: http://localhost:5173
+      BACKEND_ORIGIN: ${BACKEND_ORIGIN:-http://localhost:5185}
       DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,django-server"
     ports:
-      - "3100:8000"
-      - "8000:8000"
+      - "${DJANGO_API_HOST_PORT:-3185}:8000"
+      - "${DJANGO_HOST_PORT:-8185}:8000"
     volumes:
       - django-media:/app/media
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/auth/csrf', timeout=5)"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 30s
     depends_on:
       postgres:
         condition: service_healthy
@@ -198,10 +209,11 @@ services:
     build:
       context: .
       dockerfile: django_backend/Dockerfile
-    command: ["celery", "-A", "config.celery", "worker", "--loglevel=info"]
+    command: ["celery", "-A", "config.celery", "worker", "--loglevel=info", "--concurrency=${CELERY_WORKER_CONCURRENCY:-2}"]
     env_file:
       - .env
     environment:
+      RUN_MIGRATIONS: "false"
       DJANGO_SETTINGS_MODULE: config.settings.prod
       POSTGRES_HOST: postgres
       POSTGRES_DB: ${POSTGRES_DB:-code_assessment}
@@ -214,10 +226,38 @@ services:
     volumes:
       - django-media:/app/media
     depends_on:
+      django-server:
+        condition: service_healthy
       postgres:
         condition: service_healthy
       django-redis-cache:
         condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: django_backend/Dockerfile
+    command: ["celery", "-A", "config.celery", "beat", "--loglevel=info"]
+    env_file:
+      - .env
+    environment:
+      RUN_MIGRATIONS: "false"
+      DJANGO_SETTINGS_MODULE: config.settings.prod
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-code_assessment}
+      POSTGRES_USER: ${POSTGRES_USER:-code_assessment}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-code_assessment_dev_password}
+      POSTGRES_PORT: 5432
+      REDIS_URL: redis://django-redis-cache:6379/0
+      RABBITMQ_URL: amqp://judge0:judge0_rabbitmq_password_123@rabbitmq:5672
+    depends_on:
+      django-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
     restart: unless-stopped

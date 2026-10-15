@@ -1,12 +1,13 @@
-import React from "react";
+import PropTypes from "prop-types";
+
 import { useNavigate } from "react-router-dom";
 
-const SubmissionList = ({ submissions, onSelect, loading, error }) => {
+const SubmissionList = ({ submissions, loading }) => {
   const navigate = useNavigate();
   return (
     <div>
-      <h3 className="font-bold text-xl text-white mb-2">Submissions</h3>
-      <p className="text-gray-400 mb-4">
+      <h3 className="font-bold text-xl text-slate-900 mb-2">Submissions</h3>
+      <p className="text-slate-600 mb-4">
         Here, you can view your previous submissions for this problem.
       </p>
       {/* {error && <p className="text-red-500 text-center mb-4">{error}</p>} */}
@@ -18,11 +19,11 @@ const SubmissionList = ({ submissions, onSelect, loading, error }) => {
         <div className="mt-4 overflow-x-auto">
           {submissions.length > 0 ? (
             <table
-              className="min-w-full text-gray-200 border-separate"
+              className="min-w-full text-slate-900 border-separate"
               style={{ borderSpacing: "0 15px" }}
             >
               <thead>
-                <tr className="bg-gray-700 text-gray-300 uppercase text-sm">
+                <tr className="ui-surface text-slate-600 uppercase text-sm">
                   <th className="px-4 py-3 rounded-l-lg">Status</th>
                   <th className="px-4 py-3">Language</th>
                   <th className="px-4 py-3 items-center justify-center">
@@ -39,14 +40,14 @@ const SubmissionList = ({ submissions, onSelect, loading, error }) => {
                   <tr
                     key={submission._id}
                     onClick={() => navigate("/submissions/" + submission._id)}
-                    className="transition duration-200 ease-in-out hover:bg-gray-900 rounded-lg hover:cursor-pointer"
+                    className="transition duration-200 ease-in-out hover:ui-page rounded-lg hover:cursor-pointer"
                   >
                     <td className="px-4 py-2 font-semibold text-center capitalize">
                       <span
                         className={`px-2 py-1 rounded ${
                           submission.status === "completed"
-                            ? "bg-green-600 text-green-200"
-                            : "bg-red-600 text-red-200"
+                            ? "bg-green-600 text-green-700"
+                            : "bg-red-600 text-red-700"
                         }`}
                       >
                         {submission.status === "completed"
@@ -67,7 +68,7 @@ const SubmissionList = ({ submissions, onSelect, loading, error }) => {
                         ? `${submission.memory_usage.toFixed(2)} MB`
                         : "N/A"}
                     </td>
-                    <td className="px-4 py-2 text-gray-400 text-center">
+                    <td className="px-4 py-2 text-slate-600 text-center">
                       {submission.createdAt
                         ? new Date(submission.createdAt).toLocaleDateString(
                             "en-US",
@@ -84,7 +85,7 @@ const SubmissionList = ({ submissions, onSelect, loading, error }) => {
               </tbody>
             </table>
           ) : (
-            <p className="text-gray-400 text-center mt-4">
+            <p className="text-slate-600 text-center mt-4">
               No submissions found.
             </p>
           )}
@@ -92,6 +93,14 @@ const SubmissionList = ({ submissions, onSelect, loading, error }) => {
       )}
     </div>
   );
+};
+
+
+SubmissionList.propTypes = {
+  submissions: PropTypes.array,
+  onSelect: PropTypes.func,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
 };
 
 export default SubmissionList;

@@ -1,6 +1,7 @@
 from django.urls import path
 from apps.users.views import (
     ChangePasswordView,
+    CSRFTokenView,
     CurrentUserView,
     FetchSubjectsView,
     LoginView,
@@ -9,6 +10,7 @@ from apps.users.views import (
 )
 
 urlpatterns = [
+    path("csrf", CSRFTokenView.as_view(), name="auth-csrf"),
     path("login", LoginView.as_view(), name="auth-login"),
     path("register", RegisterView.as_view(), name="auth-register"),
     path("logout", LogoutView.as_view(), name="auth-logout"),

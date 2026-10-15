@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { can, canResource } from "../../utils/permissions";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import toast from "react-hot-toast";
@@ -21,20 +22,18 @@ const MakeProblem = () => {
   const user = useSelector((store) => store.app.user);
   const navigate = useNavigate();
   const [problems, setProblems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [problemToDelete, setProblemToDelete] = useState(null);
-  const [userRole, setUserRole] = useState(null);
+  const staffActions = can(user, "problems.edit_own", "problems.edit_all", "problems.delete_own", "problems.delete_all", "problems.assign_shared", "problems.assign_all", "submissions.review_own", "submissions.review_all");
   const [sortConfig, setSortConfig] = useState({
     key: "createdAt",
     direction: "desc",
   });
 
   useEffect(() => {
-    const role = user.role;
-    setUserRole(role);
     fetchProblems();
   }, [user]);
 
@@ -165,29 +164,29 @@ const MakeProblem = () => {
   }, [user, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-900 text-white">
-      <div className="py-6 px-8 pt-20 flex justify-center items-center">
-        <h1 className="text-3xl font-bold text-white">
-          {userRole === "student" ? "Assigned Problems" : "Problem Bank"}
+    <div className="ui-page-height ui-gradient   text-slate-900">
+      <div className="py-6 px-8 ui-page-top flex justify-center items-center">
+        <h1 className="text-3xl font-bold text-slate-900">
+          {!can(user, "problems.view_shared", "problems.view_all") ? "Assigned Problems" : "Problem Bank"}
         </h1>
       </div>
 
       <div className="max-w-7xl mx-auto p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-          {userRole !== "student" && (
+          {can(user, "problems.create") && (
             <div className="flex items-center gap-3 flex-wrap">
               <button
                 onClick={handleCreateProblem}
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all shadow-md cursor-pointer"
+                className="flex items-center gap-2 ui-gradient   text-slate-900 font-semibold py-3 px-6 rounded-lg   transition-all shadow-md cursor-pointer"
               >
                 <Plus className="w-5 h-5" />
                 <span>Add Problem</span>
               </button>
               <button
                 onClick={() => navigate("/problem-form?openAI=true")}
-                className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-semibold py-3 px-5 rounded-lg hover:from-indigo-500 hover:to-pink-500 transition-all shadow-md shadow-indigo-600/25 cursor-pointer"
+                className="flex items-center gap-2 ui-gradient    text-slate-900 font-semibold py-3 px-5 rounded-lg   transition-all shadow-md shadow-indigo-600/25 cursor-pointer"
               >
-                <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse" />
+                <Sparkles className="w-5 h-5 text-yellow-700 animate-pulse" />
                 <span>✨ Create with AI</span>
               </button>
             </div>
@@ -196,12 +195,12 @@ const MakeProblem = () => {
           <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Filter className="h-5 w-5 text-gray-400" />
+                <Filter className="h-5 w-5 text-slate-600" />
               </div>
               <select
                 value={difficultyFilter}
                 onChange={(e) => setDifficultyFilter(e.target.value)}
-                className="bg-gray-800 text-white py-3 pl-10 pr-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full md:w-48"
+                className="ui-surface text-slate-900 py-3 pl-10 pr-4 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full md:w-48"
               >
                 <option value="All">All Difficulties</option>
                 <option value="easy">Easy</option>
@@ -212,24 +211,24 @@ const MakeProblem = () => {
 
             <div className="relative flex-grow">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+                <Search className="h-5 w-5 text-slate-600" />
               </div>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search problems..."
-                className="bg-gray-800 text-white py-3 pl-10 pr-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+                className="ui-surface text-slate-900 py-3 pl-10 pr-4 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
               />
             </div>
           </div>
         </div>
 
-        <div className="bg-gray-900 rounded-xl shadow-xl overflow-hidden">
+        <div className="ui-page rounded-lg ui-card-shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-gray-700 text-gray-200 text-sm uppercase">
+                <tr className="ui-surface text-slate-900 text-sm uppercase">
                   <th className="py-4 px-6 text-left">
                     <button
                       onClick={() => handleSort("_id")}
@@ -262,7 +261,7 @@ const MakeProblem = () => {
                       Created Date {getSortIcon("createdAt")}
                     </button>
                   </th>
-                  {userRole !== "student" && (
+                  {staffActions && (
                     <th className="py-4 px-6 text-center">Actions</th>
                   )}
                 </tr>
@@ -272,16 +271,16 @@ const MakeProblem = () => {
                   filteredProblems.map((problem, index) => (
                     <tr
                       key={problem._id}
-                      className="border-t border-gray-700 hover:bg-gray-800/50 transition-colors"
+                      className="border-t border-slate-200 hover:ui-surface transition-colors"
                     >
-                      <td className="py-4 px-6 text-gray-300 font-medium">
+                      <td className="py-4 px-6 text-slate-600 font-medium">
                         {index + 1}
                       </td>
                       <td
                         className="py-4 px-6"
                         onClick={() => navigate(`/problems/${problem._id}`)}
                       >
-                        <div className="font-semibold capitalize text-blue-400 hover:text-blue-300 cursor-pointer transition-colors">
+                        <div className="font-semibold capitalize text-blue-700 hover:text-blue-700 cursor-pointer transition-colors">
                           {truncateTitle(
                             problem?.title,
                             window.innerWidth < 900 ? 25 : 50
@@ -292,32 +291,34 @@ const MakeProblem = () => {
                         <span
                           className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium ${
                             problem.difficulty === "easy"
-                              ? "bg-green-900/40 text-green-400 border border-green-500/30"
+                              ? "bg-green-50 text-green-700 border border-green-500/30"
                               : problem.difficulty === "medium"
-                              ? "bg-yellow-900/40 text-yellow-400 border border-yellow-500/30"
-                              : "bg-red-900/40 text-red-400 border border-red-500/30"
+                              ? "bg-yellow-50 text-yellow-700 border border-yellow-500/30"
+                              : "bg-red-50 text-red-700 border border-red-500/30"
                           }`}
                         >
                           {(problem?.difficulty || "easy").charAt(0).toUpperCase() +
                             (problem?.difficulty || "easy").slice(1)}
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-center text-gray-400 text-sm">
+                      <td className="py-4 px-6 text-center text-slate-600 text-sm">
                         {formatDate(problem.createdAt)}
                       </td>
-                      {userRole !== "student" && (
+                      {staffActions && (
                         <td className="py-4 px-6">
                           <div className="flex items-center justify-center gap-2">
                             <button
-                              className="p-2 rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600/40 transition-colors"
+                              className="p-2 rounded-lg bg-blue-600/20 text-blue-700 hover:bg-blue-600/40 transition-colors"
                               title="Edit"
+                              disabled={!(canResource(user, "problems", "edit", problem))}
                               onClick={() => handleEditProblem(problem._id)}
                             >
                               <Edit className="w-4 h-4" />
                             </button>
                             <button
-                              className="p-2 rounded-lg bg-red-600/20 text-red-400 hover:bg-red-600/40 transition-colors"
+                              className="p-2 rounded-lg bg-red-600/20 text-red-700 hover:bg-red-600/40 transition-colors"
                               title="Delete"
+                              disabled={!(canResource(user, "problems", "delete", problem))}
                               onClick={() =>
                                 handleDeleteConfirmation(problem._id)
                               }
@@ -325,8 +326,9 @@ const MakeProblem = () => {
                               <Trash2 className="w-4 h-4" />
                             </button>
                             <button
-                              className="p-2 rounded-lg bg-green-600/20 text-green-400 hover:bg-green-600/40 transition-colors"
+                              className="p-2 rounded-lg bg-green-600/20 text-green-700 hover:bg-green-600/40 transition-colors"
                               title="Dashboard"
+                              disabled={!(can(user, "submissions.review_all") || (can(user, "submissions.review_own") && String(problem.created_by?.id) === String(user?._id)))}
                               onClick={() =>
                                 handleDashboardConfirmation(
                                   problem._id,
@@ -339,8 +341,9 @@ const MakeProblem = () => {
                               <BarChart2 className="w-4 h-4" />
                             </button>
                             <button
-                              className="p-2 rounded-lg bg-purple-600/20 text-purple-400 hover:bg-purple-600/40 transition-colors"
+                              className="p-2 rounded-lg bg-purple-600/20 text-blue-700 hover:bg-purple-600/40 transition-colors"
                               title="Assign"
+                              disabled={!(canResource(user, "problems", "assign", problem))}
                               onClick={() => assignProblem(problem._id)}
                             >
                               <UserPlus className="w-4 h-4" />
@@ -353,13 +356,13 @@ const MakeProblem = () => {
                 ) : (
                   <tr>
                     <td
-                      colSpan={userRole !== "student" ? 5 : 4}
-                      className="py-8 px-6 text-center text-gray-400"
+                      colSpan={staffActions ? 5 : 4}
+                      className="py-8 px-6 text-center text-slate-600"
                     >
                       <div className="flex flex-col items-center justify-center">
-                        <Search className="w-12 h-12 text-gray-600 mb-3" />
+                        <Search className="w-12 h-12 text-slate-700 mb-3" />
                         <p className="text-lg font-medium">No problems found</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-slate-600">
                           Try adjusting your search or filter
                         </p>
                       </div>
@@ -374,28 +377,28 @@ const MakeProblem = () => {
 
       {showDeleteModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70">
-          <div className="bg-gray-800 p-8 rounded-xl w-11/12 max-w-md mx-auto border border-gray-700 shadow-2xl transform transition-all">
+          <div className="ui-surface p-8 rounded-lg w-11/12 max-w-md mx-auto border border-slate-200 ui-card-shadow transform transition-all">
             <div className="flex flex-col items-center">
               <div className="bg-red-500/20 p-3 rounded-full mb-4">
                 <Trash2 className="w-8 h-8 text-red-500" />
               </div>
-              <h3 className="text-xl font-bold mb-2 text-white">
+              <h3 className="text-xl font-bold mb-2 text-slate-900">
                 Confirm Deletion
               </h3>
-              <p className="text-gray-300 mb-6 text-center">
+              <p className="text-slate-600 mb-6 text-center">
                 Are you sure you want to delete this problem? This action cannot
                 be undone.
               </p>
               <div className="flex gap-4 w-full">
                 <button
                   onClick={cancelDelete}
-                  className="flex-1 py-3 px-4 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                  className="flex-1 py-3 px-4 ui-surface hover:ui-subtle text-slate-900 rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDeleteProblem}
-                  className="flex-1 py-3 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                  className="flex-1 py-3 px-4 bg-red-600 hover:bg-red-50 text-slate-900 rounded-lg transition-colors"
                 >
                   Delete
                 </button>

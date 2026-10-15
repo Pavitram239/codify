@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { can } from "../../utils/permissions";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { useSelector } from "react-redux";
 
 const ProblemForm = () => {
+  const navigate = useNavigate();
   const user = useSelector((state) => state.app.user); // Get the logged-in user
   console.log(user)
   const [title, setTitle] = useState("");
@@ -28,8 +31,8 @@ const ProblemForm = () => {
     setSampleIO([...sampleIO, { input: "", output: "" }]);
   };
 
-  useEffect(() => {z
-    if (user?.role !== "admin") navigate("/");
+  useEffect(() => {
+    if (!can(user, "problems.create")) navigate("/");
   }, [user, navigate]);
 
   const handleRemoveSampleIO = (index) => {
@@ -94,26 +97,26 @@ const ProblemForm = () => {
       <form onSubmit={handleSubmit}>
         {/* Problem Details */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-slate-700">
             Title
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            className="mt-1 block w-full p-2 border border-slate-200 rounded-md"
             required
           />
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-slate-700">
             Description
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            className="mt-1 block w-full p-2 border border-slate-200 rounded-md"
             required
           />
         </div>
@@ -121,13 +124,13 @@ const ProblemForm = () => {
         {/* Difficulty, Input/Output Format */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-slate-700">
               Difficulty
             </label>
             <select
               value={difficulty}
               onChange={(e) => setDifficulty(e.target.value)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              className="mt-1 block w-full p-2 border border-slate-200 rounded-md"
               required
             >
               <option value="easy">Easy</option>
@@ -137,14 +140,14 @@ const ProblemForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-slate-700">
               Input Format
             </label>
             <input
               type="text"
               value={inputFormat}
               onChange={(e) => setInputFormat(e.target.value)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              className="mt-1 block w-full p-2 border border-slate-200 rounded-md"
               required
             />
           </div>
@@ -152,27 +155,27 @@ const ProblemForm = () => {
 
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-slate-700">
               Output Format
             </label>
             <input
               type="text"
               value={outputFormat}
               onChange={(e) => setOutputFormat(e.target.value)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              className="mt-1 block w-full p-2 border border-slate-200 rounded-md"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-slate-700">
               Constraints
             </label>
             <input
               type="text"
               value={constraints}
               onChange={(e) => setConstraints(e.target.value)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              className="mt-1 block w-full p-2 border border-slate-200 rounded-md"
             />
           </div>
         </div>
@@ -189,7 +192,7 @@ const ProblemForm = () => {
                 onChange={(e) =>
                   handleSampleIOChange(index, "input", e.target.value)
                 }
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md mb-2"
+                className="mt-1 block w-full p-2 border border-slate-200 rounded-md mb-2"
               />
               <input
                 type="text"
@@ -198,7 +201,7 @@ const ProblemForm = () => {
                 onChange={(e) =>
                   handleSampleIOChange(index, "output", e.target.value)
                 }
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full p-2 border border-slate-200 rounded-md"
               />
               <button
                 type="button"
@@ -212,7 +215,7 @@ const ProblemForm = () => {
           <button
             type="button"
             onClick={handleAddSampleIO}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md"
+            className="px-4 py-2 bg-blue-500 text-slate-900 rounded-md"
           >
             Add Sample IO
           </button>
@@ -222,14 +225,14 @@ const ProblemForm = () => {
         <div className="mb-4">
           <h3 className="text-xl font-semibold mb-2">Test Cases</h3>
           {testCases.map((testCase, index) => (
-            <div key={index} className="mb-4 p-4 border rounded-md bg-gray-50">
+            <div key={index} className="mb-4 p-4 border rounded-md ui-subtle">
               <textarea
                 placeholder="Input"
                 value={testCase.inputs}
                 onChange={(e) =>
                   handleTestCaseChange(index, "inputs", e.target.value)
                 }
-                className="block w-full p-2 border border-gray-300 rounded-md mb-2"
+                className="block w-full p-2 border border-slate-200 rounded-md mb-2"
                 rows="3"
               />
               <textarea
@@ -238,7 +241,7 @@ const ProblemForm = () => {
                 onChange={(e) =>
                   handleTestCaseChange(index, "outputs", e.target.value)
                 }
-                className="block w-full p-2 border border-gray-300 rounded-md mb-2"
+                className="block w-full p-2 border border-slate-200 rounded-md mb-2"
                 rows="3"
               />
               <input
@@ -248,7 +251,7 @@ const ProblemForm = () => {
                 onChange={(e) =>
                   handleTestCaseChange(index, "marks", e.target.value)
                 }
-                className="block w-full p-2 border border-gray-300 rounded-md"
+                className="block w-full p-2 border border-slate-200 rounded-md"
               />
               <button
                 type="button"
@@ -262,7 +265,7 @@ const ProblemForm = () => {
           <button
             type="button"
             onClick={handleAddTestCase}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md"
+            className="px-4 py-2 bg-blue-500 text-slate-900 rounded-md"
           >
             Add Test Case
           </button>
@@ -274,7 +277,7 @@ const ProblemForm = () => {
 
         {/* Tags */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-slate-700">
             Tags
           </label>
           <input
@@ -284,14 +287,14 @@ const ProblemForm = () => {
             onChange={(e) =>
               setTags(e.target.value.split(",").map((tag) => tag.trim()))
             }
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            className="mt-1 block w-full p-2 border border-slate-200 rounded-md"
           />
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md"
+          className="px-6 py-2 bg-green-500 text-slate-900 font-semibold rounded-md"
         >
           Submit Problem
         </button>

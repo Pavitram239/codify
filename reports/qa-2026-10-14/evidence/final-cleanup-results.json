@@ -1,0 +1,6 @@
+{
+  "temporary_records_before_cleanup": {"users": 4, "problems": 2, "contests": 1, "submissions": 29, "drafts": 0},
+  "deleted_rows_including_related": 98,
+  "remaining_audit_users": 0,
+  "local_live_fixture_credentials_removed": true
+}

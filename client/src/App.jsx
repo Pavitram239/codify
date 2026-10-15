@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import AuthService from "./Auth/auth";
 import { useDispatch } from "react-redux";
@@ -10,6 +10,11 @@ import { LoaderPinwheel } from "lucide-react";
 const App = () => {
   const dispatch = useDispatch();
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  useEffect(() => {
+    const expireSession = () => dispatch(logout());
+    window.addEventListener("codify:session-expired", expireSession);
+    return () => window.removeEventListener("codify:session-expired", expireSession);
+  }, [dispatch]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -35,9 +40,9 @@ const App = () => {
 
   if (isAuthenticated === null) {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-screen bg-gradient-to-br from-gray-900 to-gray-950 text-white">
-        <LoaderPinwheel size={60} className="animate-spin text-blue-400" />
-        <p className="mt-4 text-xl text-blue-400 font-medium">
+      <div className="flex flex-col items-center justify-center w-full ui-page-height ui-gradient   text-slate-900">
+        <LoaderPinwheel size={60} className="animate-spin text-blue-700" />
+        <p className="mt-4 text-xl text-blue-700 font-medium">
           Checking authentication...
         </p>
       </div>
@@ -47,7 +52,18 @@ const App = () => {
   return (
     <div>
       <Body />
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          style: {
+            background: "var(--surface)",
+            color: "var(--text)",
+            border: "1px solid var(--border)",
+            borderRadius: "8px",
+            fontFamily: "Inter, sans-serif",
+            fontSize: "14px",
+          },
+        }}
+      />
     </div>
   );
 };

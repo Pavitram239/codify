@@ -238,6 +238,7 @@ def test_contest_dashboard(api_client, faculty_user, student_user, sample_proble
         end_time=now + timedelta(hours=2),
     )
     contest.problems.add(sample_problem)
+    contest.assigned_students.add(student_user)
 
     # Create submission for student
     Submission.objects.create(

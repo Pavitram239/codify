@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
-import { useNavigate } from "react-router-dom";
+
 import toast from "react-hot-toast";
 
 const PasswordChange = ({ id }) => {
@@ -12,7 +13,7 @@ const PasswordChange = ({ id }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,8 +26,8 @@ const PasswordChange = ({ id }) => {
       return;
     }
 
-    if (newPassword.length < 6) {
-      setError("New Password must be at least 6 characters long.");
+    if (newPassword.length < 8) {
+      setError("New Password must be at least 8 characters long.");
       setIsLoading(false);
       return;
     }
@@ -69,9 +70,9 @@ const PasswordChange = ({ id }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col w-full max-w-lg p-8 space-y-6 bg-gray-900 bg-opacity-90 rounded-lg shadow-lg"
+      className="flex flex-col w-full max-w-lg p-8 space-y-6 ui-page bg-opacity-90 rounded-lg ui-card-shadow"
     >
-      <h2 className="text-2xl font-bold text-center text-white mb-6">
+      <h2 className="text-2xl font-bold text-center text-slate-900 mb-6">
         Change Password
       </h2>
 
@@ -87,13 +88,13 @@ const PasswordChange = ({ id }) => {
           id="oldPassword"
           value={oldPassword}
           onChange={(e) => setOldPassword(e.target.value)}
-          className="p-4 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
+          className="p-4 rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
           placeholder="Enter old password"
         />
         <button
           type="button"
           onClick={() => setShowOldPassword(!showOldPassword)}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 focus:outline-none"
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-600 hover:text-blue-700 focus:outline-none"
         >
           {showOldPassword ? "🔓" : "🔒"}
         </button>
@@ -105,13 +106,13 @@ const PasswordChange = ({ id }) => {
           id="newPassword"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
-          className="p-4 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
+          className="p-4 rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
           placeholder="Enter new password"
         />
         <button
           type="button"
           onClick={() => setShowNewPassword(!showNewPassword)}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 focus:outline-none"
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-600 hover:text-blue-700 focus:outline-none"
         >
           {showNewPassword ? "🔓" : "🔒"}
         </button>
@@ -123,13 +124,13 @@ const PasswordChange = ({ id }) => {
           id="confirmPassword"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          className="p-4 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
+          className="p-4 rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
           placeholder="Confirm new password"
         />
         <button
           type="button"
           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 focus:outline-none"
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-600 hover:text-blue-700 focus:outline-none"
         >
           {showConfirmPassword ? "🔓" : "🔒"}
         </button>
@@ -137,12 +138,17 @@ const PasswordChange = ({ id }) => {
 
       <button
         type="submit"
-        className="w-full py-4 bg-blue-600 text-white font-bold rounded-md transition-transform transform hover:scale-105 focus:scale-95"
+        className="w-full py-4 bg-blue-600 text-slate-900 font-bold rounded-md transition-transform transform hover:scale-105 focus:scale-95"
       >
         {isLoading ? "Changing password..." : "Change Password"}
       </button>
     </form>
   );
+};
+
+
+PasswordChange.propTypes = {
+  id: PropTypes.any,
 };
 
 export default PasswordChange;

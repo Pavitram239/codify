@@ -8,4 +8,4 @@ class UsersConfig(AppConfig):
 
     def ready(self):
         # Import signals when the app is ready (Phase 4)
-        pass  # noqa: F401
+        from . import signals  # noqa: F401

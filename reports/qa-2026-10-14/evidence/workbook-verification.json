@@ -1,0 +1,10 @@
+{
+  "xlsx_integrity": "Passed",
+  "cached_summary_counts": "Passed",
+  "formula_errors": 0,
+  "frozen_headers_and_ids": "Passed",
+  "editable_dropdowns_and_filter_tables": "Passed",
+  "finding_rows": 38,
+  "scenario_rows": 403,
+  "file_bytes": 74107
+}

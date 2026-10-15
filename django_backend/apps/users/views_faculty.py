@@ -1,17 +1,42 @@
+from apps.users.access_policy import VIEW_PERMISSIONS
+from apps.users.access_policy import ModulePermission
 import math
+import secrets
 from django.db import transaction
 from django.db.models import Q
 from rest_framework import status
+from rest_framework.exceptions import PermissionDenied
+from uuid import UUID
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.users.models import User
-from apps.users.permissions import IsAdminOrFaculty, IsFaculty
+from apps.users.onboarding import prepare_initial_password
+from apps.users.pagination import pagination_params
+
+
+def require_faculty_scope(request, faculty_id):
+    codes = VIEW_PERMISSIONS[type(request.parser_context["view"]).__name__][request.method]
+    all_codes = [code for code in codes if code.endswith("_all")]
+    if not request.user.can(*all_codes) and str(request.user.id) != str(faculty_id):
+        raise PermissionDenied("You can only manage your own students.")
+
+
+def managed_student(request, identifier):
+    students = User.objects.filter(role="student")
+    if not request.user.can("sessions.revoke_all" if request.method == "POST" else "users.delete_all"):
+        students = students.filter(faculty=request.user)
+    query = Q(student_id=identifier) | Q(username=identifier)
+    try:
+        query |= Q(id=UUID(str(identifier)))
+    except (ValueError, TypeError, AttributeError):
+        pass
+    return students.filter(query).first()
 
 
 class FacultyPendingUsersView(APIView):
-    permission_classes = [IsAuthenticated, IsFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request):
         faculty_id = request.query_params.get("facultyId")
@@ -21,6 +46,7 @@ class FacultyPendingUsersView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        require_faculty_scope(request, faculty_id)
         try:
             page = int(request.query_params.get("page", 1))
         except ValueError:
@@ -79,7 +105,7 @@ class FacultyPendingUsersView(APIView):
 
 
 class FacultyAcceptRequestView(APIView):
-    permission_classes = [IsAuthenticated, IsFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         user_id = request.data.get("userId")
@@ -91,8 +117,12 @@ class FacultyAcceptRequestView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        require_faculty_scope(request, faculty_id)
         try:
-            user = User.objects.get(id=user_id)
+            query = User.objects.filter(role="student")
+            if not request.user.can("users.approve_all"):
+                query = query.filter(faculty=request.user)
+            user = query.get(id=user_id)
         except (User.DoesNotExist, ValueError):
             return Response(
                 {"success": False, "message": "User not found"},
@@ -114,13 +144,14 @@ class FacultyAcceptRequestView(APIView):
         email_domain = "@charusat.edu.in"
         ident = (user.student_id or user.username).lower()
         user.email = f"{ident}{email_domain}"
-        user.set_password(user.student_id or user.username)
+        credential = prepare_initial_password(user)
         user.is_approved = True
         user.save()
 
         return Response({
             "success": True,
             "message": "User request accepted and approved",
+            "temporaryPasswords": [credential] if credential else [],
             "data": {
                 "id": user.student_id or str(user.id),
                 "username": user.username,
@@ -133,7 +164,7 @@ class FacultyAcceptRequestView(APIView):
 
 
 class FacultyDeclineRequestView(APIView):
-    permission_classes = [IsAuthenticated, IsFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         user_id = request.data.get("userId")
@@ -145,8 +176,12 @@ class FacultyDeclineRequestView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        require_faculty_scope(request, faculty_id)
         try:
-            user = User.objects.get(id=user_id)
+            query = User.objects.filter(role="student")
+            if not request.user.can("users.approve_all"):
+                query = query.filter(faculty=request.user)
+            user = query.get(id=user_id)
         except (User.DoesNotExist, ValueError):
             return Response(
                 {"success": False, "message": "User not found"},
@@ -167,7 +202,7 @@ class FacultyDeclineRequestView(APIView):
 
 
 class FacultyAcceptAllRequestsView(APIView):
-    permission_classes = [IsAuthenticated, IsFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         faculty_id = request.data.get("facultyId")
@@ -177,6 +212,7 @@ class FacultyAcceptAllRequestsView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        require_faculty_scope(request, faculty_id)
         pending_users = list(User.objects.filter(
             is_approved=False,
             role="student",
@@ -190,12 +226,15 @@ class FacultyAcceptAllRequestsView(APIView):
             )
 
         approved_count = 0
+        credentials = []
         with transaction.atomic():
             email_domain = "@charusat.edu.in"
             for user in pending_users:
                 ident = (user.student_id or user.username).lower()
                 user.email = f"{ident}{email_domain}"
-                user.set_password(user.student_id or user.username)
+                credential = prepare_initial_password(user)
+                if credential:
+                    credentials.append(credential)
                 user.is_approved = True
                 user.save()
                 approved_count += 1
@@ -203,11 +242,12 @@ class FacultyAcceptAllRequestsView(APIView):
         return Response({
             "success": True,
             "message": f"{approved_count} users have been approved.",
+            "temporaryPasswords": credentials,
         }, status=status.HTTP_200_OK)
 
 
 class FacultyDeclineAllRequestsView(APIView):
-    permission_classes = [IsAuthenticated, IsFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         faculty_id = request.data.get("facultyId")
@@ -217,6 +257,7 @@ class FacultyDeclineAllRequestsView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        require_faculty_scope(request, faculty_id)
         pending_users = User.objects.filter(
             is_approved=False,
             role="student",
@@ -238,7 +279,7 @@ class FacultyDeclineAllRequestsView(APIView):
 
 
 class FacultyBulkRegisterView(APIView):
-    permission_classes = [IsAuthenticated, IsFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         faculty_id = request.data.get("facultyId")
@@ -250,21 +291,22 @@ class FacultyBulkRegisterView(APIView):
         if not students or not isinstance(students, list) or len(students) == 0:
             return Response({"message": "Invalid or missing students data."}, status=status.HTTP_400_BAD_REQUEST)
 
+        require_faculty_scope(request, faculty_id)
         try:
-            faculty = User.objects.get(id=faculty_id, role="faculty")
+            faculty = User.objects.get(id=faculty_id)
         except (User.DoesNotExist, ValueError):
             return Response({"message": "Faculty not found or invalid."}, status=status.HTTP_404_NOT_FOUND)
 
         results = {"success": [], "errors": []}
 
-        for student in students:
+        for row_index, student in enumerate(students):
             username = student.get("username")
             sid = student.get("id")
             batch = student.get("batch")
             semester = student.get("semester")
 
             if not username or not sid or not batch or not semester:
-                results["errors"].append({"id": sid, "message": "Incomplete student data."})
+                results["errors"].append({"id": sid, "rowIndex": row_index, "message": "Incomplete student data."})
                 continue
 
             sid_str = str(sid).lower()
@@ -292,11 +334,13 @@ class FacultyBulkRegisterView(APIView):
             branch = f"cspit-{branch_code}"
 
             if User.objects.filter(Q(student_id__iexact=str(sid)) | Q(username__iexact=username)).exists():
-                results["errors"].append({"id": sid, "message": "User already exists."})
+                results["errors"].append({"id": sid, "rowIndex": row_index, "message": "User already exists."})
                 continue
 
             try:
-                new_user = User.objects.create(
+                initial_password = secrets.token_urlsafe(24)
+                new_user = User.objects.create_user(
+                    password=initial_password,
                     username=username,
                     student_id=str(sid),
                     email=f"{sid_str}@charusat.edu.in",
@@ -307,25 +351,24 @@ class FacultyBulkRegisterView(APIView):
                     faculty=faculty,
                     branch=branch,
                 )
-                new_user.set_password(str(sid))
-                new_user.save()
-                results["success"].append({"id": sid, "message": "User registered successfully."})
+                credential = {"username": new_user.username, "temporaryPassword": initial_password}
+                results["success"].append({"id": sid, "rowIndex": row_index, "message": "User registered successfully.", **credential})
             except Exception as e:
-                results["errors"].append({"id": sid, "message": f"Error registering user: {str(e)}"})
+                results["errors"].append({"id": sid, "rowIndex": row_index, "message": f"Error registering user: {str(e)}"})
 
         return Response({"message": "Bulk registration completed.", "results": results}, status=status.HTTP_200_OK)
 
 
 class FacultyGetStudentsView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminOrFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         faculty_id = request.data.get("facultyId")
         if not faculty_id:
             return Response({"success": False, "message": "Faculty ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        page = int(request.data.get("page", 1))
-        limit = int(request.data.get("limit", 10))
+        require_faculty_scope(request, faculty_id)
+        page, limit = pagination_params(request.data)
         skip = (page - 1) * limit
 
         students = User.objects.filter(
@@ -346,6 +389,7 @@ class FacultyGetStudentsView(APIView):
                 "semester": u.semester,
                 "id": u.student_id or str(u.id),
                 "createdAt": u.created_at,
+                "firstTimeLogin": u.first_time_login,
             }
             for u in page_students
         ]
@@ -361,18 +405,14 @@ class FacultyGetStudentsView(APIView):
 
 
 class FacultyExpireSessionView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminOrFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         user_id = request.data.get("userId")
         if not user_id:
             return Response({"success": False, "message": "User ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = User.objects.filter(
-            Q(id=user_id if len(user_id) == 36 or '-' in user_id else None) |
-            Q(student_id=user_id) |
-            Q(username=user_id)
-        ).first()
+        user = managed_student(request, user_id)
 
         if not user:
             return Response(
@@ -390,17 +430,13 @@ class FacultyExpireSessionView(APIView):
 
 
 class FacultyRemoveUserView(APIView):
-    permission_classes = [IsAuthenticated, IsFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def delete(self, request, userId):
         if not userId:
             return Response({"success": False, "message": "Missing User ID."}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = User.objects.filter(
-            Q(id=userId if len(userId) == 36 or '-' in userId else None) |
-            Q(student_id=userId) |
-            Q(username=userId)
-        ).first()
+        user = managed_student(request, userId)
 
         if not user:
             return Response({"success": False, "message": "User not found."}, status=status.HTTP_404_NOT_FOUND)

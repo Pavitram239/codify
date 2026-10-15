@@ -1,13 +1,23 @@
 import uuid
 from django.conf import settings
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.db import transaction, IntegrityError
 from django.http import FileResponse
+from django.middleware.csrf import get_token
 from django.utils import timezone
 from django.core.cache import cache
 from rest_framework import status
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
+from apps.users.authentication import CookieJWTAuthentication
+from PIL import Image
+from apps.users.onboarding import has_predictable_password
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.users.models import User
@@ -21,10 +31,22 @@ from apps.users.serializers import (
 )
 
 
+class CSRFTokenView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        response = Response({"csrfToken": get_token(request)})
+        response["Cache-Control"] = "no-store"
+        return response
+
+
 class LoginView(APIView):
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def post(self, request):
+        SessionAuthentication().enforce_csrf(request)
         serializer = LoginSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(
@@ -51,6 +73,9 @@ class LoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        if not user.is_active:
+            return Response({"success": False, "message": "Account is inactive."}, status=status.HTTP_400_BAD_REQUEST)
+
         if not user.is_approved:
             return Response(
                 {"success": False, "message": "User not approved yet"},
@@ -63,6 +88,9 @@ class LoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        if has_predictable_password(user):
+            return Response({"success": False, "message": "Ask your administrator or faculty to issue a secure temporary password."}, status=status.HTTP_400_BAD_REQUEST)
+
         if user.first_time_login:
             return Response(
                 {
@@ -73,23 +101,26 @@ class LoginView(APIView):
                 status=status.HTTP_200_OK,
             )
 
-        # Single active session enforcement: ONLY students have single-device restriction
-        if user.role == "student" and user.session_id:
-            return Response(
-                {
-                    "success": False,
-                    "message": "User already logged in another device. Please contact the administrator to terminate your session.",
-                    "isAdmin": False,
-                    "canTerminate": False,
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        new_session_id = str(uuid.uuid4())
-        if user.role == "student":
-            user.session_id = new_session_id
-        user.last_login_time = timezone.now()
-        user.save(update_fields=["session_id", "last_login_time"])
+        # Serialize concurrent logins and replace sessions whose access token has expired.
+        with transaction.atomic():
+            user = User.objects.select_for_update().get(id=user.id)
+            now = timezone.now()
+            cutoff = now - settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"]
+            if user.role == "student" and user.session_id and user.last_login_time and user.last_login_time > cutoff:
+                return Response(
+                    {
+                        "success": False,
+                        "message": "User already logged in another device. Please contact the administrator to terminate your session.",
+                        "isAdmin": False,
+                        "canTerminate": False,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            new_session_id = str(uuid.uuid4())
+            if user.role == "student":
+                user.session_id = new_session_id
+            user.last_login_time = now
+            user.save(update_fields=["session_id", "last_login_time"])
 
         # Generate JWT with matching payload structure
         refresh = RefreshToken.for_user(user)
@@ -166,7 +197,7 @@ class RegisterView(APIView):
                 is_approved=False,
                 first_time_login=True,
             )
-            user.set_password(student_id)
+            user.set_password(data["password"])
             user.save()
 
         elif role == "faculty":
@@ -185,8 +216,7 @@ class RegisterView(APIView):
                 is_approved=False,
                 first_time_login=True,
             )
-            email_prefix = email.split("@")[0]
-            user.set_password(email_prefix)
+            user.set_password(data["password"])
             user.save()
 
         return Response(
@@ -199,9 +229,19 @@ class RegisterView(APIView):
 
 
 class LogoutView(APIView):
+    authentication_classes = []
     permission_classes = [AllowAny]
 
-    def get(self, request):
+    def post(self, request):
+        if not request.META.get("HTTP_AUTHORIZATION"):
+            SessionAuthentication().enforce_csrf(request)
+        if not request.user.is_authenticated:
+            try:
+                authenticated = CookieJWTAuthentication().authenticate(request)
+                if authenticated:
+                    request.user = authenticated[0]
+            except AuthenticationFailed:
+                pass
         if request.user and request.user.is_authenticated:
             request.user.session_id = None
             request.user.save(update_fields=["session_id"])
@@ -270,12 +310,7 @@ class ChangePasswordView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        is_valid = (
-            user.check_password(old_password)
-            or user.check_password(old_password.lower())
-            or user.check_password(old_password.upper())
-            or (user.student_id and old_password.lower().strip() == user.student_id.lower().strip())
-        )
+        is_valid = user.is_active and user.is_approved and not has_predictable_password(user) and user.check_password(old_password)
 
         if not is_valid:
             return Response(
@@ -283,9 +318,18 @@ class ChangePasswordView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        try:
+            validate_password(new_password, user=user)
+        except ValidationError as exc:
+            return Response(
+                {"success": False, "message": " ".join(exc.messages)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         user.set_password(new_password)
         user.first_time_login = False
-        user.save(update_fields=["password", "first_time_login"])
+        user.session_id = None
+        user.save(update_fields=["password", "first_time_login", "session_id"])
 
         return Response(
             {"success": True, "message": "Password changed successfully."},
@@ -323,11 +367,12 @@ class UpdateUserView(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request):
-        serializer = UpdateProfileSerializer(data=request.data)
+        serializer = UpdateProfileSerializer(data=request.data, context={"request": request})
         if not serializer.is_valid():
             return Response(
                 {
-                    "message": "Username and profile name cannot be empty.",
+                    "message": "Invalid profile fields.",
+                    "errors": serializer.errors,
                     "success": False,
                 },
                 status=status.HTTP_400_BAD_REQUEST,
@@ -364,7 +409,11 @@ class UpdateUserView(APIView):
         if data.get("linkedIn") is not None:
             user.profile_linkedin = data.get("linkedIn")
 
-        user.save()
+        try:
+            with transaction.atomic():
+                user.save()
+        except IntegrityError:
+            return Response({"success": False, "message": "Username or email already registered."}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(
             {
@@ -392,12 +441,18 @@ class UploadAvatarView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        field = serializers.ImageField()
+        try:
+            file_obj = field.run_validation(file_obj)
+        except ValidationError as exc:
+            return Response({"error": " ".join(exc.messages)}, status=status.HTTP_400_BAD_REQUEST)
         user = request.user
-        if user.profile_avatar:
-            user.profile_avatar.delete(save=False)
-
+        old_name = user.profile_avatar.name if user.profile_avatar else None
+        storage = user.profile_avatar.storage
         user.profile_avatar = file_obj
         user.save(update_fields=["profile_avatar"])
+        if old_name and old_name != user.profile_avatar.name:
+            storage.delete(old_name)
 
         return Response(
             {
@@ -420,7 +475,12 @@ class GetAvatarView(APIView):
             )
 
         try:
-            return FileResponse(user.profile_avatar.open("rb"), content_type="image/jpeg")
+            file_obj = user.profile_avatar.open("rb")
+            with Image.open(file_obj) as img:
+                mime = Image.MIME.get(img.format, "application/octet-stream")
+            file_obj = user.profile_avatar.open("rb")
+            file_obj.seek(0)
+            return FileResponse(file_obj, content_type=mime)
         except Exception:
             return Response(
                 {"error": "Error retrieving profile picture."},

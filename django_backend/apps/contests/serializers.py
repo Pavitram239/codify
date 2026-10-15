@@ -103,8 +103,8 @@ class ContestCreateUpdateSerializer(serializers.Serializer):
     end_time = serializers.DateTimeField(required=True)
 
     def validate(self, data):
-        start = data.get("start_time")
-        end = data.get("end_time")
+        start = data.get("start_time", getattr(self.instance, "start_time", None))
+        end = data.get("end_time", getattr(self.instance, "end_time", None))
         if start and end and start >= end:
             raise serializers.ValidationError({"error": "Start time must be before end time"})
         return data

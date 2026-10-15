@@ -1,0 +1,10 @@
+{
+  "findings": 38,
+  "scenarios": 403,
+  "statuses": {
+    "Passed": 256,
+    "Failed": 67,
+    "Not run": 80
+  },
+  "pending": 80
+}

@@ -1,0 +1,215 @@
+FFFFFFFF.                                                                [100%]
+=================================== FAILURES ===================================
+___________________________ test_revocation[faculty] ___________________________
+/tmp/test_audit_current.py:49: in test_revocation
+    assert r.status_code==401
+E   assert 200 == 401
+E    +  where 200 = <Response status_code=200, "application/json">.status_code
+____________________________ test_revocation[admin] ____________________________
+/tmp/test_audit_current.py:49: in test_revocation
+    assert r.status_code==401
+E   assert 200 == 401
+E    +  where 200 = <Response status_code=200, "application/json">.status_code
+____________________ test_student_directory_scope[problems] ____________________
+/tmp/test_audit_current.py:61: in test_student_directory_scope
+    assert r.status_code==200 and not exposed
+E   assert (200 == 200 and not True)
+E    +  where 200 = <Response status_code=200, "application/json">.status_code
+____________________ test_student_directory_scope[contests] ____________________
+/tmp/test_audit_current.py:61: in test_student_directory_scope
+    assert r.status_code==200 and not exposed
+E   assert (200 == 200 and not True)
+E    +  where 200 = <Response status_code=200, "application/json">.status_code
+____________________________ test_user_list_queries ____________________________
+/tmp/test_audit_current.py:70: in test_user_list_queries
+    assert r.status_code==200 and len(large)<=len(small)+10
+E   assert (200 == 200 and 86 <= (10 + 10))
+E    +  where 200 = <Response status_code=200, "application/json">.status_code
+E    +  and   86 = len(<django.test.utils.CaptureQueriesContext object at 0x7fcb87b17590>)
+E    +  and   10 = len(<django.test.utils.CaptureQueriesContext object at 0x7fcb87af3bf0>)
+_______________________________ test_throttling ________________________________
+/tmp/test_audit_current.py:77: in test_throttling
+    assert classes or RunCodeView.throttle_classes
+E   AssertionError: assert ([] or [])
+E    +  where [] = <class 'apps.execution.views.RunCodeView'>.throttle_classes
+__________________________ test_bad_uuids[execution] ___________________________
+/tmp/test_audit_current.py:84: in test_bad_uuids
+    assert r.status_code==400
+E   assert 500 == 400
+E    +  where 500 = <HttpResponseServerError status_code=500, "text/html; charset=utf-8">.status_code
+----------------------------- Captured stderr call -----------------------------
+[ERROR] 2026-10-14 10:46:38,135 log: Internal Server Error: /api/v1/compiler/run-code
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/fields/__init__.py", line 2761, in to_python
+    return uuid.UUID(**{input_form: value})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/uuid.py", line 178, in __init__
+    raise ValueError('badly formed hexadecimal UUID string')
+ValueError: badly formed hexadecimal UUID string
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/usr/local/lib/python3.12/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/usr/local/lib/python3.12/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/apps/execution/views.py", line 37, in post
+    problem = get_object_or_404(Problem, id=problem_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/shortcuts.py", line 86, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 635, in get
+    clone = self._chain() if self.query.combinator else self.filter(*args, **kwargs)
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 1476, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 1494, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 1501, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/sql/query.py", line 1609, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/sql/query.py", line 1641, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/sql/query.py", line 1555, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/sql/query.py", line 1385, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/lookups.py", line 30, in __init__
+    self.rhs = self.get_prep_lookup()
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/lookups.py", line 369, in get_prep_lookup
+    return super().get_prep_lookup()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/lookups.py", line 88, in get_prep_lookup
+    return self.lhs.output_field.get_prep_value(self.rhs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/fields/__init__.py", line 2745, in get_prep_value
+    return self.to_python(value)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/fields/__init__.py", line 2763, in to_python
+    raise exceptions.ValidationError(
+django.core.exceptions.ValidationError: ['“not-a-uuid” is not a valid UUID.']
+_________________________ test_bad_uuids[submissions] __________________________
+/tmp/test_audit_current.py:84: in test_bad_uuids
+    assert r.status_code==400
+E   assert 500 == 400
+E    +  where 500 = <HttpResponseServerError status_code=500, "text/html; charset=utf-8">.status_code
+----------------------------- Captured stderr call -----------------------------
+[ERROR] 2026-10-14 10:46:38,163 log: Internal Server Error: /api/v1/submissions/problem
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/fields/__init__.py", line 2761, in to_python
+    return uuid.UUID(**{input_form: value})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/uuid.py", line 178, in __init__
+    raise ValueError('badly formed hexadecimal UUID string')
+ValueError: badly formed hexadecimal UUID string
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/usr/local/lib/python3.12/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/usr/local/lib/python3.12/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/apps/submissions/views.py", line 72, in get
+    problem = get_object_or_404(Problem, id=problem_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/shortcuts.py", line 86, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 635, in get
+    clone = self._chain() if self.query.combinator else self.filter(*args, **kwargs)
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 1476, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 1494, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/query.py", line 1501, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/sql/query.py", line 1609, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/sql/query.py", line 1641, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/sql/query.py", line 1555, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/sql/query.py", line 1385, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/lookups.py", line 30, in __init__
+    self.rhs = self.get_prep_lookup()
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/lookups.py", line 369, in get_prep_lookup
+    return super().get_prep_lookup()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/lookups.py", line 88, in get_prep_lookup
+    return self.lhs.output_field.get_prep_value(self.rhs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/fields/__init__.py", line 2745, in get_prep_value
+    return self.to_python(value)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/django/db/models/fields/__init__.py", line 2763, in to_python
+    raise exceptions.ValidationError(
+django.core.exceptions.ValidationError: ['“not-a-uuid” is not a valid UUID.']
+=============================== warnings summary ===============================
+test_audit_current.py::test_concurrent_managers
+  /tmp:0: PytestWarning: Error when trying to teardown test databases: OperationalError('database "test_code_assessment" is being accessed by other users\nDETAIL:  There are 2 other sessions using the database.')
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../tmp/test_audit_current.py::test_revocation[faculty] - assert 200 ==...
+FAILED ../tmp/test_audit_current.py::test_revocation[admin] - assert 200 == 401
+FAILED ../tmp/test_audit_current.py::test_student_directory_scope[problems]
+FAILED ../tmp/test_audit_current.py::test_student_directory_scope[contests]
+FAILED ../tmp/test_audit_current.py::test_user_list_queries - assert (200 == ...
+FAILED ../tmp/test_audit_current.py::test_throttling - AssertionError: assert...
+FAILED ../tmp/test_audit_current.py::test_bad_uuids[execution] - assert 500 =...
+FAILED ../tmp/test_audit_current.py::test_bad_uuids[submissions] - assert 500...
+8 failed, 1 passed, 1 warning in 9.49s

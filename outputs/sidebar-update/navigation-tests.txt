@@ -1,0 +1,60 @@
+TAP version 13
+# Subtest: permission-free account has no empty groups or unavailable mobile destinations
+ok 1 - permission-free account has no empty groups or unavailable mobile destinations
+  ---
+  duration_ms: 93.4156
+  ...
+# Subtest: account type never grants administrative navigation
+ok 2 - account type never grants administrative navigation
+  ---
+  duration_ms: 0.5609
+  ...
+# Subtest: direct access-management grant reveals only its authorized administration entry
+ok 3 - direct access-management grant reveals only its authorized administration entry
+  ---
+  duration_ms: 0.419
+  ...
+# Subtest: assigned approver gets Approvals but cannot open the faculty approval tab
+ok 4 - assigned approver gets Approvals but cannot open the faculty approval tab
+  ---
+  duration_ms: 0.9758
+  ...
+# Subtest: create-only student permission exposes registration without granting directory reads
+ok 5 - create-only student permission exposes registration without granting directory reads
+  ---
+  duration_ms: 0.3968
+  ...
+# Subtest: student directory permission does not grant import access
+ok 6 - student directory permission does not grant import access
+  ---
+  duration_ms: 0.357
+  ...
+# Subtest: submission-review permission does not advertise own-history access
+ok 7 - submission-review permission does not advertise own-history access
+  ---
+  duration_ms: 0.3409
+  ...
+# Subtest: student subpages retain the same navigation highlight
+ok 8 - student subpages retain the same navigation highlight
+  ---
+  duration_ms: 0.8454
+  ...
+# Subtest: nested access-management and approvals routes activate their parent item
+ok 9 - nested access-management and approvals routes activate their parent item
+  ---
+  duration_ms: 0.7055
+  ...
+# Subtest: history and resource editors retain the appropriate main navigation highlight
+ok 10 - history and resource editors retain the appropriate main navigation highlight
+  ---
+  duration_ms: 0.7898
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 169.0763

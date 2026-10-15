@@ -1,0 +1,10 @@
+{
+  "permissions": [
+    "users.create_assigned",
+    "users.view_assigned"
+  ],
+  "ui_delete_enabled": true,
+  "delete_http": 403,
+  "student_still_exists": true,
+  "meaning": "UI offers forbidden action; backend rejects it. No unauthorized deletion demonstrated."
+}

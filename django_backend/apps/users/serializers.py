@@ -1,5 +1,9 @@
 from rest_framework import serializers
 from apps.users.models import User
+from datetime import date
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.contrib.auth.password_validation import validate_password
 
 
 class UserProfileSerializer(serializers.Serializer):
@@ -24,6 +28,15 @@ class UserProfileSerializer(serializers.Serializer):
 
 
 class UserResponseSerializer(serializers.ModelSerializer):
+    permissions = serializers.SerializerMethodField()
+    accessRoles = serializers.SerializerMethodField()
+
+    def get_permissions(self, obj):
+        return sorted(obj.effective_permissions())
+
+    def get_accessRoles(self, obj):
+        return list(obj.access_roles.values("id", "name"))
+
     _id = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
     isApproved = serializers.BooleanField(source="is_approved")
@@ -40,6 +53,8 @@ class UserResponseSerializer(serializers.ModelSerializer):
             "email",
             "mobileNo",
             "role",
+            "permissions",
+            "accessRoles",
             "branch",
             "semester",
             "batch",
@@ -72,6 +87,7 @@ class LoginSerializer(serializers.Serializer):
 
 
 class RegisterSerializer(serializers.Serializer):
+    password = serializers.CharField(write_only=True)
     username = serializers.CharField(required=True)
     id = serializers.CharField(required=False, allow_blank=True)
     email = serializers.EmailField(required=False, allow_blank=True)
@@ -85,6 +101,10 @@ class RegisterSerializer(serializers.Serializer):
 
     def validate(self, data):
         role = data.get("role")
+        try:
+            validate_password(data["password"], user=User(username=data.get("username"), email=data.get("email")))
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError({"password": exc.messages})
         if role == "student":
             if not data.get("id"):
                 raise serializers.ValidationError({"id": "Student ID is required for students."})
@@ -124,4 +144,31 @@ class UpdateProfileSerializer(serializers.Serializer):
         if not value or not value.strip():
             raise serializers.ValidationError("Profile name cannot be empty.")
         return value.strip()
+
+    def validate_email(self, value):
+        if value:
+            value = value.strip().lower()
+            user = self.context["request"].user
+            if User.objects.filter(email__iexact=value).exclude(pk=user.pk).exists():
+                raise serializers.ValidationError("Email already registered.")
+        return value
+
+    def validate_birthday(self, value):
+        if value:
+            try:
+                date.fromisoformat(value)
+            except ValueError:
+                raise serializers.ValidationError("Birthday must be a valid YYYY-MM-DD date.")
+        return value
+
+    def _validate_url(self, value):
+        if value:
+            try:
+                URLValidator(schemes=["https", "http"])(value)
+            except DjangoValidationError:
+                raise serializers.ValidationError("Enter a valid http or https URL.")
+        return value
+
+    validate_github = _validate_url
+    validate_linkedIn = _validate_url
 

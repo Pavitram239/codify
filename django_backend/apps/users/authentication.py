@@ -1,6 +1,7 @@
-from django.conf import settings
+from rest_framework.authentication import SessionAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import AuthenticationFailed, InvalidToken
+from rest_framework_simplejwt.utils import get_md5_hash_password
 
 
 class CookieJWTAuthentication(JWTAuthentication):
@@ -29,12 +30,14 @@ class CookieJWTAuthentication(JWTAuthentication):
 
         user = self.get_user(validated_token)
 
+        if header is None:
+            SessionAuthentication().enforce_csrf(request)
+
         # Check session_id matching if present in token payload (enforced ONLY for students)
         if user.role == "student":
             token_session_id = validated_token.get("sessionId")
-            if token_session_id:
-                if not user.session_id or user.session_id != token_session_id:
-                    raise AuthenticationFailed("Session expired or logged in from another device")
+            if not token_session_id or not user.session_id or user.session_id != token_session_id:
+                raise AuthenticationFailed("Session expired or logged in from another device")
 
         return user, validated_token
 
@@ -44,11 +47,17 @@ class CookieJWTAuthentication(JWTAuthentication):
             raise AuthenticationFailed("Token contained no recognizable user identification")
 
         try:
-            user = self.user_model.objects.get(**{self.user_model.USERNAME_FIELD if False else "id": user_id})
+            user = self.user_model.objects.get(id=user_id)
         except self.user_model.DoesNotExist:
             raise AuthenticationFailed("User not found", code="user_not_found")
 
         if not user.is_active:
             raise AuthenticationFailed("User is inactive", code="user_inactive")
+
+        if not user.is_approved:
+            raise AuthenticationFailed("Account is awaiting approval.", code="user_unapproved")
+
+        if validated_token.get("hash_password") != get_md5_hash_password(user.password):
+            raise AuthenticationFailed("Password changed. Please sign in again.")
 
         return user

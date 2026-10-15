@@ -30,7 +30,7 @@ def user(db):
 
 @pytest.fixture
 def problem(db, user):
-    return Problem.objects.create(
+    problem = Problem.objects.create(
         title="Sum of Two",
         description="Add two ints",
         difficulty="easy",
@@ -39,6 +39,8 @@ def problem(db, user):
         total_marks=10,
         created_by=user,
     )
+    problem.assigned_students.add(user)
+    return problem
 
 
 @pytest.mark.django_db

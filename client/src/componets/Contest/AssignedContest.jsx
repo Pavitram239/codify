@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import toast from "react-hot-toast";
@@ -37,7 +37,7 @@ const AssignedContest = () => {
         );
         setStudents(response.data.assignedStudents || []);
         setTotalAssigned(response.data.assignedStudents.length);
-      } catch (err) {
+      } catch {
         setError("Failed to load students");
       } finally {
         setLoading(false);
@@ -85,7 +85,7 @@ const AssignedContest = () => {
       toast.success(res.data.message);
       setSelectedStudents([]);
       setError(null);
-    } catch (error) {
+    } catch {
       toast.error("Failed to unassign students. Please try again.");
       setError("Failed to unassign students. Please try again.");
     } finally {
@@ -100,8 +100,8 @@ const AssignedContest = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gray-900 text-white">
-      <h1 className="text-2xl font-bold mb-4 pt-20 justify-center flex items-center">
+    <div className="relative ui-page-height ui-page text-slate-900">
+      <h1 className="text-2xl font-bold mb-4 ui-page-top justify-center flex items-center">
         Contest assigned Students List
       </h1>
 
@@ -111,7 +111,7 @@ const AssignedContest = () => {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
           <div className="flex flex-col items-center">
             <svg
-              className="animate-spin h-12 w-12 text-blue-500 mb-4"
+              className="animate-spin h-12 w-12 text-blue-700 mb-4"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -130,13 +130,13 @@ const AssignedContest = () => {
                 d="M4 12a8 8 0 018-8v8H4z"
               ></path>
             </svg>
-            <p className="text-white text-lg font-semibold">Unassigning...</p>
+            <p className="text-slate-900 text-lg font-semibold">Unassigning...</p>
           </div>
         </div>
       )}
 
       <button
-        className="py-2 px-6 ml-6 bg-gradient-to-r mb-4 from-blue-500 to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-700 active:scale-95 transition transform duration-200"
+        className="py-2 px-6 ml-6 ui-gradient mb-4   text-slate-900 font-semibold rounded-lg shadow-md   active:scale-95 transition transform duration-200"
         onClick={() => navigate(-1)}
       >
         Back
@@ -166,7 +166,7 @@ const AssignedContest = () => {
         <button
           onClick={handleUnassign}
           disabled={selectedStudents.length === 0}
-          className="bg-green-500 text-white  px-4 py-2 rounded hover:bg-green-600 disabled:bg-gray-600"
+          className="bg-green-500 text-slate-900  px-4 py-2 rounded hover:bg-green-600 disabled:ui-subtle"
         >
           Unassign Problem
         </button>

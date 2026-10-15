@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import "../../CSS/ProblemShow.css";
@@ -7,15 +7,24 @@ import Solution from "./Solution";
 import Statement from "./Statement";
 import CodeEditor from "../CodeEditor/CodeEditor";
 import toast from "react-hot-toast";
-import { useLocation } from "react-router-dom";
+
+
+const codeTemplates = {
+    java:
+      "public class Main {\n  public static void main(String[] args) {\n    // Your code here\n  }\n}",
+    python: 'if __name__ == "__main__":\n    # Your code here\n    pass',
+    cpp:
+      "#include <iostream>\nint main() {\n  // Your code here\n  return 0;\n}",
+  };
 
 const ProblemShow = () => {
   const { id } = useParams();
-  const location = useLocation();
-  const { state } = location;
-  const { startTime, endTime } = state || {};
+
+
+  
   const navigate = useNavigate();
   const [problem, setProblem] = useState(null);
+  const [problemError, setProblemError] = useState("");
   const [language, setLanguage] = useState("java");
   const [code, setCode] = useState("");
   const [activeTab, setActiveTab] = useState("statement");
@@ -28,23 +37,20 @@ const ProblemShow = () => {
     setActiveTab("submissions");
   };
 
-  const codeTemplates = {
-    java:
-      "public class Main {\n  public static void main(String[] args) {\n    // Your code here\n  }\n}",
-    python: 'if __name__ == "__main__":\n    # Your code here\n    pass',
-    cpp:
-      "#include <iostream>\nint main() {\n  // Your code here\n  return 0;\n}",
-  };
+  
 
   const resizableRef = useRef(null);
 
   useEffect(() => {
     const fetchProblem = async () => {
+      setProblem(null);
+      setProblemError("");
       try {
         const response = await axiosInstance.get(`/problems/${id}`);
         setProblem(response.data);
         // console.log(response.data)
       } catch (error) {
+        setProblemError(error.response?.status === 404 ? "This problem could not be found." : "Unable to load this problem. Please try again.");
         toast.error("Failed to load problem data");
         // console.error("Failed to load problem data", error);
       }
@@ -67,11 +73,12 @@ const ProblemShow = () => {
     }
   };
 
+  if (problemError) return <div role="alert" className="p-6"><p>{problemError}</p><button className="mt-4 ui-gradient px-4 py-2 rounded" onClick={() => navigate('/problems')}>Back to problems</button></div>;
   if (!problem) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+      <div className="flex justify-center items-center ui-page-height ui-page">
         <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
-        <span className="ml-4 text-white text-lg">
+        <span className="ml-4 text-slate-900 text-lg">
           Loading problem details...
         </span>
       </div>
@@ -82,12 +89,13 @@ const ProblemShow = () => {
     <div className="problem-container">
       <div
         ref={resizableRef}
-        className="resizable bg-gray-900 p-4 flex flex-col"
+        className="resizable ui-page p-4 flex flex-col"
       >
         <div className="sticky top-0 z-10 pb-4">
           <button
             onClick={() => navigate(-1)}
-            className="mb-3 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-full flex items-center shadow-md hover:shadow-lg transition-all duration-200 ease-in-out"
+            aria-label="Back to problems"
+            className="mb-3 ui-surface hover:ui-subtle text-slate-900 px-4 py-2 rounded-full flex items-center shadow-md hover:ui-card-shadow transition-all duration-200 ease-in-out"
           >
             <svg
               className="MuiSvgIcon-root _icon_1pe2i_343"
@@ -95,25 +103,25 @@ const ProblemShow = () => {
               focusable="false"
               viewBox="0 0 24 24"
               aria-hidden="true"
-              fill="white"
+              fill="currentColor"
             >
               <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
             </svg>
           </button>
 
           <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-extrabold text-white tracking-tight">
+            <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">
               {problem.title}
             </h1>
           </div>
 
-          <div className="border-b border-gray-700 mb-4">
+          <div className="border-b border-slate-200 mb-4">
             <button
               onClick={() => setActiveTab("statement")}
               className={`py-2 px-4 ${
                 activeTab === "statement"
-                  ? "border-b-2 border-blue-500 text-blue-500"
-                  : "text-gray-400 hover:text-white"
+                  ? "border-b-2 border-blue-500 text-blue-700"
+                  : "text-slate-600 hover:text-slate-900"
               } transition-all duration-200`}
             >
               Statement
@@ -122,8 +130,8 @@ const ProblemShow = () => {
               onClick={() => setActiveTab("submissions")}
               className={`py-2 px-4 ${
                 activeTab === "submissions"
-                  ? "border-b-2 border-blue-500 text-blue-500"
-                  : "text-gray-400 hover:text-white"
+                  ? "border-b-2 border-blue-500 text-blue-700"
+                  : "text-slate-600 hover:text-slate-900"
               } transition-all duration-200`}
             >
               Submissions
@@ -132,8 +140,8 @@ const ProblemShow = () => {
               onClick={() => setActiveTab("solution")}
               className={`py-2 px-4 ${
                 activeTab === "solution"
-                  ? "border-b-2 border-blue-500 text-blue-500"
-                  : "text-gray-400 hover:text-white"
+                  ? "border-b-2 border-blue-500 text-blue-700"
+                  : "text-slate-600 hover:text-slate-900"
               } transition-all duration-200`}
             >
               Solution

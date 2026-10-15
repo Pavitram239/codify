@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
-import { useSelector } from "react-redux";
+
 import toast from "react-hot-toast";
+import InitialPasswordButton from "../InitialPasswordButton";
 import { BeatLoader } from "react-spinners";
 
 const AdminRegister = () => {
-  const user = useSelector((store) => store.app.user);
+  
   const [facultys, setFacultys] = useState([]);
   const [loading, setLoading] = useState(true);
   const [terminatingId, setTerminatingId] = useState(null);
-  const [error, setError] = useState("");
-  const [facultyPage, setFacultyPage] = useState(1);
-  const [totalFacultyPages, setTotalFacultyPages] = useState(0);
+  const [, setError] = useState("");
+  const [facultyPage, ] = useState(1);
+  const [, setTotalFacultyPages] = useState(0);
   const [totalFaculty, setTotalFaculty] = useState(0);
 
   const itemsPerPage = 8;
@@ -34,7 +35,7 @@ const AdminRegister = () => {
       } else {
         setError(response.data.message || "Failed to fetch faculty.");
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred while fetching faculty.");
     } finally {
       setLoading(false);
@@ -87,19 +88,19 @@ const AdminRegister = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gray-900 text-white">
-      <div className="flex justify-center pt-[6%]">
+    <div className="relative ui-page-height ui-page text-slate-900">
+      <div className="flex justify-center ui-page-top">
         <h1 className="text-2xl font-bold mb-4">Faculty Register</h1>
       </div>
 
       <button
-        className="py-2 px-6 ml-6 bg-gradient-to-r mb-4 from-blue-500 to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-700 active:scale-95 transition transform duration-200"
+        className="py-2 px-6 ml-6 ui-gradient mb-4   text-slate-900 font-semibold rounded-lg shadow-md   active:scale-95 transition transform duration-200"
         onClick={() => navigate(-1)}
       >
         Back
       </button>
 
-      <div className="flex items-center ml-4 text-white py-2 px-4 rounded-full  text-lg font-semibold">
+      <div className="flex items-center ml-4 text-slate-900 py-2 px-4 rounded-full  text-lg font-semibold">
         <span>Total Number of Faculty Register:</span>
         <span className="ml-2 text-xl font-bold">{totalFaculty}</span>
       </div>
@@ -109,15 +110,15 @@ const AdminRegister = () => {
           <div className="flex justify-center items-center h-64">
             <div className="flex flex-col items-center">
               <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-opacity-75"></div>
-              <p className="mt-4 text-blue-500 text-lg font-medium">
+              <p className="mt-4 text-blue-700 text-lg font-medium">
                 Loading, please wait...
               </p>
             </div>
           </div>
         ) : (
           <div className="p-4 overflow-x-auto">
-            <table className="min-w-full text-lg text-left text-gray-500">
-              <thead className="bg-gray-900 text-gray-400">
+            <table className="min-w-full text-lg text-left text-slate-600">
+              <thead className="ui-page text-slate-600">
                 <tr>
                   <th className="py-3 px-6">#</th>
                   <th className="py-3 px-6">Username</th>
@@ -134,7 +135,7 @@ const AdminRegister = () => {
                   <tr>
                     <td
                       colSpan="8"
-                      className="py-3 px-6 text-center text-gray-400"
+                      className="py-3 px-6 text-center text-slate-600"
                     >
                       Data not available
                     </td>
@@ -145,11 +146,11 @@ const AdminRegister = () => {
                       key={faculty._id}
                       onClick={() => handleFacultyClick(faculty._id)}
                       className={`cursor-pointer ${
-                        index % 2 === 0 ? "bg-gray-900" : "bg-gray-800"
-                      } hover:bg-gray-700/50 transition`}
+                        index % 2 === 0 ? "ui-page" : "ui-surface"
+                      } hover:ui-surface transition`}
                     >
                       <td className="py-3 px-6">{index + 1}</td>
-                      <td className="py-3 px-6 text-white font-medium">
+                      <td className="py-3 px-6 text-slate-900 font-medium">
                         {faculty.username}
                       </td>
                       <td className="py-3 px-6">{faculty.email}</td>
@@ -159,13 +160,13 @@ const AdminRegister = () => {
                       <td className="py-3 px-6">{faculty.subject}</td>
                       <td className="py-3 px-6">
                         {faculty.sessionId ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 border border-emerald-500/30">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                             Active
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-800 text-gray-400 border border-gray-700">
-                            <span className="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ui-surface text-slate-600 border border-slate-200">
+                            <span className="w-1.5 h-1.5 rounded-full ui-subtle"></span>
                             Inactive
                           </span>
                         )}
@@ -174,6 +175,7 @@ const AdminRegister = () => {
                         {formatDate(faculty.createdAt)}
                       </td>
                       <td className="py-3 px-6 text-center">
+                        {faculty.firstTimeLogin && <InitialPasswordButton userId={faculty._id} namespace="admin" />}
                         <button
                           onClick={(e) =>
                             handleTerminateSession(
@@ -188,8 +190,8 @@ const AdminRegister = () => {
                           }
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                             faculty.sessionId
-                              ? "bg-red-600 hover:bg-red-700 text-white shadow"
-                              : "bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700/40"
+                              ? "bg-red-600 hover:bg-red-50 text-slate-900 shadow"
+                              : "ui-surface text-slate-600 cursor-not-allowed border border-slate-200"
                           }`}
                         >
                           {terminatingId === faculty._id ? (

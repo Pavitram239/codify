@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { can } from "../../utils/permissions";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../utils/axiosInstance";
@@ -25,7 +26,7 @@ const SessionManagement = () => {
 
   // Only admin allowed
   useEffect(() => {
-    if (user?.role !== "admin") {
+    if (!can(user, "sessions.view_all")) {
       navigate("/");
     }
   }, [user, navigate]);
@@ -114,16 +115,16 @@ const SessionManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white pt-24 px-4 sm:px-8 pb-12">
+    <div className="ui-page-height ui-page text-slate-900 ui-page-top px-4 sm:px-8 pb-12">
       <div className="max-w-7xl mx-auto">
         {/* Header and Back Button */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-3">
-              <ShieldAlert className="text-blue-400" size={32} />
+              <ShieldAlert className="text-blue-700" size={32} />
               Session Management
             </h1>
-            <p className="text-gray-400 text-sm mt-1">
+            <p className="text-slate-600 text-sm mt-1">
               Terminate active sessions for locked-out students (e.g., closed incognito tabs). Admin and faculty accounts support multi-device sessions.
             </p>
           </div>
@@ -131,7 +132,7 @@ const SessionManagement = () => {
             <button
               onClick={() => fetchUsers(currentPage)}
               disabled={loading}
-              className="flex items-center gap-2 py-2 px-4 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-lg border border-gray-700 transition"
+              className="flex items-center gap-2 py-2 px-4 ui-surface hover:ui-surface text-slate-900 rounded-lg border border-slate-200 transition"
               title="Refresh"
             >
               <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
@@ -139,7 +140,7 @@ const SessionManagement = () => {
             </button>
             <button
               onClick={() => navigate("/pending-requests")}
-              className="py-2 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-700 transition active:scale-95"
+              className="py-2 px-6 ui-gradient   text-slate-900 font-semibold rounded-lg shadow-md   transition active:scale-95"
             >
               Back to Admin
             </button>
@@ -148,45 +149,45 @@ const SessionManagement = () => {
 
         {/* Stats Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <div className="bg-gray-800/80 border border-gray-700/60 p-4 rounded-xl flex items-center justify-between">
+          <div className="ui-surface border border-slate-200 p-4 rounded-lg flex items-center justify-between">
             <div>
-              <p className="text-xs uppercase font-medium text-gray-400">Total Users</p>
-              <p className="text-2xl font-bold text-white mt-1">{totalUsers}</p>
+              <p className="text-xs uppercase font-medium text-slate-600">Total Users</p>
+              <p className="text-2xl font-bold text-slate-900 mt-1">{totalUsers}</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-full bg-blue-500/10 text-blue-700 flex items-center justify-center font-bold">
               {totalUsers}
             </div>
           </div>
-          <div className="bg-gray-800/80 border border-gray-700/60 p-4 rounded-xl flex items-center justify-between">
+          <div className="ui-surface border border-slate-200 p-4 rounded-lg flex items-center justify-between">
             <div>
-              <p className="text-xs uppercase font-medium text-green-400">Active Sessions</p>
-              <p className="text-2xl font-bold text-green-400 mt-1">{activeSessionsCount}</p>
+              <p className="text-xs uppercase font-medium text-green-700">Active Sessions</p>
+              <p className="text-2xl font-bold text-green-700 mt-1">{activeSessionsCount}</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-green-500/10 text-green-400 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-full bg-green-500/10 text-green-700 flex items-center justify-center font-bold">
               ⚡
             </div>
           </div>
-          <div className="bg-gray-800/80 border border-gray-700/60 p-4 rounded-xl flex items-center justify-between">
+          <div className="ui-surface border border-slate-200 p-4 rounded-lg flex items-center justify-between">
             <div>
-              <p className="text-xs uppercase font-medium text-gray-400">Inactive Users</p>
-              <p className="text-2xl font-bold text-gray-300 mt-1">
+              <p className="text-xs uppercase font-medium text-slate-600">Inactive Users</p>
+              <p className="text-2xl font-bold text-slate-600 mt-1">
                 {Math.max(0, totalUsers - activeSessionsCount)}
               </p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-gray-700/30 text-gray-400 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-full ui-surface text-slate-600 flex items-center justify-center font-bold">
               💤
             </div>
           </div>
         </div>
 
         {/* Filter and Search Controls */}
-        <div className="bg-gray-800/60 border border-gray-700/60 p-4 rounded-xl mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div className="ui-surface border border-slate-200 p-4 rounded-lg mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
           <form
             onSubmit={handleSearchSubmit}
             className="flex-1 w-full md:max-w-md relative"
           >
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600"
               size={18}
             />
             <input
@@ -194,11 +195,11 @@ const SessionManagement = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by ID, Email, Username..."
-              className="w-full pl-10 pr-24 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full pl-10 pr-24 py-2 ui-page border border-slate-200 rounded-lg text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
             <button
               type="submit"
-              className="absolute right-1 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-500 text-xs text-white font-medium px-3 py-1.5 rounded-md transition"
+              className="absolute right-1 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-500 text-xs text-slate-900 font-medium px-3 py-1.5 rounded-md transition"
             >
               Search
             </button>
@@ -206,7 +207,7 @@ const SessionManagement = () => {
 
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             {/* Role Filter */}
-            <div className="flex bg-gray-900 border border-gray-700 rounded-lg p-1 text-xs">
+            <div className="flex ui-page border border-slate-200 rounded-lg p-1 text-xs">
               <button
                 type="button"
                 onClick={() => {
@@ -215,8 +216,8 @@ const SessionManagement = () => {
                 }}
                 className={`px-3 py-1.5 rounded-md font-medium transition ${
                   roleFilter === "all"
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-400 hover:text-white"
+                    ? "bg-blue-600 text-slate-900"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 All Roles
@@ -229,8 +230,8 @@ const SessionManagement = () => {
                 }}
                 className={`px-3 py-1.5 rounded-md font-medium transition ${
                   roleFilter === "student"
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-400 hover:text-white"
+                    ? "bg-blue-600 text-slate-900"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 Students
@@ -243,8 +244,8 @@ const SessionManagement = () => {
                 }}
                 className={`px-3 py-1.5 rounded-md font-medium transition ${
                   roleFilter === "faculty"
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-400 hover:text-white"
+                    ? "bg-blue-600 text-slate-900"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 Faculty
@@ -252,7 +253,7 @@ const SessionManagement = () => {
             </div>
 
             {/* Session Status Filter */}
-            <div className="flex bg-gray-900 border border-gray-700 rounded-lg p-1 text-xs">
+            <div className="flex ui-page border border-slate-200 rounded-lg p-1 text-xs">
               <button
                 type="button"
                 onClick={() => {
@@ -261,8 +262,8 @@ const SessionManagement = () => {
                 }}
                 className={`px-3 py-1.5 rounded-md font-medium transition ${
                   statusFilter === "all"
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-400 hover:text-white"
+                    ? "bg-blue-600 text-slate-900"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 All Sessions
@@ -275,8 +276,8 @@ const SessionManagement = () => {
                 }}
                 className={`px-3 py-1.5 rounded-md font-medium transition ${
                   statusFilter === "active"
-                    ? "bg-green-600 text-white"
-                    : "text-gray-400 hover:text-white"
+                    ? "bg-green-600 text-slate-900"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 Active Only
@@ -291,18 +292,18 @@ const SessionManagement = () => {
             <BeatLoader size={14} color="#3B82F6" />
           </div>
         ) : users.length === 0 ? (
-          <div className="bg-gray-800/40 border border-gray-700/60 rounded-xl p-12 text-center text-gray-400">
-            <UserX className="mx-auto text-gray-500 mb-3" size={48} />
+          <div className="ui-surface border border-slate-200 rounded-lg p-12 text-center text-slate-600">
+            <UserX className="mx-auto text-slate-600 mb-3" size={48} />
             <p className="text-lg font-medium">No users found</p>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-slate-600 mt-1">
               Try adjusting your search or filters.
             </p>
           </div>
         ) : (
-          <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-xl">
+          <div className="ui-page border border-slate-200 rounded-lg overflow-hidden ui-card-shadow">
             <div className="overflow-x-auto">
               <table className="min-w-full text-left text-sm">
-                <thead className="bg-gray-800/80 text-gray-400 uppercase text-xs tracking-wider">
+                <thead className="ui-surface text-slate-600 uppercase text-xs tracking-wider">
                   <tr>
                     <th className="py-3.5 px-4">#</th>
                     <th className="py-3.5 px-4">User ID / Email</th>
@@ -314,55 +315,55 @@ const SessionManagement = () => {
                     <th className="py-3.5 px-4 text-center">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-800">
+                <tbody className="divide-y divide-slate-200">
                   {users.map((u, idx) => (
                     <tr
                       key={u._id}
-                      className="hover:bg-gray-800/40 transition duration-150"
+                      className="hover:ui-surface transition duration-150"
                     >
-                      <td className="py-3.5 px-4 text-gray-500 font-mono">
+                      <td className="py-3.5 px-4 text-slate-600 font-mono">
                         {(currentPage - 1) * PAGE_SIZE + idx + 1}
                       </td>
                       <td className="py-3.5 px-4">
-                        <div className="font-medium text-white">
+                        <div className="font-medium text-slate-900">
                           {u.id || u.email}
                         </div>
                         {u.id && u.email && (
-                          <div className="text-xs text-gray-400">{u.email}</div>
+                          <div className="text-xs text-slate-600">{u.email}</div>
                         )}
                       </td>
-                      <td className="py-3.5 px-4 capitalize text-gray-200">
+                      <td className="py-3.5 px-4 capitalize text-slate-900">
                         {u.username}
                       </td>
                       <td className="py-3.5 px-4">
                         <span
                           className={`inline-block px-2 py-0.5 rounded text-xs font-semibold uppercase ${
                             u.role === "admin"
-                              ? "bg-purple-900/60 text-purple-300 border border-purple-700/50"
+                              ? "bg-purple-50 text-blue-700 border border-purple-700/50"
                               : u.role === "faculty"
-                              ? "bg-blue-900/60 text-blue-300 border border-blue-700/50"
-                              : "bg-emerald-900/60 text-emerald-300 border border-emerald-700/50"
+                              ? "bg-blue-50 text-blue-700 border border-blue-700/50"
+                              : "bg-emerald-50 text-emerald-700 border border-emerald-700/50"
                           }`}
                         >
                           {u.role}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-gray-400">
+                      <td className="py-3.5 px-4 text-slate-600">
                         {u.branch ? u.branch.toUpperCase() : "—"}{" "}
                         {u.batch ? `(${u.batch.toUpperCase()})` : ""}
                       </td>
-                      <td className="py-3.5 px-4 text-xs text-gray-400">
+                      <td className="py-3.5 px-4 text-xs text-slate-600">
                         {formatDate(u.lastLoginTime)}
                       </td>
                       <td className="py-3.5 px-4">
                         {u.hasActiveSession ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-700 border border-emerald-500/30">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                             Active Session
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-800 text-gray-400 border border-gray-700">
-                            <span className="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ui-surface text-slate-600 border border-slate-200">
+                            <span className="w-1.5 h-1.5 rounded-full ui-subtle"></span>
                             Inactive
                           </span>
                         )}
@@ -375,8 +376,8 @@ const SessionManagement = () => {
                           }
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                             u.hasActiveSession
-                              ? "bg-red-600 hover:bg-red-700 text-white shadow hover:scale-105 active:scale-95 cursor-pointer"
-                              : "bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700/40"
+                              ? "bg-red-600 hover:bg-red-50 text-slate-900 shadow hover:scale-105 active:scale-95 cursor-pointer"
+                              : "ui-surface text-slate-600 cursor-not-allowed border border-slate-200"
                           }`}
                         >
                           {terminatingId === u._id ? (
@@ -394,16 +395,16 @@ const SessionManagement = () => {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between px-4 py-3 bg-gray-800/50 border-t border-gray-800 text-sm">
-                <span className="text-gray-400">
-                  Page <strong className="text-white">{currentPage}</strong> of{" "}
-                  <strong className="text-white">{totalPages}</strong>
+              <div className="flex items-center justify-between px-4 py-3 ui-surface border-t border-slate-200 text-sm">
+                <span className="text-slate-600">
+                  Page <strong className="text-slate-900">{currentPage}</strong> of{" "}
+                  <strong className="text-slate-900">{totalPages}</strong>
                 </span>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="px-3 py-1 rounded bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-xs font-medium"
+                    className="px-3 py-1 rounded ui-surface hover:ui-surface disabled:opacity-50 text-xs font-medium"
                   >
                     Previous
                   </button>
@@ -412,7 +413,7 @@ const SessionManagement = () => {
                       setCurrentPage((p) => Math.min(totalPages, p + 1))
                     }
                     disabled={currentPage === totalPages}
-                    className="px-3 py-1 rounded bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-xs font-medium"
+                    className="px-3 py-1 rounded ui-surface hover:ui-surface disabled:opacity-50 text-xs font-medium"
                   >
                     Next
                   </button>

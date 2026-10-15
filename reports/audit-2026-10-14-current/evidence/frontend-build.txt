@@ -1,0 +1,66 @@
+
+> client@0.0.0 build
+> vite build
+
+vite v5.4.3 building for production...
+transforming...
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2162 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                               0.48 kB │ gzip:   0.31 kB
+dist/assets/inter-vietnamese-400-normal-DMkecbls.woff2        4.97 kB
+dist/assets/inter-vietnamese-600-normal-Cc8MFFhd.woff2        5.10 kB
+dist/assets/inter-vietnamese-700-normal-DlLaEgI2.woff2        5.10 kB
+dist/assets/inter-greek-ext-400-normal-DGGRlc-M.woff2         5.26 kB
+dist/assets/inter-greek-ext-600-normal-DRtmH8MT.woff2         5.43 kB
+dist/assets/inter-greek-ext-700-normal-qfdV9bQt.woff2         5.44 kB
+dist/assets/inter-vietnamese-400-normal-Bbgyi5SW.woff         6.50 kB
+dist/assets/inter-vietnamese-700-normal-BZaoP0fm.woff         6.63 kB
+dist/assets/inter-vietnamese-600-normal-BuLX-rYi.woff         6.64 kB
+dist/assets/inter-greek-ext-400-normal-KugGGMne.woff          7.06 kB
+dist/assets/inter-greek-ext-600-normal-B8X0CLgF.woff          7.21 kB
+dist/assets/inter-greek-ext-700-normal-BoQ6DsYi.woff          7.22 kB
+dist/assets/inter-cyrillic-400-normal-obahsSVq.woff2          7.71 kB
+dist/assets/inter-greek-400-normal-B4URO6DV.woff2             7.78 kB
+dist/assets/inter-cyrillic-700-normal-CjBOestx.woff2          7.90 kB
+dist/assets/inter-greek-700-normal-C3JjAnD8.woff2             7.92 kB
+dist/assets/inter-greek-600-normal-plRanbMR.woff2             7.94 kB
+dist/assets/inter-cyrillic-600-normal-CWCymEST.woff2          7.97 kB
+dist/assets/inter-cyrillic-400-normal-HOLc17fK.woff           9.78 kB
+dist/assets/inter-cyrillic-700-normal-DrXBdSj3.woff           9.91 kB
+dist/assets/inter-greek-400-normal-q2sYcFCs.woff              9.92 kB
+dist/assets/inter-cyrillic-600-normal-4D_pXhcN.woff           9.94 kB
+dist/assets/inter-greek-700-normal-BUv2fZ6O.woff              9.98 kB
+dist/assets/inter-greek-600-normal-BZpKdvQh.woff             10.03 kB
+dist/assets/inter-cyrillic-ext-400-normal-BQZuk6qB.woff2     10.23 kB
+dist/assets/inter-cyrillic-ext-600-normal-Dfes3d0z.woff2     10.48 kB
+dist/assets/inter-cyrillic-ext-700-normal-BjwYoWNd.woff2     10.50 kB
+dist/assets/inter-cyrillic-ext-400-normal-DQukG94-.woff      13.34 kB
+dist/assets/inter-cyrillic-ext-700-normal-LO58E6JB.woff      13.41 kB
+dist/assets/inter-cyrillic-ext-600-normal-Bcila6Z-.woff      13.46 kB
+dist/assets/inter-latin-400-normal-C38fXH4l.woff2            23.66 kB
+dist/assets/inter-latin-700-normal-Yt3aPRUw.woff2            24.36 kB
+dist/assets/inter-latin-600-normal-LgqL8muc.woff2            24.45 kB
+dist/assets/inter-latin-400-normal-CyCys3Eg.woff             30.70 kB
+dist/assets/inter-latin-600-normal-CiBQ2DWP.woff             31.26 kB
+dist/assets/inter-latin-700-normal-BLAVimhd.woff             31.32 kB
+dist/assets/inter-latin-ext-400-normal-C1nco2VV.woff2        35.00 kB
+dist/assets/inter-latin-ext-700-normal-Ca8adRJv.woff2        36.24 kB
+dist/assets/inter-latin-ext-600-normal-D2bJ5OIk.woff2        36.26 kB
+dist/assets/inter-latin-ext-400-normal-77YHD8bZ.woff         47.56 kB
+dist/assets/inter-latin-ext-700-normal-TidjK2hL.woff         48.63 kB
+dist/assets/inter-latin-ext-600-normal-CIVaiw4L.woff         48.67 kB
+dist/assets/index-BqitCNVI.css                               90.37 kB │ gzip:  15.70 kB
+dist/assets/purify.es-C_uT9hQ1.js                            21.98 kB │ gzip:   8.74 kB
+dist/assets/index.es-DnXcAY2o.js                            149.85 kB │ gzip:  51.24 kB
+dist/assets/html2canvas.esm-CBrSDip1.js                     201.42 kB │ gzip:  48.03 kB
+dist/assets/index-Byk_p4b5.js                             1,431.73 kB │ gzip: 446.00 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 27.83s

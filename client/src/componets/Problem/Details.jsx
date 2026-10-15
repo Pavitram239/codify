@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
-import SubmissionDetails from "./SubmissionDetails"; // Adjust the import path as necessary.
+import SubmissionReview from "../workspace/SubmissionReview";
+import { RequestState } from "../workspace/WorkspaceUI";
 
 const Details = () => {
   const { submissionId } = useParams();
@@ -31,24 +32,20 @@ const Details = () => {
   }, [submissionId]);
 
   return (
-    <div className="bg-gray-900 min-h-screen text-white">
+    <div>
       {/* Back button */}
-      <div className="pt-20"></div>
 
       {/* Show loading spinner or message */}
       {loading && (
-        <div className="flex justify-center items-center min-h-[50vh]">
-          <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
-          <span className="ml-4 text-lg">Loading...</span>
-        </div>
+        <RequestState loading />
       )}
 
       {/* Show error message */}
       {error && (
-        <div className="text-red-500 text-center mt-4 pt-20">
+        <div className="workspace-error" role="alert">
           <button
             onClick={() => navigate(-1)}
-            className="mb-4 px-4 py-2  bg-blue-600 hover:bg-blue-700 text-white rounded"
+            className="workspace-button workspace-button--secondary"
           >
             Back
           </button>
@@ -58,7 +55,7 @@ const Details = () => {
 
       {/* Render SubmissionDetails Component */}
       {!loading && !error && submission && (
-        <SubmissionDetails
+        <SubmissionReview
           submission={submission}
           onBack={() => navigate(-1)}
         />

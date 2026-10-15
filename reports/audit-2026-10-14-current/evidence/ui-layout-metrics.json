@@ -1,0 +1,1087 @@
+[
+  {
+    "label": "users-phone-390",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "User Management",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "user-form-phone-390",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "User Management",
+    "unlabelled": [
+      "<select><option value=\"student\">Student</option><option value=\"faculty\">Faculty / staff</option><option value=\"admin\">Administrator</option></select>",
+      "<select><option value=\"cspit-it\">CSPIT IT</option><option value=\"cspit-ce\">CSPIT CE</option><option value=\"cspit-cse\">CSPIT CSE</option></select>",
+      "<input type=\"number\" min=\"1\" max=\"12\" required=\"\" value=\"1\">",
+      "<select><option value=\"\">No assigned faculty</option><option value=\"90354c7b-66be-4ae8-8b23-a711a9cfbbd7\">audit.author</option><option value=\"af8a62a8-aabe-41fe",
+      "<input maxlength=\"20\" required=\"\" value=\"a1\">",
+      "<input type=\"checkbox\" checked=\"\">",
+      "<input type=\"checkbox\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">"
+    ],
+    "width": 375
+  },
+  {
+    "label": "custom-permissions-phone-390",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "User Management",
+    "unlabelled": [
+      "<select><option value=\"student\">Student</option><option value=\"faculty\">Faculty / staff</option><option value=\"admin\">Administrator</option></select>",
+      "<select><option value=\"cspit-it\">CSPIT IT</option><option value=\"cspit-ce\">CSPIT CE</option><option value=\"cspit-cse\">CSPIT CSE</option></select>",
+      "<input type=\"number\" min=\"1\" max=\"12\" required=\"\" value=\"1\">",
+      "<select><option value=\"\">No assigned faculty</option><option value=\"90354c7b-66be-4ae8-8b23-a711a9cfbbd7\">audit.author</option><option value=\"af8a62a8-aabe-41fe",
+      "<input maxlength=\"20\" required=\"\" value=\"a1\">",
+      "<input type=\"checkbox\" checked=\"\">",
+      "<input type=\"checkbox\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\" disabled=\"\" checked=\"\">"
+    ],
+    "width": 375
+  },
+  {
+    "label": "roles-phone-390",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Role Management",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "permissions-phone-390",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Permission Management",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "history-phone-390",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Submission History",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "profile-phone-390",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "students-phone-390",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Student Register",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "faculty-phone-390",
+    "offscreen": [
+      {
+        "left": 916.2625122070312,
+        "right": 1009.9500122070312,
+        "text": "Terminate Session"
+      },
+      {
+        "left": 916.2625122070312,
+        "right": 1009.9500122070312,
+        "text": "Terminate Session"
+      },
+      {
+        "left": 916.2625122070312,
+        "right": 1009.9500122070312,
+        "text": "Terminate Session"
+      }
+    ],
+    "scrollWidth": 375,
+    "title": "Faculty Register",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "sessions-phone-390",
+    "offscreen": [
+      {
+        "left": 921.7625122070312,
+        "right": 1015.4500122070312,
+        "text": "Terminate Session"
+      },
+      {
+        "left": 921.7625122070312,
+        "right": 1015.4500122070312,
+        "text": "Terminate Session"
+      },
+      {
+        "left": 921.7625122070312,
+        "right": 1015.4500122070312,
+        "text": "Terminate Session"
+      },
+      {
+        "left": 921.7625122070312,
+        "right": 1015.4500122070312,
+        "text": "Terminate Session"
+      },
+      {
+        "left": 921.7625122070312,
+        "right": 1015.4500122070312,
+        "text": "Terminate Session"
+      },
+      {
+        "left": 921.7625122070312,
+        "right": 1015.4500122070312,
+        "text": "Terminate Session"
+      },
+      {
+        "left": 921.7625122070312,
+        "right": 1015.4500122070312,
+        "text": "Terminate Session"
+      },
+      {
+        "left": 921.7625122070312,
+        "right": 1015.4500122070312,
+        "text": "Terminate Session"
+      },
+      {
+        "left": 921.7625122070312,
+        "right": 1015.4500122070312,
+        "text": "Terminate Session"
+      },
+      {
+        "left": 921.7625122070312,
+        "right": 1015.4500122070312,
+        "text": "Terminate Session"
+      }
+    ],
+    "scrollWidth": 375,
+    "title": "Session Management",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "assessments-phone-390",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Assessments",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "problems-phone-390",
+    "offscreen": [
+      {
+        "left": 284.6125183105469,
+        "right": 389.2250213623047,
+        "text": "Created Date"
+      },
+      {
+        "left": 421.2250061035156,
+        "right": 454.825008392334,
+        "text": ""
+      },
+      {
+        "left": 462.8250122070313,
+        "right": 494.8250122070313,
+        "text": ""
+      },
+      {
+        "left": 502.8250122070313,
+        "right": 534.8250122070312,
+        "text": ""
+      },
+      {
+        "left": 542.8250122070312,
+        "right": 576.4250144958496,
+        "text": ""
+      },
+      {
+        "left": 421.2250061035156,
+        "right": 454.825008392334,
+        "text": ""
+      },
+      {
+        "left": 462.8250122070313,
+        "right": 494.8250122070313,
+        "text": ""
+      },
+      {
+        "left": 502.8250122070313,
+        "right": 534.8250122070312,
+        "text": ""
+      },
+      {
+        "left": 542.8250122070312,
+        "right": 576.4250144958496,
+        "text": ""
+      }
+    ],
+    "scrollWidth": 375,
+    "title": "Problem Bank",
+    "unlabelled": [
+      "<select class=\"ui-surface text-slate-900 py-3 pl-10 pr-4 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-tra"
+    ],
+    "width": 375
+  },
+  {
+    "label": "problem-form-phone-390",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Edit Problem",
+    "unlabelled": [
+      "<select name=\"difficulty\" class=\"w-full p-4  ui-surface border border-slate-200 rounded-lg mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 \">"
+    ],
+    "width": 375
+  },
+  {
+    "label": "coding-phone-390",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Audit Pair Sum",
+    "unlabelled": [
+      "<select class=\"border border-slate-200 text-slate-900 rounded-md py-2 pl-3 pr-10 appearance-none outline-none cursor-pointer\" style=\"background-color: var(--sur"
+    ],
+    "width": 375
+  },
+  {
+    "label": "roles-small-320",
+    "offscreen": [],
+    "scrollWidth": 305,
+    "title": "Role Management",
+    "unlabelled": [],
+    "width": 305
+  },
+  {
+    "label": "role-dialog-small-320",
+    "offscreen": [],
+    "scrollWidth": 305,
+    "title": "Role Management",
+    "unlabelled": [
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">"
+    ],
+    "width": 305
+  },
+  {
+    "label": "users-320x568",
+    "offscreen": [],
+    "scrollWidth": 305,
+    "title": "User Management",
+    "unlabelled": [],
+    "width": 305
+  },
+  {
+    "label": "roles-320x568",
+    "offscreen": [],
+    "scrollWidth": 305,
+    "title": "Role Management",
+    "unlabelled": [],
+    "width": 305
+  },
+  {
+    "label": "home-320x568",
+    "offscreen": [],
+    "scrollWidth": 305,
+    "title": "Good afternoon, Audit",
+    "unlabelled": [],
+    "width": 305
+  },
+  {
+    "label": "profile-320x568",
+    "offscreen": [],
+    "scrollWidth": 305,
+    "unlabelled": [],
+    "width": 305
+  },
+  {
+    "label": "assessments-320x568",
+    "offscreen": [],
+    "scrollWidth": 305,
+    "title": "Assessments",
+    "unlabelled": [],
+    "width": 305
+  },
+  {
+    "label": "coding-320x568",
+    "offscreen": [],
+    "scrollWidth": 305,
+    "title": "Audit Pair Sum",
+    "unlabelled": [
+      "<select class=\"border border-slate-200 text-slate-900 rounded-md py-2 pl-3 pr-10 appearance-none outline-none cursor-pointer\" style=\"background-color: var(--sur"
+    ],
+    "width": 305
+  },
+  {
+    "label": "users-768x1024",
+    "offscreen": [],
+    "scrollWidth": 768,
+    "title": "User Management",
+    "unlabelled": [],
+    "width": 768
+  },
+  {
+    "label": "roles-768x1024",
+    "offscreen": [],
+    "scrollWidth": 753,
+    "title": "Role Management",
+    "unlabelled": [],
+    "width": 753
+  },
+  {
+    "label": "home-768x1024",
+    "offscreen": [],
+    "scrollWidth": 753,
+    "title": "Good afternoon, Audit",
+    "unlabelled": [],
+    "width": 753
+  },
+  {
+    "label": "profile-768x1024",
+    "offscreen": [],
+    "scrollWidth": 768,
+    "unlabelled": [],
+    "width": 768
+  },
+  {
+    "label": "assessments-768x1024",
+    "offscreen": [],
+    "scrollWidth": 768,
+    "title": "Assessments",
+    "unlabelled": [],
+    "width": 768
+  },
+  {
+    "label": "coding-768x1024",
+    "offscreen": [],
+    "scrollWidth": 753,
+    "title": "Audit Pair Sum",
+    "unlabelled": [
+      "<select class=\"border border-slate-200 text-slate-900 rounded-md py-2 pl-3 pr-10 appearance-none outline-none cursor-pointer\" style=\"background-color: var(--sur"
+    ],
+    "width": 753
+  },
+  {
+    "label": "users-1024x768",
+    "offscreen": [],
+    "scrollWidth": 1009,
+    "title": "User Management",
+    "unlabelled": [],
+    "width": 1009
+  },
+  {
+    "label": "roles-1024x768",
+    "offscreen": [],
+    "scrollWidth": 1009,
+    "title": "Role Management",
+    "unlabelled": [],
+    "width": 1009
+  },
+  {
+    "label": "home-1024x768",
+    "offscreen": [],
+    "scrollWidth": 1009,
+    "title": "Good afternoon, Audit",
+    "unlabelled": [],
+    "width": 1009
+  },
+  {
+    "label": "profile-1024x768",
+    "offscreen": [],
+    "scrollWidth": 1009,
+    "unlabelled": [],
+    "width": 1009
+  },
+  {
+    "label": "assessments-1024x768",
+    "offscreen": [],
+    "scrollWidth": 1009,
+    "title": "Assessments",
+    "unlabelled": [],
+    "width": 1009
+  },
+  {
+    "label": "coding-1024x768",
+    "offscreen": [],
+    "scrollWidth": 1009,
+    "title": "Audit Pair Sum",
+    "unlabelled": [
+      "<select class=\"border border-slate-200 text-slate-900 rounded-md py-2 pl-3 pr-10 appearance-none outline-none cursor-pointer\" style=\"background-color: var(--sur"
+    ],
+    "width": 1009
+  },
+  {
+    "label": "users-1440x900",
+    "offscreen": [],
+    "scrollWidth": 1425,
+    "title": "User Management",
+    "unlabelled": [],
+    "width": 1425
+  },
+  {
+    "label": "roles-1440x900",
+    "offscreen": [],
+    "scrollWidth": 1425,
+    "title": "Role Management",
+    "unlabelled": [],
+    "width": 1425
+  },
+  {
+    "label": "home-1440x900",
+    "offscreen": [],
+    "scrollWidth": 1425,
+    "title": "Good afternoon, Audit",
+    "unlabelled": [],
+    "width": 1425
+  },
+  {
+    "label": "profile-1440x900",
+    "offscreen": [],
+    "scrollWidth": 1425,
+    "unlabelled": [],
+    "width": 1425
+  },
+  {
+    "label": "assessments-1440x900",
+    "offscreen": [],
+    "scrollWidth": 1425,
+    "title": "Assessments",
+    "unlabelled": [],
+    "width": 1425
+  },
+  {
+    "label": "coding-1440x900",
+    "offscreen": [],
+    "scrollWidth": 1425,
+    "title": "Audit Pair Sum",
+    "unlabelled": [
+      "<select class=\"border border-slate-200 text-slate-900 rounded-md py-2 pl-3 pr-10 appearance-none outline-none cursor-pointer\" style=\"background-color: var(--sur"
+    ],
+    "width": 1425
+  },
+  {
+    "label": "users-844x390",
+    "offscreen": [
+      {
+        "left": 949.8250122070312,
+        "right": 1047.2875137329102,
+        "text": "Edit user"
+      },
+      {
+        "left": 1055.2874755859375,
+        "right": 1195.5749816894531,
+        "text": "Manage access"
+      },
+      {
+        "left": 1203.5750732421875,
+        "right": 1286.5750732421875,
+        "text": "Delete"
+      },
+      {
+        "left": 949.8250122070312,
+        "right": 1047.2875137329102,
+        "text": "Edit user"
+      },
+      {
+        "left": 1055.2874755859375,
+        "right": 1195.5749816894531,
+        "text": "Manage access"
+      },
+      {
+        "left": 1203.5750732421875,
+        "right": 1286.5750732421875,
+        "text": "Delete"
+      },
+      {
+        "left": 949.8250122070312,
+        "right": 1047.2875137329102,
+        "text": "Edit user"
+      },
+      {
+        "left": 1055.2874755859375,
+        "right": 1195.5749816894531,
+        "text": "Manage access"
+      },
+      {
+        "left": 1203.5750732421875,
+        "right": 1286.5750732421875,
+        "text": "Delete"
+      },
+      {
+        "left": 949.8250122070312,
+        "right": 1047.2875137329102,
+        "text": "Edit user"
+      },
+      {
+        "left": 1055.2874755859375,
+        "right": 1195.5749816894531,
+        "text": "Manage access"
+      },
+      {
+        "left": 1203.5750732421875,
+        "right": 1286.5750732421875,
+        "text": "Delete"
+      },
+      {
+        "left": 949.8250122070312,
+        "right": 1047.2875137329102,
+        "text": "Edit user"
+      },
+      {
+        "left": 1055.2874755859375,
+        "right": 1195.5749816894531,
+        "text": "Manage access"
+      },
+      {
+        "left": 1203.5750732421875,
+        "right": 1286.5750732421875,
+        "text": "Delete"
+      },
+      {
+        "left": 949.8250122070312,
+        "right": 1047.2875137329102,
+        "text": "Edit user"
+      },
+      {
+        "left": 1055.2874755859375,
+        "right": 1195.5749816894531,
+        "text": "Manage access"
+      },
+      {
+        "left": 1203.5750732421875,
+        "right": 1286.5750732421875,
+        "text": "Delete"
+      },
+      {
+        "left": 949.8250122070312,
+        "right": 1047.2875137329102,
+        "text": "Edit user"
+      },
+      {
+        "left": 1055.2874755859375,
+        "right": 1195.5749816894531,
+        "text": "Manage access"
+      },
+      {
+        "left": 1203.5750732421875,
+        "right": 1286.5750732421875,
+        "text": "Delete"
+      },
+      {
+        "left": 949.8250122070312,
+        "right": 1047.2875137329102,
+        "text": "Edit user"
+      },
+      {
+        "left": 1055.2874755859375,
+        "right": 1195.5749816894531,
+        "text": "Manage access"
+      },
+      {
+        "left": 1203.5750732421875,
+        "right": 1286.5750732421875,
+        "text": "Delete"
+      },
+      {
+        "left": 949.8250122070312,
+        "right": 1047.2875137329102,
+        "text": "Edit user"
+      },
+      {
+        "left": 1055.2874755859375,
+        "right": 1195.5749816894531,
+        "text": "Manage access"
+      },
+      {
+        "left": 1203.5750732421875,
+        "right": 1286.5750732421875,
+        "text": "Delete"
+      },
+      {
+        "left": 949.8250122070312,
+        "right": 1047.2875137329102,
+        "text": "Edit user"
+      },
+      {
+        "left": 1055.2874755859375,
+        "right": 1195.5749816894531,
+        "text": "Manage access"
+      },
+      {
+        "left": 1203.5750732421875,
+        "right": 1286.5750732421875,
+        "text": "Delete"
+      }
+    ],
+    "scrollWidth": 829,
+    "title": "User Management",
+    "unlabelled": [],
+    "width": 829
+  },
+  {
+    "label": "roles-844x390",
+    "offscreen": [],
+    "scrollWidth": 829,
+    "title": "Role Management",
+    "unlabelled": [],
+    "width": 829
+  },
+  {
+    "label": "home-844x390",
+    "offscreen": [],
+    "scrollWidth": 829,
+    "title": "Good afternoon, Audit",
+    "unlabelled": [],
+    "width": 829
+  },
+  {
+    "label": "profile-844x390",
+    "offscreen": [],
+    "scrollWidth": 829,
+    "unlabelled": [],
+    "width": 829
+  },
+  {
+    "label": "assessments-844x390",
+    "offscreen": [],
+    "scrollWidth": 829,
+    "title": "Assessments",
+    "unlabelled": [],
+    "width": 829
+  },
+  {
+    "label": "coding-844x390",
+    "offscreen": [],
+    "scrollWidth": 829,
+    "title": "Audit Pair Sum",
+    "unlabelled": [
+      "<select class=\"border border-slate-200 text-slate-900 rounded-md py-2 pl-3 pr-10 appearance-none outline-none cursor-pointer\" style=\"background-color: var(--sur"
+    ],
+    "width": 829
+  },
+  {
+    "label": "users-640x450",
+    "offscreen": [],
+    "scrollWidth": 625,
+    "title": "User Management",
+    "unlabelled": [],
+    "width": 625
+  },
+  {
+    "label": "roles-640x450",
+    "offscreen": [],
+    "scrollWidth": 625,
+    "title": "Role Management",
+    "unlabelled": [],
+    "width": 625
+  },
+  {
+    "label": "home-640x450",
+    "offscreen": [],
+    "scrollWidth": 625,
+    "title": "Good afternoon, Audit",
+    "unlabelled": [],
+    "width": 625
+  },
+  {
+    "label": "profile-640x450",
+    "offscreen": [],
+    "scrollWidth": 625,
+    "unlabelled": [],
+    "width": 625
+  },
+  {
+    "label": "assessments-640x450",
+    "offscreen": [],
+    "scrollWidth": 625,
+    "title": "Assessments",
+    "unlabelled": [],
+    "width": 625
+  },
+  {
+    "label": "coding-640x450",
+    "offscreen": [],
+    "scrollWidth": 625,
+    "title": "Audit Pair Sum",
+    "unlabelled": [
+      "<select class=\"border border-slate-200 text-slate-900 rounded-md py-2 pl-3 pr-10 appearance-none outline-none cursor-pointer\" style=\"background-color: var(--sur"
+    ],
+    "width": 625
+  },
+  {
+    "label": "navigation-phone-open",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Good afternoon, Audit",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "login-phone-390",
+    "offscreen": [],
+    "scrollWidth": 390,
+    "title": "Login",
+    "unlabelled": [],
+    "width": 390
+  },
+  {
+    "label": "direct-author-home-phone",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Good afternoon, audit.author",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "direct-author-problems-phone",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Problem Bank",
+    "unlabelled": [
+      "<select class=\"ui-surface text-slate-900 py-3 pl-10 pr-4 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-tra"
+    ],
+    "width": 375
+  },
+  {
+    "label": "direct-author-denied-access",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Access denied",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "student-custom-role-problems",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Assigned Problems",
+    "unlabelled": [
+      "<select class=\"ui-surface text-slate-900 py-3 pl-10 pr-4 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-tra"
+    ],
+    "width": 375
+  },
+  {
+    "label": "student-history-phone",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Submission History",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "student-submission-details-phone",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "audit.student’s submission",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "student-contest-phone",
+    "offscreen": [],
+    "scrollWidth": 375,
+    "title": "Audit coding assessment with a longer title",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "coding-actions-small-320",
+    "offscreen": [],
+    "scrollWidth": 305,
+    "title": "Audit Pair Sum",
+    "unlabelled": [
+      "<select class=\"border border-slate-200 text-slate-900 rounded-md py-2 pl-3 pr-10 appearance-none outline-none cursor-pointer\" style=\"background-color: var(--sur"
+    ],
+    "width": 305
+  },
+  {
+    "label": "student-profile-desktop",
+    "offscreen": [],
+    "scrollWidth": 1440,
+    "unlabelled": [],
+    "width": 1440
+  },
+  {
+    "label": "faculty-problem-dashboard-desktop",
+    "offscreen": [],
+    "scrollWidth": 1440,
+    "unlabelled": [
+      "<select class=\"ui-surface text-slate-900 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500\"><option value=\"ALL\">All Branches</option><option",
+      "<select class=\"ui-surface text-slate-900 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500\"><option value=\"ALL\">All Semesters</option><optio",
+      "<select class=\"ui-surface text-slate-900 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500\"><option value=\"ALL\">All Batches</option><option "
+    ],
+    "width": 1440
+  },
+  {
+    "label": "assessment-form-landscape",
+    "offscreen": [],
+    "scrollWidth": 829,
+    "title": "Edit assessment details",
+    "unlabelled": [],
+    "width": 829
+  },
+  {
+    "label": "assessment-form-landscape-ready",
+    "offscreen": [],
+    "scrollWidth": 829,
+    "title": "Edit assessment details",
+    "unlabelled": [],
+    "width": 829
+  },
+  {
+    "label": "faculty-students-populated-phone",
+    "offscreen": [
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      }
+    ],
+    "scrollWidth": 375,
+    "title": "Student Register",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "faculty-students-phone-scrolled-right",
+    "offscreen": [
+      {
+        "left": -400.1499938964844,
+        "right": -307.57498931884766,
+        "text": "Previous"
+      },
+      {
+        "left": -221.21250915527344,
+        "right": -155.86251068115234,
+        "text": "Next"
+      }
+    ],
+    "scrollWidth": 375,
+    "title": "Student Register",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "faculty-without-delete-grant",
+    "offscreen": [
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      },
+      {
+        "left": 720.1749877929688,
+        "right": 787.5999908447266,
+        "text": "Delete"
+      }
+    ],
+    "scrollWidth": 375,
+    "title": "Student Register",
+    "unlabelled": [],
+    "width": 375
+  },
+  {
+    "label": "role-dialog-landscape-844",
+    "offscreen": [],
+    "scrollWidth": 829,
+    "title": "Role Management",
+    "unlabelled": [
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">",
+      "<input type=\"checkbox\">"
+    ],
+    "width": 829
+  }
+]

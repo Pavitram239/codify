@@ -1,12 +1,4 @@
-import React from 'react'
-import Header from './Header'
-
-function Duplicate() {
-  return (
-    <div>
-    <Header/>
-    Duplicate</div>
-  )
+import NotFoundError from "./NotFoundError";
+export default function Duplicate() {
+  return <NotFoundError />;
 }
-
-export default Duplicate

@@ -2,7 +2,25 @@
 
 This backend service is a complete, drop-in replacement for the legacy Node.js/Express/MongoDB backend, re-engineered using **Python 3.12+**, **Django 5.1**, **Django REST Framework (DRF)**, **PostgreSQL 16**, **Redis**, and **Celery**.
 
-All API routes, payload structures, HTTP status codes, cookie conventions, and business logic are 100% compatible with the React frontend without modifying any frontend code.
+The React frontend uses the Django API's existing payload conventions, with CSRF protection for cookie-authenticated writes.
+
+## Authentication and assessment rules
+
+- Browser clients first call `GET /api/v1/auth/csrf` and send its `csrfToken` as `X-CSRFToken` on login and cookie-authenticated writes. The supplied Axios instance handles this automatically. Set `BACKEND_ORIGIN` to the exact frontend origin so Django can validate it; use `DJANGO_COOKIE_SECURE=True` with HTTPS in production. Bearer-token requests do not require a CSRF token.
+- Logout uses `POST /api/v1/auth/logout`; GET does not change sessions.
+- Signup requires a chosen password validated by Django. Approval preserves that password. Bulk-created accounts receive random temporary passwords, visible to the registering faculty for that operation, and must change them at first login. Legacy public-identifier passwords are blocked; authorized staff can use `issue-initial-password` to issue a secure replacement for accounts that have not completed first login.
+- Password changes require the exact current password and revoke existing tokens for every role. Cookie-authenticated writes require CSRF; expired-cookie logout still clears the cookie. Students retain single-session enforcement.
+- Faculty can delete or manage only their own students. Contest changes and assignments require the contest's creator or an administrator. Faculty may read administrator-created contests and use administrator-created problems.
+- Students can read, run, and save drafts only for assigned problems. When a problem belongs to a contest assigned to that student, access requires an ongoing assigned contest. If the same problem is used in several assigned contests, any ongoing window permits access. Problems without an assigned contest remain available for practice.
+- Contest rankings include evaluated submissions from assigned students within the contest's start and end times. Submissions are timestamped when execution starts, so a run started before the deadline can finish afterward. Reusing a problem in overlapping contests can count the same submission in both rankings; there is no separate contest ID on submissions.
+- Student sessions expire with the access-token lifetime (`JWT_EXP_SECONDS`, default one day). Login replaces expired sessions automatically. The Compose `celery-beat` service schedules stale-session cleanup every five minutes; run only one Beat scheduler for a deployment.
+
+Run backend verification with `USE_SQLITE=True` and `python -m pytest apps/`. The suite isolates uploaded media in temporary directories. Apply migration `users.0002_unique_login_email` to enforce case-insensitive uniqueness of nonempty login emails; inspect existing duplicate emails before upgrading.
+
+The local Compose frontend uses `http://localhost:5185`, and the Django API is exposed on ports 3185 and 8185. Set `CLIENT_HOST_PORT`, `DJANGO_API_HOST_PORT`, `DJANGO_HOST_PORT`, `BACKEND_ORIGIN`, and `VITE_FRONTEND_ORIGIN` in `.env` when changing those ports.
+Local worker concurrency defaults to two Judge0 workers and two Celery workers to avoid excessive idle-process memory use on a shared development machine. Tune `JUDGE0_WORKER_COUNT` and `CELERY_WORKER_CONCURRENCY` for the intended deployment and validate its load capacity separately.
+
+Problem create/update payloads are validated before any writes. Nested samples and cases update atomically. Scores require an accepted judge status and matching output; authored memory budgets are passed to the judge without increasing them. Faculty submission inspection requires problem ownership; administrators retain access. Removing an assessment assignment preserves access supplied by another assessment. Ranking numbers are computed before display sorting, and assessment ranking times use labelled Asia/Kolkata time.
 
 ---
 

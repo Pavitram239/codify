@@ -1,12 +1,11 @@
-import React from "react";
+
 
 const Solution = () => {
   return (
     <div>
-      <h3 className="font-bold text-white">Solution</h3>
-      <p className="text-gray-400">
-        Here, you can view the solution or editorial for this problem once
-        available.
+      <h3 className="font-bold text-slate-900">Solution</h3>
+      <p className="text-slate-600">
+        No solution has been published for this problem.
       </p>
     </div>
   );

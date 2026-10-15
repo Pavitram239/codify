@@ -1,3 +1,4 @@
+from apps.users.access_policy import ModulePermission
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -6,10 +7,12 @@ from rest_framework.views import APIView
 from apps.code_drafts.models import CodeDraft
 from apps.code_drafts.serializers import CodeDraftModelSerializer, CodeDraftSaveSerializer
 from apps.problems.models import Problem
+from apps.problems.access import require_problem_access
+from django.shortcuts import get_object_or_404
 
 
 class SaveCodeDraftView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request):
         serializer = CodeDraftSaveSerializer(data=request.data)
@@ -22,12 +25,8 @@ class SaveCodeDraftView(APIView):
         problem_id = serializer.validated_data["problemId"]
         code_by_language = serializer.validated_data["codeByLanguage"]
 
-        # Ensure problem exists
-        if not Problem.objects.filter(id=problem_id).exists():
-            return Response(
-                {"success": False, "message": "Problem not found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        problem = get_object_or_404(Problem, id=problem_id)
+        require_problem_access(request.user, problem)
 
         code_draft, _ = CodeDraft.objects.update_or_create(
             user=request.user,
@@ -46,7 +45,7 @@ class SaveCodeDraftView(APIView):
 
 
 class GetCodeDraftView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request):
         problem_id = request.query_params.get("problemId")
@@ -56,6 +55,8 @@ class GetCodeDraftView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        problem = get_object_or_404(Problem, id=problem_id)
+        require_problem_access(request.user, problem)
         try:
             code_draft = CodeDraft.objects.get(user=request.user, problem_id=problem_id)
             return Response(

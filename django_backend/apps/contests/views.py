@@ -1,8 +1,14 @@
+from apps.users.resource_access import require_resource, visible_resources
+from apps.users.access_policy import ModulePermission
 import math
+from uuid import UUID
 from django.db import transaction
 from django.db.models import Q
+from django.utils import timezone
+from zoneinfo import ZoneInfo
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,36 +19,66 @@ from apps.contests.serializers import (
     ContestSerializer,
 )
 from apps.problems.models import Problem
+from apps.problems.access import require_problem_access
 from apps.problems.serializers import StudentListSerializer
 from apps.submissions.models import Submission
 from apps.users.models import User
-from apps.users.permissions import IsAdmin, IsAdminOrFaculty
+from apps.users.pagination import pagination_params
+
+
+def require_contest_access(user, contest, write=False, action=None):
+    require_resource(user, contest, "contests", action or ("edit" if write else "assign"))
+
+
+def resolve_contest_problems(user, identifiers):
+    problems = []
+    for identifier in identifiers:
+        try:
+            problem = Problem.objects.filter(id=UUID(identifier)).first()
+        except (ValueError, TypeError, AttributeError):
+            problem = Problem.objects.filter(title=identifier).first()
+        if problem is None:
+            raise ValidationError({"problems": "One or more selected problems do not exist."})
+        require_problem_access(user, problem)
+        if problem not in problems:
+            problems.append(problem)
+    return problems
+
+
+def resolve_students(identifiers):
+    students = []
+    for identifier in identifiers:
+        if not isinstance(identifier, str) or not identifier:
+            raise ValidationError({"studentIds": "Each student ID must be a valid UUID or institutional ID."})
+        try:
+            student = User.objects.filter(id=UUID(identifier), role="student").first()
+        except ValueError:
+            student = User.objects.filter(student_id=identifier, role="student").first()
+        if student is None:
+            raise ValidationError({"studentIds": "One or more selected students do not exist."})
+        if student not in students:
+            students.append(student)
+    return students
+
+
+def remove_unshared_assignments(contest, students):
+    for problem in contest.problems.all():
+        remaining_ids = set(Contest.objects.filter(problems=problem).exclude(pk=contest.pk)
+                            .values_list("assigned_students", flat=True))
+        problem.assigned_students.remove(*(s for s in students if s.pk not in remaining_ids))
 
 
 class ContestListCreateView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request):
         user = request.user
-        role = user.role
-
-        if role == "admin":
-            contests = Contest.objects.all().prefetch_related("problems", "assigned_students").select_related("created_by")
-        elif role == "faculty":
-            contests = Contest.objects.filter(
-                Q(created_by=user) | Q(created_by__role="admin")
-            ).prefetch_related("problems", "assigned_students").select_related("created_by")
-        elif role == "student":
-            contests = Contest.objects.filter(assigned_students=user).prefetch_related("problems", "assigned_students").select_related("created_by")
-        else:
-            return Response({"error": "Unauthorized access"}, status=status.HTTP_403_FORBIDDEN)
+        contests = visible_resources(user, Contest.objects.all(), "contests").prefetch_related("problems", "assigned_students").select_related("created_by")
 
         serializer = ContestSerializer(contests, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        if not (request.user.role in ["admin", "faculty"] or request.user.is_staff or request.user.is_superuser):
-            return Response({"error": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
 
         serializer = ContestCreateUpdateSerializer(data=request.data)
         if not serializer.is_valid():
@@ -50,6 +86,7 @@ class ContestListCreateView(APIView):
 
         data = serializer.validated_data
         problem_ids = data.get("problems", [])
+        problems = resolve_contest_problems(request.user, problem_ids)
 
         contest = Contest.objects.create(
             name=data["name"],
@@ -60,17 +97,13 @@ class ContestListCreateView(APIView):
         )
 
         if problem_ids:
-            problems = Problem.objects.filter(
-                Q(id__in=[p for p in problem_ids if len(p) == 36 or '-' in p]) |
-                Q(title__in=problem_ids)
-            )
             contest.problems.set(problems)
 
         return Response(ContestSerializer(contest).data, status=status.HTTP_201_CREATED)
 
 
 class ContestDetailView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get_contest(self, pk):
         return get_object_or_404(
@@ -81,29 +114,20 @@ class ContestDetailView(APIView):
     def get(self, request, pk):
         contest = self.get_contest(pk)
         user = request.user
-        role = user.role
-
-        if role == "admin" or user.is_staff or user.is_superuser:
-            pass
-        elif role == "faculty" and (contest.created_by_id == user.id or getattr(contest.created_by, "role", None) == "admin"):
-            pass
-        elif role == "student" and contest.assigned_students.filter(id=user.id).exists():
-            pass
-        else:
-            return Response({"error": "You do not have access to this contest."}, status=status.HTTP_403_FORBIDDEN)
+        require_resource(user, contest, "contests", "view")
 
         return Response(ContestSerializer(contest).data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
-        if not (request.user.role in ["admin", "faculty"] or request.user.is_staff or request.user.is_superuser):
-            return Response({"error": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
 
         contest = self.get_contest(pk)
-        serializer = ContestCreateUpdateSerializer(data=request.data, partial=True)
+        require_contest_access(request.user, contest, write=True)
+        serializer = ContestCreateUpdateSerializer(contest, data=request.data, partial=True)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         data = serializer.validated_data
+        problems = resolve_contest_problems(request.user, data["problems"]) if "problems" in data else None
         if "name" in data:
             contest.name = data["name"]
         if "description" in data:
@@ -115,33 +139,25 @@ class ContestDetailView(APIView):
         contest.save()
 
         if "problems" in data:
-            problem_ids = data["problems"]
-            problems = Problem.objects.filter(
-                Q(id__in=[p for p in problem_ids if len(p) == 36 or '-' in p]) |
-                Q(title__in=problem_ids)
-            )
             contest.problems.set(problems)
 
         return Response(ContestSerializer(contest).data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
-        if not (request.user.role in ["admin", "faculty"] or request.user.is_staff or request.user.is_superuser):
-            return Response({"error": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
 
         contest = self.get_contest(pk)
-
+        require_contest_access(request.user, contest, action="delete")
         with transaction.atomic():
             assigned_students = list(contest.assigned_students.all())
             if assigned_students:
-                for problem in contest.problems.all():
-                    problem.assigned_students.remove(*assigned_students)
+                remove_unshared_assignments(contest, assigned_students)
             contest.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AssignContestToStudentsView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminOrFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request, pk):
         student_ids = request.data.get("studentIds", [])
@@ -152,12 +168,9 @@ class AssignContestToStudentsView(APIView):
             )
 
         contest = get_object_or_404(Contest.objects.prefetch_related("problems", "assigned_students"), id=pk)
+        require_contest_access(request.user, contest, action="assign")
 
-        students = list(User.objects.filter(
-            Q(id__in=[s for s in student_ids if len(s) == 36 or '-' in s]) |
-            Q(student_id__in=student_ids),
-            role="student"
-        ))
+        students = resolve_students(student_ids)
 
         with transaction.atomic():
             contest.assigned_students.add(*students)
@@ -171,7 +184,7 @@ class AssignContestToStudentsView(APIView):
 
 
 class UnassignContestToStudentsView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminOrFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def post(self, request, pk):
         student_ids = request.data.get("studentIds", [])
@@ -182,16 +195,13 @@ class UnassignContestToStudentsView(APIView):
             )
 
         contest = get_object_or_404(Contest.objects.prefetch_related("problems", "assigned_students"), id=pk)
+        require_contest_access(request.user, contest, action="assign")
 
-        students = list(User.objects.filter(
-            Q(id__in=[s for s in student_ids if len(s) == 36 or '-' in s]) |
-            Q(student_id__in=student_ids)
-        ))
+        students = resolve_students(student_ids)
 
         with transaction.atomic():
             contest.assigned_students.remove(*students)
-            for problem in contest.problems.all():
-                problem.assigned_students.remove(*students)
+            remove_unshared_assignments(contest, students)
 
         return Response({
             "message": "Students unassigned from contest successfully.",
@@ -200,10 +210,11 @@ class UnassignContestToStudentsView(APIView):
 
 
 class GetAssignedStudentsView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminOrFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request, pk):
         contest = get_object_or_404(Contest, id=pk)
+        require_contest_access(request.user, contest)
 
         branch = request.query_params.get("branch")
         semester = request.query_params.get("semester")
@@ -226,10 +237,11 @@ class GetAssignedStudentsView(APIView):
 
 
 class GetUnassignedStudentsView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminOrFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request, pk):
         contest = get_object_or_404(Contest, id=pk)
+        require_contest_access(request.user, contest)
 
         branch = request.query_params.get("branch")
         semester = request.query_params.get("semester")
@@ -253,13 +265,14 @@ class GetUnassignedStudentsView(APIView):
 
 
 class ContestDashboardView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminOrFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request, pk):
         contest = get_object_or_404(Contest.objects.prefetch_related("problems"), id=pk)
+        if not (request.user.can("submissions.review_all") or (request.user.can("submissions.review_own") and contest.created_by_id == request.user.pk)):
+            raise PermissionDenied("You can only review your own contests.")
 
-        page = int(request.query_params.get("page", 1))
-        limit = int(request.query_params.get("limit", 10))
+        page, limit = pagination_params(request.query_params)
         sort_by = request.query_params.get("sortBy", "totalMarks")
         sort_order = request.query_params.get("sortOrder", "desc")
         branch = request.query_params.get("branch", "ALL")
@@ -279,7 +292,11 @@ class ContestDashboardView(APIView):
 
         submissions = Submission.objects.filter(
             problem_id__in=problem_ids,
-            user__role="student"
+            user__role="student",
+            user__in=contest.assigned_students.all(),
+            created_at__gte=contest.start_time,
+            created_at__lte=contest.end_time,
+            status__in=["completed", "rejected"],
         ).select_related("user", "problem")
 
         if branch != "ALL":
@@ -325,9 +342,14 @@ class ContestDashboardView(APIView):
         for student in student_scores.values():
             rankings.append({
                 **student,
-                "lastSubmissionDate": student["lastSubmissionTime"].strftime("%m/%d/%Y"),
-                "lastSubmissionTime": student["lastSubmissionTime"].strftime("%I:%M:%S %p"),
+                "lastSubmissionDate": timezone.localtime(student["lastSubmissionTime"], ZoneInfo("Asia/Kolkata")).strftime("%m/%d/%Y"),
+                "lastSubmissionTime": timezone.localtime(student["lastSubmissionTime"], ZoneInfo("Asia/Kolkata")).strftime("%I:%M:%S %p"),
+                "submissionTimezone": "Asia/Kolkata",
             })
+
+        rankings.sort(key=lambda s: (-s["totalMarks"], s["studentId"]))
+        for index, student in enumerate(rankings):
+            student["rank"] = index + 1
 
         reverse = (sort_order != "asc")
         if sort_by == "totalMarks":
@@ -336,9 +358,6 @@ class ContestDashboardView(APIView):
             rankings.sort(key=lambda s: s["studentId"], reverse=reverse)
         else:
             rankings.sort(key=lambda s: s["totalMarks"], reverse=reverse)
-
-        for index, s in enumerate(rankings):
-            s["rank"] = index + 1
 
         total_students = len(rankings)
         total_pages = math.ceil(total_students / limit) if limit > 0 else 1

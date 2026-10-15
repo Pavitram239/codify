@@ -23,7 +23,7 @@ COPY django_backend ./
 
 # Media files volume mount point
 RUN mkdir -p /app/media /app/static
-RUN chmod +x /app/entrypoint.sh
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 ENV DJANGO_SETTINGS_MODULE=config.settings.prod
 ENV PORT=8000

@@ -60,6 +60,7 @@ def problem_with_cases(db, user):
         is_hidden=True,
         order=1,
     )
+    prob.assigned_students.add(user)
     return prob
 
 

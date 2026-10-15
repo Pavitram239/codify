@@ -1,3 +1,4 @@
+from apps.users.access_policy import ModulePermission
 import math
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -12,11 +13,17 @@ from apps.submissions.serializers import (
     UserProblemSubmissionSerializer,
     UserSubmissionHistorySerializer,
 )
-from apps.users.permissions import IsAdminOrFaculty
+from apps.problems.models import Problem
+from rest_framework.exceptions import PermissionDenied
+
+
+def require_submission_owner(user, problem):
+    if not (user.can("submissions.review_all") or (user.can("submissions.review_own") and problem.created_by_id == user.id)):
+        raise PermissionDenied("You can only inspect submissions for your own problems.")
 
 
 class UserSubmissionsForProblemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request):
         problem_id = request.query_params.get("problem_id")
@@ -52,7 +59,7 @@ class UserSubmissionsForProblemView(APIView):
 
 
 class AllSubmissionsForProblemView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminOrFaculty]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request):
         problem_id = request.query_params.get("problem_id")
@@ -62,6 +69,8 @@ class AllSubmissionsForProblemView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        problem = get_object_or_404(Problem, id=problem_id)
+        require_submission_owner(request.user, problem)
         submissions = (
             Submission.objects.filter(problem_id=problem_id, user__role="student")
             .select_related("user")
@@ -97,7 +106,7 @@ class AllSubmissionsForProblemView(APIView):
 
 
 class AllSubmissionsForUserView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request):
         try:
@@ -138,7 +147,7 @@ class AllSubmissionsForUserView(APIView):
 
 
 class SubmissionDetailView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ModulePermission]
 
     def get(self, request, id):
         submission = get_object_or_404(
@@ -146,24 +155,11 @@ class SubmissionDetailView(APIView):
             id=id,
         )
 
-        user_role = request.user.role
-        user_id = request.user.id
-
-        # Role-based access control matching Express controller
-        if user_role == "student" and submission.user_id != user_id:
-            return Response(
-                {"message": "Unauthorized: Students can only view their own submissions."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
-        if user_role == "faculty" and submission.user.role == "admin":
-            return Response(
-                {"message": "Unauthorized: Faculty cannot view admin submissions."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
-        # Mask hidden test cases if user is a student
-        mask_hidden = (user_role == "student")
+        own = submission.user_id == request.user.pk and request.user.can("submissions.view_own")
+        review = request.user.can("submissions.review_all") or (request.user.can("submissions.review_own") and submission.problem.created_by_id == request.user.pk)
+        if not own and not review:
+            raise PermissionDenied("You do not have access to this submission.")
+        mask_hidden = not review
         serializer = SubmissionDetailSerializer(submission, context={"mask_hidden": mask_hidden})
 
         return Response(serializer.data, status=status.HTTP_200_OK)

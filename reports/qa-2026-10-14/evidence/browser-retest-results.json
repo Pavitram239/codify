@@ -1,0 +1,134 @@
+[
+  {
+    "id": "UI-A03",
+    "bug": "BUG-ERROR-TOAST",
+    "status": "Passed",
+    "actual": "Malformed email returned 400; form remained visible; no browser errors"
+  },
+  {
+    "id": "UI-PR03",
+    "bug": "BUG-FIELD-LABELS",
+    "status": "Passed",
+    "actual": "Profile text labels identify their controls"
+  },
+  {
+    "id": "UI-PR02",
+    "bug": "BUG-PROFILE-STATE",
+    "status": "Passed",
+    "actual": "Saved name appeared in shared header/sidebar without refresh"
+  },
+  {
+    "id": "UI-F01",
+    "bug": "BUG-DIALOG-KEYBOARD",
+    "status": "Passed",
+    "actual": "Escape closes dialog and restores opener focus"
+  },
+  {
+    "id": "UI-F02",
+    "bug": "BUG-BULK-RETRY",
+    "status": "Passed",
+    "actual": "Duplicate row is retained with its backend error"
+  },
+  {
+    "id": "UI-PR04",
+    "bug": "BUG-PROFILE-NO-EMAIL",
+    "status": "Passed",
+    "actual": "Email-null account saved its valid profile change"
+  },
+  {
+    "id": "UI-E02",
+    "bug": "BUG-EDITOR-LANGUAGE",
+    "status": "Passed",
+    "actual": "Monaco syntax follows Python and C++ selection"
+  },
+  {
+    "id": "UI-E04",
+    "bug": "BUG-SAVE-LABEL",
+    "status": "Passed",
+    "actual": "Save Code label is correct"
+  },
+  {
+    "id": "UI-GAP01",
+    "bug": "GAP-SOLUTION",
+    "status": "Passed",
+    "actual": "Solution shows explicit unpublished state"
+  },
+  {
+    "id": "LIVE-E01",
+    "bug": "",
+    "status": "Passed",
+    "actual": "Real python execution allPassed=true, marks=20"
+  },
+  {
+    "id": "LIVE-E02",
+    "bug": "",
+    "status": "Passed",
+    "actual": "Real python execution allPassed=false, marks=0"
+  },
+  {
+    "id": "LIVE-E03",
+    "bug": "",
+    "status": "Passed",
+    "actual": "Real python execution allPassed=false, marks=0"
+  },
+  {
+    "id": "LIVE-E04",
+    "bug": "",
+    "status": "Passed",
+    "actual": "Real python execution allPassed=false, marks=0"
+  },
+  {
+    "id": "LIVE-E05",
+    "bug": "",
+    "status": "Passed",
+    "actual": "Real python execution allPassed=false, marks=0"
+  },
+  {
+    "id": "LIVE-E06",
+    "bug": "",
+    "status": "Passed",
+    "actual": "Real cpp execution allPassed=true, marks=20"
+  },
+  {
+    "id": "LIVE-E07",
+    "bug": "",
+    "status": "Passed",
+    "actual": "Real java execution allPassed=true, marks=20"
+  },
+  {
+    "id": "LIVE-E08",
+    "bug": "BUG-MEMORY-ENFORCEMENT",
+    "status": "Passed",
+    "actual": "8 MB budget rejected 20 MB allocation with zero marks"
+  },
+  {
+    "id": "UI-S02",
+    "bug": "BUG-RANDOM-STATUS",
+    "status": "Passed",
+    "actual": "Controlled missing status displays Unknown"
+  },
+  {
+    "id": "LIVE-R320-profile",
+    "bug": "BUG-PROFILE-OVERFLOW",
+    "status": "Passed",
+    "actual": "{\"width\":320,\"document\":320}"
+  },
+  {
+    "id": "UI-P03",
+    "bug": "BUG-PROBLEM-ERROR",
+    "status": "Passed",
+    "actual": "404 has a clear missing state and return action"
+  },
+  {
+    "id": "UI-R01",
+    "bug": "BUG-ROLE-ROUTES",
+    "status": "Passed",
+    "actual": "Student gets Access denied; staff component/API request never mounts"
+  },
+  {
+    "id": "UI-A05",
+    "bug": "BUG-SESSION-RECOVERY",
+    "status": "Passed",
+    "actual": "Injected 401 clears the HTTP-only token cookie and local auth before returning to login; late responses are guarded by auth generation."
+  }
+]

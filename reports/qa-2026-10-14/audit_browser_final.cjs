@@ -1,0 +1,24 @@
+const fs=require('fs'),path=require('path');const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
+const f=JSON.parse(fs.readFileSync(path.join(__dirname,'live-fixtures.json'),'utf8'));
+const file=path.join(__dirname,'evidence/browser-live-results.json'),results=JSON.parse(fs.readFileSync(file,'utf8'));
+const api=process.env.QA_API_URL || 'http://localhost:3185/api/v1',base=process.env.WORKSPACE_URL || 'http://localhost:5185';
+function row(id,area,scenario,expected,actual,passed,extra={}){results.push({id,area,scenario,expected,actual,status:passed?'Passed':'Failed',role:'Faculty',method:'Live browser/API',steps:'',source:'',bug:'',...extra});console.log(`${passed?'PASS':'FAIL'} ${id}: ${actual.slice(0,220)}`);}
+(async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try{
+  async function login(role){const context=await browser.newContext({viewport:{width:1440,height:1000}});const csrf=await context.request.get(api+'/auth/csrf');const headers={Origin:base,'X-CSRFToken':(await csrf.json()).csrfToken};const login=await context.request.post(api+'/auth/login',{headers,data:{id:f.users[role].username,password:f.password}});if(!(await login.json()).success)throw Error('QA login failed');const page=await context.newPage();page.setDefaultTimeout(12000);return{context,page,headers};}
+  const admin=await login('admin');await admin.page.goto(base+'/profile');await admin.page.getByRole('button',{name:'Edit Details',exact:true}).click();await admin.page.locator('input[name=name]').fill('QA Admin Missing Email');const email=admin.page.locator('input[type=email]');const emailValue=await email.inputValue();const readOnly=await email.getAttribute('readonly');await admin.page.getByRole('button',{name:'Save Changes',exact:true}).click();await admin.page.getByText('Username and email are required.',{exact:true}).waitFor();
+  row('UI-PR04','Profile','Accounts without email can edit their otherwise valid profile','Profile save succeeds or the user can add the required email',`Email blank=${emailValue===''}; email read-only=${readOnly!==null}; saving shows Username and email are required`,false,{role:'Admin',steps:'Use a temporary allowed account with email=null; edit its name and save',source:'client/src/componets/Profile/Profile.jsx / ProfileRight.jsx',bug:'BUG-PROFILE-NO-EMAIL'});
+  await admin.context.request.post(api+'/auth/logout',{headers:admin.headers});await admin.context.close();
+
+  const student=await login('student');let denied;
+  student.page.on('response',r=>{if(r.url().includes('/admin/users-sessions'))denied=r.status();});
+  await student.page.goto(base+'/session-management');await student.page.getByRole('heading',{name:'Session Management',exact:true}).waitFor();await student.page.waitForTimeout(300);
+  row('UI-R01','Role permissions','Student deep-link to administration displays an access-denied screen','Staff-only page is blocked in the UI before showing staff actions',`Backend request HTTP ${denied}; staff Session Management heading still rendered for a student`,false,{role:'Student',steps:'As a student, directly open /session-management',source:'client/src/componets/Layout.jsx',bug:'BUG-ROLE-ROUTES'});
+
+  await student.page.route('**/api/v1/submissions/user/submissions**',async r=>{const response=await r.fetch();const json=await response.json();json.submissions=[{...json.submissions[0],status:null}];await r.fulfill({response,json});});
+  await student.page.goto(base+'/profile');await student.page.locator('.application-page li .text-xs').first().waitFor();const status=await student.page.locator('.application-page li .text-xs').first().innerText();
+  row('UI-S02','History and submissions','Missing submission status is not replaced by a fabricated result','Missing status displays Unknown or a clear unavailable state',`Missing API status rendered as ${status}`,/unknown|unavailable|pending verification/i.test(status),{role:'Student',steps:'Inject a controlled null status in a real submission response, then open profile history',method:'Browser with injected missing status',source:'client/src/componets/SubmissionPage.jsx:getRandomStatus',bug:'BUG-RANDOM-STATUS'});
+  await student.page.unroute('**/api/v1/submissions/user/submissions**');
+  await student.page.goto(base+'/problems/'+f.problemId);await student.page.getByRole('button',{name:'Save Codez',exact:true}).waitFor();
+  row('UI-E04','Code editor','Draft save action has the correct label','Save Code',`Actual button text: Save Codez`,false,{role:'Student',steps:'Open any problem and inspect the draft save button',source:'client/src/componets/CodeEditor/TestCaseResults.jsx',bug:'BUG-SAVE-LABEL'});
+  await student.context.request.post(api+'/auth/logout',{headers:student.headers});await student.context.close();
+}finally{fs.writeFileSync(file,JSON.stringify(results,null,2));await browser.close();}})().catch(e=>{console.error(e.message);process.exitCode=1;});

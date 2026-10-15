@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
+import { useState, useEffect, useRef } from "react";
 import { User, Github, Linkedin, Edit, Upload, X } from "lucide-react";
 import axiosInstance from "../../utils/axiosInstance";
 import toast from "react-hot-toast";
@@ -45,7 +46,7 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
   }, [selectedFile]);
 
   const githubURL = formData.github
-    ? `https://github.com/${formData.github}`
+    ? (formData.github.startsWith("https://") || formData.github.startsWith("http://") ? formData.github : `https://github.com/${encodeURIComponent(formData.github)}`)
     : null;
   const linkedInURL = formData.linkedIn || null;
 
@@ -126,19 +127,19 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
 
   return (
     <div 
-      className={`sticky top-20 bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-xl shadow-2xl p-8 border border-gray-700 transition-opacity duration-500 ease-in-out ${
+      className={`sticky top-20 ui-gradient   text-slate-900 rounded-lg ui-card-shadow p-8 border border-slate-200 transition-opacity duration-500 ease-in-out ${
         contentReady ? "opacity-100" : "opacity-0"
       }`}
     >
       <div className="flex flex-col items-center">
         <div className="relative mb-6">
           {combinedLoading ? (
-            <div className="w-40 h-40 rounded-full bg-gray-700 flex items-center justify-center">
+            <div className="w-40 h-40 rounded-full ui-surface flex items-center justify-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
             </div>
           ) : (
             <div className="relative group">
-              <div className="w-40 h-40 rounded-full overflow-hidden ring-4 ring-blue-500 shadow-lg transition-all duration-300 hover:ring-blue-400">
+              <div className="w-40 h-40 rounded-full overflow-hidden ring-4 ring-blue-500 ui-card-shadow transition-all duration-300 hover:ring-blue-400">
                 {selectedFile ? (
                   <img
                     src={imagePreview}
@@ -154,12 +155,12 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
                       // Handle image load errors
                       e.target.onerror = null;
                       e.target.src = "/default-img.png"; // Set to a default placeholder image
-                      e.target.classList.add("bg-gray-700"); // Add a fallback background color
+                      e.target.classList.add("ui-surface"); // Add a fallback background color
                     }}
                   />
                 ) : (
-                  <div className="w-full h-full bg-gray-700 flex items-center justify-center">
-                    <User size={80} className="text-gray-400" />
+                  <div className="w-full h-full ui-surface flex items-center justify-center">
+                    <User size={80} className="text-slate-600" />
                   </div>
                 )}
               </div>
@@ -169,7 +170,7 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
               }`}>
                 <button
                   onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                  className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full transition-all transform hover:scale-110"
+                  className="bg-blue-600 hover:bg-blue-700 text-slate-900 p-2 rounded-full transition-all transform hover:scale-110"
                   disabled={combinedLoading}
                 >
                   <Edit size={20} />
@@ -179,7 +180,7 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
           )}
         </div>
 
-        <h2 className="text-2xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 transition-all duration-300">
+        <h2 className="text-2xl font-bold mb-2  text-slate-900 ui-gradient   transition-all duration-300">
           {formData.name || "Your Name"}
         </h2>
 
@@ -190,8 +191,8 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
             rel="noopener noreferrer"
             className={`transition-all p-2 rounded-full ${
               githubURL
-                ? "bg-gray-700 text-white hover:bg-gray-600 hover:scale-110"
-                : "bg-gray-800 text-gray-500 cursor-not-allowed"
+                ? "ui-surface text-slate-900 hover:ui-subtle hover:scale-110"
+                : "ui-surface text-slate-600 cursor-not-allowed"
             }`}
             title={githubURL ? "GitHub Profile" : "No GitHub profile available"}
             onClick={(e) => !githubURL && e.preventDefault()}
@@ -204,8 +205,8 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
             rel="noopener noreferrer"
             className={`transition-all p-2 rounded-full ${
               linkedInURL
-                ? "bg-gray-700 text-white hover:bg-gray-600 hover:scale-110"
-                : "bg-gray-800 text-gray-500 cursor-not-allowed"
+                ? "ui-surface text-slate-900 hover:ui-subtle hover:scale-110"
+                : "ui-surface text-slate-600 cursor-not-allowed"
             }`}
             title={linkedInURL ? "LinkedIn Profile" : "No LinkedIn profile available"}
             onClick={(e) => !linkedInURL && e.preventDefault()}
@@ -218,9 +219,9 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
           onClick={toggleEdit}
           className={`px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
             isEditing
-              ? "bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800"
-              : "bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800"
-          } text-white shadow-lg`}
+              ? "ui-gradient    "
+              : "ui-gradient    "
+          } text-slate-900 ui-card-shadow`}
         >
           {isEditing ? "Cancel Edit" : "Edit Details"}
         </button>
@@ -240,7 +241,7 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
               <button
                 onClick={() => fileInputRef.current && fileInputRef.current.click()}
                 disabled={combinedLoading}
-                className="w-full bg-gradient-to-r from-indigo-500 to-blue-600 text-white rounded-lg px-4 py-3 shadow-lg hover:from-indigo-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+                className="w-full ui-gradient   text-slate-900 rounded-lg px-4 py-3 ui-card-shadow   focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
               >
                 <Upload size={18} />
                 <span>Select New Image</span>
@@ -249,12 +250,12 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
 
             {selectedFile && (
               <div className="space-y-3 animate-fade-in">
-                <div className="text-sm text-gray-300 bg-gray-800 p-3 rounded-lg flex items-center">
+                <div className="text-sm text-slate-600 ui-surface p-3 rounded-lg flex items-center">
                   <div className="flex-1 truncate">{selectedFile.name}</div>
                   <button
                     onClick={() => setSelectedFile(null)}
                     disabled={combinedLoading}
-                    className="text-gray-400 hover:text-red-400 ml-2 disabled:opacity-50"
+                    className="text-slate-600 hover:text-red-700 ml-2 disabled:opacity-50"
                   >
                     <X size={16} />
                   </button>
@@ -262,7 +263,7 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
                 <button
                   onClick={handleUpdateProfilePic}
                   disabled={combinedLoading}
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg px-4 py-3 shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+                  className="w-full ui-gradient   text-slate-900 rounded-lg px-4 py-3 ui-card-shadow   focus:outline-none focus:ring-2 focus:ring-green-400 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
                 >
                   {combinedLoading ? (
                     <>
@@ -283,7 +284,7 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
               <button
                 onClick={handleRemoveImage}
                 disabled={combinedLoading}
-                className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg px-4 py-3 shadow-lg hover:from-red-600 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+                className="w-full ui-gradient   text-slate-900 rounded-lg px-4 py-3 ui-card-shadow   focus:outline-none focus:ring-2 focus:ring-red-400 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
               >
                 {combinedLoading ? (
                   <>
@@ -303,6 +304,14 @@ const ProfileLeft = ({ formData, toggleEdit, isEditing, imageUrl }) => {
       </div>
     </div>
   );
+};
+
+
+ProfileLeft.propTypes = {
+  formData: PropTypes.object,
+  toggleEdit: PropTypes.func,
+  isEditing: PropTypes.bool,
+  imageUrl: PropTypes.string,
 };
 
 export default ProfileLeft;

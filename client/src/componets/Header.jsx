@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-import { logout, setUser } from "../redux/userSlice";
+import { logout } from "../redux/userSlice";
 import axiosInstance from "../utils/axiosInstance";
 import { persistor } from "../redux/store";
 import { logoutHistory } from "../redux/slices/historySlice";
@@ -30,7 +30,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [, setIsAdmin] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScreenSmall, setIsScreenSmall] = useState(false);
   const [isOnMakeContest, setIsOnMakeContest] = useState(false);
@@ -105,7 +105,7 @@ const Header = () => {
 
   const logoutHandler = async () => {
     try {
-      await axiosInstance.get("auth/logout");
+      await axiosInstance.post("auth/logout");
       localStorage.removeItem("UserToken");
       
       // Dispatch actions in the correct order

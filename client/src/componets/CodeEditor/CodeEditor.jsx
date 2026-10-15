@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
+import { useState, useEffect, useRef } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import ScoreAndLanguageSelector from "./ScoreAndLanguageSelector";
 import CodeEditorArea from "./CodeEditorArea";
@@ -13,7 +14,7 @@ const CodeEditor = ({ language, setLanguage, problem, onSubmission }) => {
   const [assignLoading, setAssignLoading] = useState(false); // For button-specific loading
   const userId = user._id;
   const dispatch = useDispatch();
-  const testcases = problem.testCases;
+  
 
   // console.log(testcases[0]);
 
@@ -46,7 +47,7 @@ int main() {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState(null);
   const previousLanguageRef = useRef(language);
-  const [theme, setTheme] = useState("vs-dark"); // Default theme
+  const [theme, setTheme] = useState("light"); // Default theme
 
   useEffect(() => {
     const fetchSavedCode = async () => {
@@ -265,7 +266,7 @@ int main() {
           onSubmission(savedSubmission);
           dispatch(fetchHistory({ page: 1, limit: 9 }));
           dispatch(setCurrentPage(1));
-          dispatch(fetchSubmissions({ page: 1, limit: 7 }));
+          dispatch(fetchSubmissions({ page: 1, limit: 7, force: true }));
         }
       }
     } catch (error) {
@@ -294,7 +295,7 @@ int main() {
   };
 
   return (
-    <div className="code-editor bg-gray-900 p-6 shadow-lg">
+    <div className="code-editor ui-page p-6 ui-card-shadow">
       <ScoreAndLanguageSelector
         language={language}
         handleLanguageChange={handleLanguageChange}
@@ -325,7 +326,7 @@ int main() {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
           <div className="flex flex-col items-center">
             <svg
-              className="animate-spin h-12 w-12 text-blue-500 mb-4"
+              className="animate-spin h-12 w-12 text-blue-700 mb-4"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -344,12 +345,20 @@ int main() {
                 d="M4 12a8 8 0 018-8v8H4z"
               ></path>
             </svg>
-            <p className="text-white text-lg font-semibold">Submitting...</p>
+            <p className="text-slate-900 text-lg font-semibold">Submitting...</p>
           </div>
         </div>
       )}
     </div>
   );
+};
+
+
+CodeEditor.propTypes = {
+  language: PropTypes.string,
+  setLanguage: PropTypes.func,
+  problem: PropTypes.object,
+  onSubmission: PropTypes.func,
 };
 
 export default CodeEditor;

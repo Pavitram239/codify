@@ -2,7 +2,7 @@
  * Utility to manage smooth transitions between pages/components
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { startNavigation, endNavigation } from '../redux/slices/historySlice';
 
@@ -42,7 +42,7 @@ export const usePageTransition = (initialState = false, transitionTime = 300) =>
  * @param {Number} duration - The transition duration in ms
  */
 export const withTransition = (Component, duration = 300) => {
-  return (props) => {
+  return function WithTransitionWrapper(props) {
     const isVisible = usePageTransition(false, duration);
     
     return (

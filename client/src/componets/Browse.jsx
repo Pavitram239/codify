@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Code2, Trophy, Users, Timer, Terminal, Rocket, ExternalLink } from "lucide-react";
-import Header from "./Header";
-import { useAnimation } from "framer-motion";
+import { Code2, Trophy, Users, Timer, Rocket, ExternalLink } from "lucide-react";
+
+
 import { useNavigate } from "react-router-dom";
 
 // Adding the SimpleCodeBlock component
@@ -21,23 +21,23 @@ int main() {
     const tokens = line.split(/(\bint\b|\breturn\b|\bcout\b|\bendl\b|#include\b|<|>|"[^"]*"|\/\/.*|\{|\}|\(|\)|;)/g);
     return tokens.map((token, i) => {
       if (!token) return null;
-      if (/^#include\b/.test(token)) return <span key={i} className="text-blue-400">{token}</span>;
-      if (/^<.*>$/.test(token)) return <span key={i} className="text-blue-300">{token}</span>;
-      if (/^int\b/.test(token)) return <span key={i} className="text-purple-400">{token}</span>;
-      if (/^return\b/.test(token)) return <span key={i} className="text-purple-400">{token}</span>;
-      if (/^cout\b|endl\b/.test(token)) return <span key={i} className="text-green-300">{token}</span>;
-      if (/^\/\/.*/.test(token)) return <span key={i} className="text-gray-500 italic">{token}</span>;
-      if (/^"[^"]*"$/.test(token)) return <span key={i} className="text-yellow-300">{token}</span>;
+      if (/^#include\b/.test(token)) return <span key={i} className="text-blue-700">{token}</span>;
+      if (/^<.*>$/.test(token)) return <span key={i} className="text-blue-700">{token}</span>;
+      if (/^int\b/.test(token)) return <span key={i} className="text-blue-700">{token}</span>;
+      if (/^return\b/.test(token)) return <span key={i} className="text-blue-700">{token}</span>;
+      if (/^cout\b|endl\b/.test(token)) return <span key={i} className="text-green-700">{token}</span>;
+      if (/^\/\/.*/.test(token)) return <span key={i} className="text-slate-600 italic">{token}</span>;
+      if (/^"[^"]*"$/.test(token)) return <span key={i} className="text-yellow-700">{token}</span>;
       if (/^\{|\}|\(|\)|;$/.test(token)) return <span key={i} className="text-pink-400">{token}</span>;
       return <span key={i}>{token}</span>;
     });
   };
 
   return (
-    <div className="bg-[#0d1117] text-gray-300 p-4 rounded font-mono text-sm leading-relaxed">
+    <div className="bg-[#0d1117] text-slate-600 p-4 rounded font-mono text-sm leading-relaxed">
       {codeString.split("\n").map((line, i) => (
         <div key={i} className="flex items-start">
-          <span className="w-6 text-right pr-3 text-gray-500 select-none">{i + 1}</span>
+          <span className="w-6 text-right pr-3 text-slate-600 select-none">{i + 1}</span>
           <pre className="whitespace-pre-wrap">{getHighlightedLine(line)}</pre>
         </div>
       ))}
@@ -54,44 +54,44 @@ const Browse = () => {
 
   const features = [
     {
-      icon: <Code2 className="w-10 h-10 text-blue-400" />,
+      icon: <Code2 className="w-10 h-10 text-blue-700" />,
       title: "Coding Challenges",
       description: "Tackle real-world programming problems and sharpen your skills with our curated challenges.",
-      color: "from-blue-500/20 to-blue-600/20",
+      color: " ",
       borderColor: "border-blue-500/30",
-      hoverColor: "group-hover:text-blue-400"
+      hoverColor: "group-hover:text-blue-700"
     },
     {
-      icon: <Trophy className="w-10 h-10 text-yellow-400" />,
+      icon: <Trophy className="w-10 h-10 text-yellow-700" />,
       title: "Compete & Win",
       description: "Participate in contests, earn points and climb the leaderboard to showcase your expertise.",
-      color: "from-yellow-500/20 to-yellow-600/20",
+      color: " ",
       borderColor: "border-yellow-500/30",
-      hoverColor: "group-hover:text-yellow-400"
+      hoverColor: "group-hover:text-yellow-700"
     },
     {
-      icon: <Users className="w-10 h-10 text-green-400" />,
+      icon: <Users className="w-10 h-10 text-green-700" />,
       title: "Global Community",
       description: "Connect with developers worldwide, share solutions and learn from diverse perspectives.",
-      color: "from-green-500/20 to-green-600/20",
+      color: " ",
       borderColor: "border-green-500/30",
-      hoverColor: "group-hover:text-green-400"
+      hoverColor: "group-hover:text-green-700"
     },
     {
-      icon: <Timer className="w-10 h-10 text-purple-400" />,
+      icon: <Timer className="w-10 h-10 text-blue-700" />,
       title: "Time-based Contests",
       description: "Test your speed and efficiency in timed competitions designed to push your limits.",
-      color: "from-purple-500/20 to-purple-600/20", 
+      color: " ",
       borderColor: "border-purple-500/30",
-      hoverColor: "group-hover:text-purple-400"
+      hoverColor: "group-hover:text-blue-700"
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-950 to-black text-white">
+    <div className="ui-page-height ui-gradient   to-black text-slate-900">
       <main className="container mx-auto px-4 pb-12">
         <HeroSection />
-        
+
         {/* Features Section with Enhanced Design */}
         <section className="py-20">
           <motion.div
@@ -99,15 +99,15 @@ const Browse = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-16"
           >
-            <span className="px-4 py-2 rounded-full bg-blue-900/30 text-blue-400 text-sm font-medium">Our Platform Features</span>
-            <h2 className="mt-4 text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-400 via-purple-400 to-blue-500 text-transparent bg-clip-text">
+            <span className="px-4 py-2 rounded-full bg-blue-50 text-blue-700 text-sm font-medium">Our Platform Features</span>
+            <h2 className="mt-4 text-4xl font-bold tracking-tight ui-gradient    text-slate-900 ">
               Everything You Need to Excel
             </h2>
-            <p className="mt-3 max-w-2xl mx-auto text-gray-400">
+            <p className="mt-3 max-w-2xl mx-auto text-slate-600">
               Designed to help programmers of all levels improve their skills through practical challenges and competition.
             </p>
           </motion.div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {features.map((feature, index) => (
               <motion.div
@@ -115,11 +115,11 @@ const Browse = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * index }}
-                className={`group rounded-xl p-6 bg-gradient-to-br ${feature.color} backdrop-blur-sm border ${feature.borderColor} hover:border-opacity-70 transition-all duration-300 hover:-translate-y-1`}
+                className={`group rounded-lg p-6 ui-gradient ${feature.color} backdrop-blur-sm border ${feature.borderColor} hover:border-opacity-70 transition-all duration-300 hover:-translate-y-1`}
               >
-                <div className="mb-4 bg-gray-800/50 p-3 rounded-lg inline-block">{feature.icon}</div>
+                <div className="mb-4 ui-surface p-3 rounded-lg inline-block">{feature.icon}</div>
                 <h3 className={`text-xl font-bold mb-3 ${feature.hoverColor} transition-colors duration-300`}>{feature.title}</h3>
-                <p className="text-gray-300 leading-relaxed">{feature.description}</p>
+                <p className="text-slate-600 leading-relaxed">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -127,10 +127,10 @@ const Browse = () => {
 
         {/* Join Contest Section */}
         <section className="py-12 my-12">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="rounded-2xl bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/30 border border-blue-700/20 p-10 text-center relative overflow-hidden"
+            className="rounded-lg ui-gradient    border border-blue-700/20 p-10 text-center relative overflow-hidden"
           >
             {/* Animated background elements */}
             <div className="absolute inset-0 overflow-hidden">
@@ -158,23 +158,23 @@ const Browse = () => {
             </div>
 
             <div className="relative z-10">
-              <motion.h2 
-                className="text-3xl md:text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400"
+              <motion.h2
+                className="text-3xl md:text-4xl font-bold mb-6 text-slate-900  ui-gradient  "
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
               >
                 Ready to Test Your Skills?
               </motion.h2>
-              
-              <motion.p 
-                className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto"
+
+              <motion.p
+                className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 }}
               >
                 Join our upcoming coding contests and challenge yourself against programmers worldwide.
               </motion.p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <motion.button
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -182,12 +182,12 @@ const Browse = () => {
                   transition={{ delay: 0.3 }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.97 }}
-                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl text-lg font-semibold shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+                  className="px-8 py-4 ui-gradient   rounded-lg text-lg font-semibold ui-card-shadow hover:shadow-blue-500/20 transition-all duration-300"
                   onClick={() => navigate('/contests')}
                 >
                   View Upcoming Contests
                 </motion.button>
-                
+
                 <motion.button
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -195,7 +195,7 @@ const Browse = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setIsPopupOpen(true)}
-                  className="px-8 py-4 border border-blue-500/30 hover:border-blue-400 rounded-xl text-lg font-semibold hover:bg-blue-900/20 transition-all duration-300"
+                  className="px-8 py-4 border border-blue-500/30 hover:border-blue-400 rounded-lg text-lg font-semibold hover:bg-blue-50 transition-all duration-300"
                 >
                   Join with Code
                 </motion.button>
@@ -218,31 +218,31 @@ const Browse = () => {
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-gray-800 border border-gray-700 rounded-xl p-6 max-w-md w-full"
+                className="ui-surface border border-slate-200 rounded-lg p-6 max-w-md w-full"
                 onClick={(e) => e.stopPropagation()}
               >
                 <h3 className="text-xl font-bold mb-4">Join Contest</h3>
-                <p className="text-gray-300 mb-6">Enter the contest code provided by the organizer to join the competition.</p>
-                
+                <p className="text-slate-600 mb-6">Enter the contest code provided by the organizer to join the competition.</p>
+
                 <div className="space-y-4">
                   <input
                     type="text"
                     value={joinCode}
                     onChange={(e) => setJoinCode(e.target.value)}
                     placeholder="Enter contest code"
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 ui-page border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  
-                  {errorMessage && <p className="text-red-400 text-sm">{errorMessage}</p>}
-                  
+
+                  {errorMessage && <p className="text-red-700 text-sm">{errorMessage}</p>}
+
                   <div className="flex gap-3 justify-end">
                     <button
                       onClick={() => setIsPopupOpen(false)}
-                      className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
+                      className="px-4 py-2 text-slate-600 hover:text-slate-900 transition-colors"
                     >
                       Cancel
                     </button>
-                    
+
                     <button
                       onClick={() => {
                         setIsLoading(true);
@@ -285,7 +285,7 @@ export default Browse;
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen overflow-hidden px-4 sm:px-6 lg:px-8 flex justify-center items-center">
+    <section className="relative ui-page-height overflow-hidden px-4 sm:px-6 lg:px-8 flex justify-center items-center">
       <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row items-center">
         {/* Left Content */}
         <motion.div
@@ -295,30 +295,30 @@ const HeroSection = () => {
           transition={{ duration: 1, ease: "easeOut" }}
         >
           <div className="text-center md:text-left">
-            <div className="inline-flex items-center gap-2 mb-2 px-4 py-2 rounded-full bg-blue-900/50 text-blue-300 backdrop-blur-sm border border-blue-700/30">
+            <div className="inline-flex items-center gap-2 mb-2 px-4 py-2 rounded-full bg-blue-50 text-blue-700 backdrop-blur-sm border border-blue-700/30">
               <Rocket size={20} />
               <span className="font-medium">Welcome to Codify</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 mb-4 leading-tight tracking-tight">
+            <h1 className="text-4xl md:text-5xl font-semibold text-slate-900  ui-gradient    mb-4 leading-tight tracking-tight">
               Code Without Limits <br className="hidden sm:inline" />
-              <span className="relative text-white">
+              <span className="relative text-slate-900">
                 Think. Build. Dominate.
-                <span className="absolute -bottom-1 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 rounded-full" />
+                <span className="absolute -bottom-1 left-0 w-full h-1.5 ui-gradient    rounded-full" />
               </span>
             </h1>
 
-            <p className="text-lg text-gray-300 max-w-3xl mx-auto md:mx-0 leading-relaxed">
-              Elevate your programming journey on a platform where challenges 
-              ignite innovation, competitions forge excellence, and code 
+            <p className="text-lg text-slate-600 max-w-3xl mx-auto md:mx-0 leading-relaxed">
+              Elevate your programming journey on a platform where challenges
+              ignite innovation, competitions forge excellence, and code
               becomes your signature in the tech world.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <button className="px-6 py-3 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-all duration-300">
+              <button className="px-6 py-3 bg-blue-600 text-slate-900 rounded-md font-medium hover:bg-blue-700 transition-all duration-300">
                 Start Coding
               </button>
-              <button className="px-6 py-3 border border-blue-500 text-blue-400 rounded-md font-medium hover:bg-blue-900/20 transition-all duration-300">
+              <button className="px-6 py-3 border border-blue-500 text-blue-700 rounded-md font-medium hover:bg-blue-50 transition-all duration-300">
                 Explore Challenges
               </button>
             </div>
@@ -332,16 +332,16 @@ const HeroSection = () => {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
         >
-          <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-2xl overflow-hidden">
-            <div className="bg-gray-800 px-4 py-2 flex items-center">
+          <div className="ui-page border border-slate-200 rounded-lg ui-card-shadow overflow-hidden">
+            <div className="ui-surface px-4 py-2 flex items-center">
               <div className="flex space-x-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                 <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                 <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               </div>
-              <div className="ml-4 text-gray-400 text-sm font-mono">challenge.js</div>
+              <div className="ml-4 text-slate-600 text-sm font-mono">challenge.js</div>
             </div>
-            <div className="p-4 font-mono text-sm text-gray-300">
+            <div className="p-4 font-mono text-sm text-slate-600">
               <SimpleCodeBlock />
             </div>
           </div>
@@ -370,8 +370,8 @@ const Footer = () => {
           transition={{ delay: 0.5, duration: 0.5 }}
         />
 
-        {/* Footer Text */} 
-        <p className="text-gray-600 text-sm">
+        {/* Footer Text */}
+        <p className="text-slate-700 text-sm">
           Coding Platform - KDPIT
         </p>
 
@@ -389,7 +389,7 @@ const Footer = () => {
         </motion.a>
 
         {/* Copyright */}
-        <p className="mt-6 text-gray-500 text-xs">
+        <p className="mt-6 text-slate-600 text-xs">
           &copy; {new Date().getFullYear()}{" "}
           <span className="font-semibold">CHARUSAT UNIVERSITY - KDPIT</span>.
           All rights reserved.

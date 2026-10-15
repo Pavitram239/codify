@@ -1,0 +1,5 @@
+{
+  "status": "Passed",
+  "scenario": "Admin UI issues a random initial password to a bulk-created student; first login requires a password change and then authenticates successfully",
+  "secretsLogged": false
+}

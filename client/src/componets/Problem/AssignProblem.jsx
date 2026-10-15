@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import toast from "react-hot-toast";
@@ -35,7 +35,7 @@ const AssignProblem = () => {
           }
         );
         setUnassignedStudents(response.data.unassignedStudents);
-      } catch (err) {
+      } catch {
         toast.error("Failed to fetch unassigned students. Please try again.");
         setError("Failed to fetch unassigned students");
       } finally {
@@ -83,7 +83,7 @@ const AssignProblem = () => {
       toast.success(res.data.message);
       setSelectedStudents([]);
       setError(null);
-    } catch (error) {
+    } catch {
       toast.error("Failed to assign students. Please try again.");
       setError("Failed to assign students. Please try again.");
     } finally {
@@ -98,8 +98,8 @@ const AssignProblem = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gray-900 text-white">
-      <h1 className="text-2xl font-bold mb-4 pt-20 justify-center flex items-center">
+    <div className="relative ui-page-height ui-page text-slate-900">
+      <h1 className="text-2xl font-bold mb-4 ui-page-top justify-center flex items-center">
         List of Students unAssigned to the Problem
       </h1>
 
@@ -109,7 +109,7 @@ const AssignProblem = () => {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
           <div className="flex flex-col items-center">
             <svg
-              className="animate-spin h-12 w-12 text-blue-500 mb-4"
+              className="animate-spin h-12 w-12 text-blue-700 mb-4"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -128,13 +128,13 @@ const AssignProblem = () => {
                 d="M4 12a8 8 0 018-8v8H4z"
               ></path>
             </svg>
-            <p className="text-white text-lg font-semibold">Assigning...</p>
+            <p className="text-slate-900 text-lg font-semibold">Assigning...</p>
           </div>
         </div>
       )}
 
       <button
-        className="py-2 px-6 ml-6 bg-gradient-to-r mb-4 from-blue-500 to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-700 active:scale-95 transition transform duration-200"
+        className="py-2 px-6 ml-6 ui-gradient mb-4   text-slate-900 font-semibold rounded-lg shadow-md   active:scale-95 transition transform duration-200"
         onClick={() => navigate(`/assignedStudents/${problemId}`)}
       >
         View Assigned Students
@@ -164,7 +164,7 @@ const AssignProblem = () => {
         <button
           onClick={handleAssign}
           disabled={selectedStudents.length === 0}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:bg-gray-600"
+          className="bg-green-500 text-slate-900 px-4 py-2 rounded hover:bg-green-600 disabled:ui-subtle"
         >
           Assign Problem
         </button>

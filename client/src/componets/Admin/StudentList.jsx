@@ -1,10 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import toast from "react-hot-toast";
+import InitialPasswordButton from "../InitialPasswordButton";
+import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
+import { can } from "../../utils/permissions";
+import { Modal } from "../access/AccessUI";
+import { errorMessage } from "../../utils/errorMessage";
+import "../../CSS/AccessManagement.css";
 
-const StudentList = () => {
-  const { facultyId } = useParams();
+const StudentList = ({ embedded = false, facultyId: selectedFacultyId }) => {
+  const params = useParams();
+  const facultyId = selectedFacultyId || params.facultyId;
+  const user = useSelector((state) => state.app.user);
+  const canManage = (action) => can(user, `${action}_all`) || (String(facultyId) === String(user?._id) && can(user, `${action}_assigned`));
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,9 +26,10 @@ const StudentList = () => {
   const studentsPerPage = 10;
   const [totalStudents, setTotalStudents] = useState(0);
 
-  const fetchStudents = async (page) => {
+  const fetchStudents = useCallback(async (page) => {
     try {
       setLoading(true);
+      setError("");
       const response = await axiosInstance.post(
         "/faculty/get-students-by-faculty",
         {
@@ -33,16 +46,16 @@ const StudentList = () => {
       } else {
         setError(response.data.message || "Failed to fetch students.");
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred while fetching students.");
     } finally {
       setLoading(false);
     }
-  };
+  }, [facultyId]);
 
   useEffect(() => {
     fetchStudents(currentPage); // Fetch students when currentPage changes
-  }, [facultyId, currentPage]);
+  }, [fetchStudents, currentPage]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -79,22 +92,34 @@ const StudentList = () => {
       toast.error("An error occurred while expiring the session.");
     }
   };
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await axiosInstance.delete(`/faculty/remove-user/${deleteTarget._id}`);
+      setDeleteTarget(null);
+      toast.success("Student deleted.");
+      if (students.length === 1 && currentPage > 1) setCurrentPage(currentPage - 1);
+      else await fetchStudents(currentPage);
+    } catch (err) {
+      toast.error(errorMessage(err.response?.data, "Unable to delete the student."));
+    } finally { setDeleting(false); }
+  };
 
   return (
-    <div className="relative min-h-screen bg-gray-900 text-white">
+    <div className="relative ui-page-height ui-page text-slate-900">
 
-      <div className="flex justify-center pt-[6%]">
+      {!embedded && <div className="flex justify-center ui-page-top">
         <h1 className="text-2xl font-bold mb-4">Student List</h1>
-      </div>
+      </div>}
 
-      <button
-        className="py-2 px-6 ml-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-700 active:scale-95 transition transform duration-200"
+      {!embedded && <button
+        className="py-2 px-6 ml-6 ui-gradient   text-slate-900 font-semibold rounded-lg shadow-md   active:scale-95 transition transform duration-200"
         onClick={() => navigate(-1)}
       >
         Back
-      </button>
+      </button>}
 
-      <div className="flex items-center ml-4 text-white py-2 px-4 rounded-full shadow-lg text-lg font-semibold">
+      <div className="flex items-center ml-4 text-slate-900 py-2 px-4 rounded-full ui-card-shadow text-lg font-semibold">
         <span>Total Number of Students Register:</span>
         <span className="ml-2 text-xl font-bold">{totalStudents}</span>
       </div>
@@ -103,7 +128,7 @@ const StudentList = () => {
         <div className="flex justify-center items-center h-64">
           <div className="flex flex-col items-center">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-opacity-75"></div>
-            <p className="mt-4 text-blue-500 text-lg font-medium">
+            <p className="mt-4 text-blue-700 text-lg font-medium">
               Loading, please wait...
             </p>
           </div>
@@ -112,9 +137,9 @@ const StudentList = () => {
         <div className="text-center text-red-500">{error}</div>
       ) : (
         <>
-          <div className="overflow-x-auto bg-gray-900 shadow-md rounded-lg p-4">
-            <table className="min-w-full text-lg text-left text-gray-500">
-              <thead className="bg-gray-900 text-gray-400">
+          <div className="overflow-x-auto ui-page shadow-md rounded-lg p-4">
+            <table className="min-w-full text-lg text-left text-slate-600">
+              <thead className="ui-page text-slate-600">
                 <tr>
                   <th className="py-3 px-6">#</th>
                   <th className="py-3 px-6">ID</th>
@@ -131,7 +156,7 @@ const StudentList = () => {
                   <tr>
                     <td
                       colSpan="7"
-                      className="py-3 px-6 text-center text-gray-400"
+                      className="py-3 px-6 text-center text-slate-600"
                     >
                       Data not available
                     </td>
@@ -141,7 +166,7 @@ const StudentList = () => {
                     <tr
                       key={student._id}
                       className={`${
-                        index % 2 === 0 ? "bg-gray-900" : "bg-gray-800"
+                        index % 2 === 0 ? "ui-page" : "ui-surface"
                       }`}
                     >
                       <td className="py-3 px-6">
@@ -165,12 +190,16 @@ const StudentList = () => {
                         {formatDate(student?.createdAt)}{" "}
                       </td>
                       <td className="py-3 px-6">
-                        <button
+                      <div className="flex flex-wrap items-center gap-2">
+                      {student.firstTimeLogin && canManage("users.issue_password") && <InitialPasswordButton userId={student._id} namespace={can(user, "users.issue_password_all") ? "admin" : "faculty"} />}
+                        {canManage("sessions.revoke") && <button
                           onClick={() => handleExpireSession(student._id)}
-                          className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 shadow-md transition duration-200 ease-in-out transform hover:scale-105"
+                          className="bg-blue-500 text-slate-900 py-2 px-4 rounded-lg hover:bg-blue-600 shadow-md transition duration-200 ease-in-out transform hover:scale-105"
                         >
                           Expire Session
-                        </button>
+                        </button>}
+                        {canManage("users.delete") && <button type="button" onClick={() => setDeleteTarget(student)} className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">Delete</button>}
+                      </div>
                       </td>
                     </tr>
                   ))
@@ -181,17 +210,17 @@ const StudentList = () => {
               <button
                 onClick={handlePreviousPage}
                 disabled={currentPage === 1}
-                className="bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition disabled:opacity-50"
+                className="ui-surface text-slate-900 py-2 px-4 rounded-lg hover:ui-subtle transition disabled:opacity-50"
               >
                 Previous
               </button>
-              <span className="text-gray-300 pr-2 pl-2">
+              <span className="text-slate-600 pr-2 pl-2">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-                className="bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition disabled:opacity-50"
+                className="ui-surface text-slate-900 py-2 px-4 rounded-lg hover:ui-subtle transition disabled:opacity-50"
               >
                 Next
               </button>
@@ -199,8 +228,13 @@ const StudentList = () => {
           </div>
         </>
       )}
+      {deleteTarget && <Modal title="Delete student?" subtitle={deleteTarget.username} busy={deleting} onClose={() => { if (!deleting) setDeleteTarget(null); }} footer={<>
+        <button type="button" className="rbac-button" disabled={deleting} onClick={() => setDeleteTarget(null)}>Cancel</button>
+        <button type="button" className="rbac-button rbac-button--danger-solid" disabled={deleting} onClick={handleDelete}>{deleting ? "Deleting…" : "Delete student"}</button>
+      </>}><p>Deleting this student also removes their submissions and code drafts. This cannot be undone.</p></Modal>}
     </div>
   );
 };
 
+StudentList.propTypes = { embedded: PropTypes.bool, facultyId: PropTypes.string };
 export default StudentList;

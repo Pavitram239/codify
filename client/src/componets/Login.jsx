@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProfilePicThunk, setImageUrl, setLoading, setUser } from "../redux/userSlice";
+import { fetchProfilePicThunk, setLoading, setUser } from "../redux/userSlice";
 import axiosInstance from "../utils/axiosInstance";
+import { errorMessage } from "../utils/errorMessage";
 import { SEM, BRANCH } from "../utils/constants";
 import PasswordChange from "./PassWordChange";
-import { ClipLoader } from "react-spinners";
+
 
 const Login = () => {
-  const user = useSelector((store) => store.app.user);
+  
   const [isLogin, setIsLogin] = useState(true);
   const authStatus = useSelector((store) => store.app.authStatus);
-  const [fullName, setFullName] = useState("");
+  const [, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [idOrEmail, setIdOrEmail] = useState("");
   const [mobileNo, setMobileNo] = useState("");
@@ -28,7 +29,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const isLoading = useSelector((store) => store.app.isLoading);
   const [userType, setUserType] = useState("");
-  const [isLoad, setIsLoad] = useState(false);
+  const [, setIsLoad] = useState(false);
   const [canTerminateSession, setCanTerminateSession] = useState(false);
   const [cachedCredentials, setCachedCredentials] = useState(null);
 
@@ -44,7 +45,7 @@ const Login = () => {
     } else {
       navigate("/");
     }
-  }, [authStatus]);
+  }, [authStatus, navigate]);
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -68,6 +69,10 @@ const Login = () => {
   }, [userType]);
 
   const validateRegistration = () => {
+    if (!password || password.length < 8) {
+      toast.error("Choose a password with at least 8 characters.");
+      return false;
+    }
     if (!username || !idOrEmail || !userType || !subject) {
       toast.error("Username, ID/Email, User Type, and Subject are required.");
       return false;
@@ -106,6 +111,7 @@ const Login = () => {
       batch: userType === "student" ? batch.toLowerCase() : undefined,
       subject: userType === "student" ? selectedSubject.subject : subject,
       role: userType,
+      password,
     };
 
     // console.log(newUser);
@@ -120,7 +126,7 @@ const Login = () => {
         setIsLogin(true);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Registration failed.");
+      toast.error(errorMessage(error.response?.data?.message, "Registration failed."));
     } finally {
       dispatch(setLoading(false));
     }
@@ -148,7 +154,6 @@ const Login = () => {
     try {
       const url = `auth/login`;
       const res = await axiosInstance.post(url, userPayload);
-      console.log(res.data);
       if (res.data.success) {
         setCanTerminateSession(false);
         setCachedCredentials(null);
@@ -169,12 +174,12 @@ const Login = () => {
         resetForm();
         navigate("/browse");
       } else {
-        toast.error(res.data.message || "Login failed!");
+        toast.error(errorMessage(res.data.message, "Login failed!"));
       }
     } catch (error) {
-      const errorMessage =
+      const loginError =
         error?.response?.data?.message || "An error occurred during login.";
-      toast.error(errorMessage);
+      toast.error(errorMessage(loginError));
 
       if (error?.response?.data?.canTerminate) {
         setCanTerminateSession(true);
@@ -230,16 +235,16 @@ const Login = () => {
 
   return (
     <>
-      <div style={{ backgroundColor: "black" }}>
-        <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-r overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
+      <div style={{ backgroundColor: "var(--background)" }}>
+        <div className="relative ui-page-height flex items-center justify-center ui-gradient overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
           {isFirstTime ? (
             <PasswordChange id={idOrEmail} />
           ) : (
             <form
               onSubmit={isLogin ? handleLogin : handleRegistration}
-              className="flex flex-col w-full max-w-lg p-8 space-y-6 bg-gray-900 bg-opacity-90 rounded-lg shadow-lg"
+              className="flex flex-col w-full max-w-lg p-8 space-y-6 ui-page bg-opacity-90 rounded-lg ui-card-shadow"
             >
-              <h1 className="text-4xl text-white font-bold text-center">
+              <h1 className="text-4xl text-slate-900 font-bold text-center">
                 {isLogin ? "Login" : "Signup"}
               </h1>
               {!isLogin && (
@@ -250,7 +255,7 @@ const Login = () => {
                     onChange={(e) => setUsername(e.target.value)}
                     type="text"
                     placeholder="Username"
-                    className="p-4 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
+                    className="p-4 rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
                   />
 
                   {/* idOrEmail and userType */}
@@ -262,7 +267,7 @@ const Login = () => {
                       placeholder={
                         userType === "faculty" ? "Faculty Email" : "Student ID"
                       }
-                      className="p-4 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      className="p-4 rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
 
                     <select
@@ -272,7 +277,7 @@ const Login = () => {
                         setUserType(e.target.value);
                         setSubject("");
                       }}
-                      className="p-3 w-full cursor-pointer rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      className="p-3 w-full cursor-pointer rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     >
                       <option value="" disabled>
                         -- Select User Type --
@@ -289,7 +294,7 @@ const Login = () => {
                         <select
                           value={branch}
                           onChange={(e) => setBranch(e.target.value)}
-                          className="p-4 cursor-pointer rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                          className="p-4 cursor-pointer rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         >
                           <option value="">Select Branch</option>
                           {Object.values(BRANCH).map((branchOption, index) => (
@@ -302,7 +307,7 @@ const Login = () => {
                         <select
                           value={sem}
                           onChange={(e) => setSem(e.target.value)}
-                          className="p-4 cursor-pointer rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                          className="p-4 cursor-pointer rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         >
                           <option value="">Select Semester</option>
                           {Object.values(SEM).map((semOption, index) => (
@@ -317,7 +322,7 @@ const Login = () => {
                         <select
                           value={batch}
                           onChange={(e) => setBatch(e.target.value)}
-                          className="p-4 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                          className="p-4 rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         >
                           <option value="" disabled>
                             Select Batch
@@ -337,7 +342,7 @@ const Login = () => {
                           onChange={(e) => setMobileNo(e.target.value)}
                           type="text"
                           placeholder="Mobile No"
-                          className="p-4 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                          className="p-4 rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         />
                       </div>
                     </>
@@ -349,7 +354,7 @@ const Login = () => {
                       <select
                         value={subject}
                         onChange={(e) => setSubject(e.target.value)}
-                        className="p-4 w-full cursor-pointer rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        className="p-4 w-full cursor-pointer rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                       >
                         <option value="" disabled>
                           -- Select Subject --
@@ -368,11 +373,14 @@ const Login = () => {
                         onChange={(e) => setSubject(e.target.value)}
                         type="text"
                         placeholder="Enter Subject"
-                        className="p-4 w-full rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        className="p-4 w-full rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                       />
                     )}
                   </div>
                 </>
+              )}
+              {!isLogin && (
+                <input type="password" autoComplete="new-password" aria-label="Choose password" placeholder="Choose password" value={password} onChange={(e) => setPassword(e.target.value)} minLength={8} required className="p-4 w-full rounded-md ui-surface text-slate-900 border border-slate-200" />
               )}
               {isLogin && (
                 <>
@@ -384,7 +392,7 @@ const Login = () => {
                     }}
                     type="name"
                     placeholder="Id"
-                    className="p-4 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="p-4 rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   />
                   <div className="relative w-full">
                     <input
@@ -395,12 +403,12 @@ const Login = () => {
                       }}
                       type={showPassword ? "text" : "password"}
                       placeholder="Password"
-                      className="p-4 w-full rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      className="p-4 w-full rounded-md ui-surface text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 focus:outline-none"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-600 hover:text-blue-700 focus:outline-none"
                     >
                       {showPassword ? (
                         <span>🔓</span>
@@ -422,7 +430,7 @@ const Login = () => {
                       <button
                         type="button"
                         onClick={handleTerminateAndLogin}
-                        className="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-md shadow transition duration-150 active:scale-98"
+                        className="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-500 text-slate-900 font-semibold rounded-md shadow transition duration-150 active:scale-98"
                       >
                         Terminate Active Session &amp; Log In
                       </button>
@@ -432,18 +440,19 @@ const Login = () => {
               )}
               <button
                 type="submit"
-                className="w-full py-4 bg-blue-600 text-white font-bold rounded-md transition-transform transform hover:scale-105 focus:scale-95"
+                className="w-full py-4 bg-blue-600 text-slate-900 font-bold rounded-md transition-transform transform hover:scale-105 focus:scale-95"
               >
                 {isLoading ? "Loading..." : isLogin ? "Login" : "Signup"}
               </button>
-              <p className="text-white text-center">
+              <p className="text-slate-900 text-center">
                 {isLogin ? "New to Coding App?" : "Already have an account?"}
-                <span
+                <button
+                  type="button"
                   onClick={toggleLogin}
-                  className="ml-2 text-blue-500 cursor-pointer hover:underline"
+                  className="ml-2 text-blue-700 cursor-pointer hover:underline"
                 >
                   {isLogin ? "Signup" : "Login"}
-                </span>
+                </button>
               </p>
             </form>
           )}
